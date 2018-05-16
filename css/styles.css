@@ -1,0 +1,98 @@
+/* FONT IMPORT */
+@font-face {
+	font-family: 'Freight Sans Book';
+	src: url('../fonts/Freight Sans Book.otf');
+}
+
+@font-face {
+	font-family: 'Freight Sans Book Italic';
+	src: url('../fonts/Freight Sans Book Italic.otf');
+}
+
+/* CLASSES */
+.custom-bg {
+	background-color: rgb(204,204,204);
+}
+
+.custom-bg li {
+	font-family: "Freight Sans Book";
+}
+
+/* IDs */
+#login-button {
+	text-align: center;
+}
+
+#login-form {
+	width: 40%;
+	margin: 5% auto;
+}
+
+#logo {
+	width: 500px;
+	position: absolute;
+	padding-left: 1rem;
+	bottom: 0;
+}
+
+#logo a:hover {
+	text-decoration: none;
+}
+
+#logo h1 {
+	font-family: "Rockwell";
+	font-size: 60px;
+	font-weight: bold;
+	color: white;
+}
+
+#logo-img {
+	float: left;
+}
+
+#logo-text-pt1 {
+	padding-top: 0;
+}
+
+#logo-text-pt2 {
+	margin-top: -15px;
+}
+
+#rmembr-chckbox {
+	text-align: center;
+}
+
+#scheduler-font {
+	font-family: "Freight Sans Book Italic";
+	font-size: 30px;
+	font-weight: lighter;
+	color: white;
+}
+
+#title-section {
+	height: 200px;
+	background-color: rgb(13,106,168);
+	position: relative;
+}
+
+/* BOOTSTRAP OVERRIDES */
+
+.form-group {
+	margin-top: 30px;
+}
+
+.navbar-default .navbar-nav>li>a {
+    color: rgb(64,64,64);
+    font-size: 18px;
+}
+
+.navbar-default .navbar-nav>li>a:hover {
+    color: rgb(119,119,119);
+}
+
+ .navbar-toggle {
+	float: left;
+	margin-left: 15px;
+} 
+
+
