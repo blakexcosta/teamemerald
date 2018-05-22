@@ -19,6 +19,12 @@
 }
 
 /* IDs */
+#error-container {
+	text-align: center;
+	top: 50%;
+	margin-top: 10%;
+}
+
 #login-button {
 	text-align: center;
 }
