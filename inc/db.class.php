@@ -6,7 +6,7 @@
 	    private $host = "localhost";
 	    private $db_name = "raihn";
 	    private $username = "root";
-	    private $password = 'yukinositaRed21';
+	    private $password = '';
 	    public $conn;
 	 
 	    // get the database connection
