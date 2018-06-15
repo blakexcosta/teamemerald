@@ -53,14 +53,19 @@
 	 * Tests the DB connection by running query and getting results back
 	 */
 	function testConnection() {
-		$sqlQuery = "SELECT * FROM BUS_DRIVER";
+		try{
+			$sqlQuery = "SELECT * FROM BUS_DRIVER";
 
-		$db = new Database();
-		$conn = $db->getConnection();
-		$query = $conn.prepare($sqlQuery);
-		if($query->execute()) {
-			$data = $query->fetchAll(PDO::FETCH_ASSOC);
-			return $data;
+			$db = new Database();
+			$conn = $db->getConnection();
+			$query = $conn->prepare($sqlQuery);
+			if($query->execute()) {
+				$data = $query->fetchAll(PDO::FETCH_ASSOC);
+				var_dump($data);
+				return $data;
+			}
+		}catch(PDOException $e) {
+			echo $e;
 		}
 	}
 
