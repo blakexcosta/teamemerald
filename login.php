@@ -1,4 +1,4 @@
-<?php include_once 'inc/top_layout.php'; ?>
+<?php require_once('inc/top_layout.php'); ?>
 
 	<form id="login-form">
 		<div class="form-group row">
@@ -24,4 +24,4 @@
 		</div>	
 	</form>
 
-<?php include_once 'inc/bottom_layout.php'; ?>
+<?php require_once('inc/bottom_layout.php'); ?>

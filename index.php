@@ -1,4 +1,4 @@
-<?php include_once 'inc/top_layout.php'; ?>
+<?php require_once('inc/top_layout.php'); ?>
 
 <p>Sed ut perspiciatis unde omnis iste 
 	natus error sit voluptatem accusantium doloremque laudantium, 
@@ -55,4 +55,4 @@ Mei errem labitur expetenda te. Qui ex homero salutatus, qui eu malis labores, v
 Ut pri ocurreret mnesarchum, integre gubergren nec et. Diceret nusquam quo ex. Eos in populo complectitur, sale vituperatoribus et nec. Vis clita vocibus ne, ad pro regione veritus accommodare.
 </p>
 
-<?php include_once 'inc/bottom_layout.php'; ?>
+<?php require_once('inc/bottom_layout.php'); ?>

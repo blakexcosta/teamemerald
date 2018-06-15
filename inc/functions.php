@@ -1,5 +1,5 @@
 <?php 
-	require_once('inc/db.class.php');
+	require_once('db.class.php');
 
 	///* FUNCTIONS *///
 
@@ -54,8 +54,14 @@
 	 */
 	function testConnection() {
 		$sqlQuery = "SELECT * FROM BUS_DRIVER";
-		$data = execute($sqlQuery);
-		return $data;
+
+		$db = new Database();
+		$conn = $db->getConnection();
+		$query = $conn.prepare($sqlQuery);
+		if($query->execute()) {
+			$data = $query->fetchAll(PDO::FETCH_ASSOC);
+			return $data;
+		}
 	}
 
 ?>

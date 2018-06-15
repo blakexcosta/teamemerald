@@ -1,4 +1,4 @@
-<?php include_once 'inc/top_layout.php'; ?>
+<?php require_once('inc/top_layout.php'); ?>
 
 <table class="table">
   <thead>
@@ -47,4 +47,4 @@
   </tbody>
 </table>
 
-<?php include_once 'inc/bottom_layout.php'; ?>
+<?php require_once('inc/bottom_layout.php'); ?>

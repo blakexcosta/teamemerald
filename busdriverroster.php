@@ -1,6 +1,6 @@
 <?php 
-    include_once 'inc/top_layout.php';
-    include_once 'inc/functions.php';
+    require_once('inc/top_layout.php');
+    require_once('inc/functions.php');
 ?>
 
 
@@ -9,4 +9,4 @@
 
 ?>
 
-<?php include_once 'inc/bottom_layout.php'; ?>
+<?php require_once('inc/bottom_layout.php'); ?>
