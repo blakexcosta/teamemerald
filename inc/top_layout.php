@@ -14,7 +14,7 @@
 		<a href="./index.php">
 			<div id="logo">
 				<div id="logo-img">
-					<img src="./img/RAIHNlogo.png"  alt="RAIHN logo"/>
+					<img src="./img/RAIHNlogo.PNG"  alt="RAIHN logo"/>
 				</div>
 				<div id="logo-text">
 					<div id="logo-text-pt1">
