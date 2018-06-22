@@ -4,8 +4,8 @@
 ?>
 
 <?php 
-    //Gets the data for all host congregations in MySQL
-    getHostCongregationRoster(); 
+  	//Gets the data for all host congregation coordinators in MySQL
+	getCongregationCoordinators();
 ?>
 
 <?php require_once('inc/bottom_layout.php'); ?>

@@ -5,8 +5,8 @@
 
 
 <?php 
-	testConnection(); //tests the database connection
-
+	//Gets the data for all the bus drivers
+	getBusDriverData(); 
 ?>
 
 <?php require_once('inc/bottom_layout.php'); ?>
