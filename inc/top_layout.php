@@ -14,7 +14,7 @@
 		<a href="./index.php">
 			<div id="logo">
 				<div id="logo-img">
-					<img src="./img/RAIHNlogo.png"  alt="RAIHN logo"/>
+					<img src="./img/RAIHNlogo.PNG"  alt="RAIHN logo"/>
 				</div>
 				<div id="logo-text">
 					<div id="logo-text-pt1">
@@ -50,6 +50,9 @@
 		      	</li>
 		      	<li class="nav-item">
 		        	<a class="nav-link" href="./congregationroster.php">Host Congregation Roster</a>
+		      	</li>
+		      	<li class="nav-item">
+		        	<a class="nav-link" href="./congregationcoordinators.php">Congregation Coordinators</a>
 		      	</li>
 		      	<li class="nav-item">
 		        	<a class="nav-link" href="./login.php">Login</a>
