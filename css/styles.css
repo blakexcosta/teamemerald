@@ -18,6 +18,12 @@
 	font-family: "Freight Sans Book";
 }
 
+.error-msg {
+	font-size: 25px;
+	color: rgb(204,73,72);
+	text-align: center;
+}
+
 /* IDs */
 #error-container {
 	text-align: center;

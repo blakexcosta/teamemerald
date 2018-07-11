@@ -8,21 +8,31 @@
 	 * @param $params - any params used with the query (WHERE somevar = "") 
 	 * @return $data - the data fetched from MySQL
 	 */
-	function executeQuery($sqlQuery, ...$params) {
-		if(sizeof($params) == 0) {
-			$db = new Database();
-			$conn = $db->getConnection();
-			$query = $conn->prepare($sqlQuery);
-			if($query->execute()){
-                $data = $query->fetchAll(PDO::FETCH_ASSOC);
-                return $data;
-            }
-		}/*else {
-			$db = new Database();
-			$conn = $db->getConnection();
-			$query = $conn->prepare($sqlQuery);
-
-		}*/
+	function executeQuery($sqlQuery, $params) {
+		try {
+			if(sizeof($params) == 0) {
+				$db = new Database();
+				$conn = $db->getConnection();
+				$query = $conn->prepare($sqlQuery);
+				if($query->execute()){
+	                $data = $query->fetchAll(PDO::FETCH_ASSOC);
+	                return $data;
+	            }
+			}else {
+				$db = new Database();
+				$conn = $db->getConnection();
+				$query = $conn->prepare($sqlQuery);
+				foreach ($params as $key => $key_value) {
+					$query->bindParam($key, $key_value, PDO::PARAM_STR);
+				}
+				if($query->execute()){
+	                $data = $query->fetchAll(PDO::FETCH_ASSOC);
+	                return $data;
+	            }
+			}
+		}catch(PDOException $e) {
+			error_log($e->getMessage(), 3, "../error-log.txt");
+		}
 	}
 
 	function getBusDriverData() {
@@ -105,6 +115,28 @@
 			$bigString .= "</tbody>";
 		$bigString .= "</table>";
 		echo $bigString;
+	}
+
+	function verifyUser($email, $pass) {
+		$sqlQuery = "SELECT email, password FROM USERS WHERE email = :email";
+		$params = array(':email' => $email);
+		$data = executeQuery($sqlQuery, $params);
+		var_dump($data);
+		if(sizeof($data) == 0) {
+			return false;
+		}else {
+			if($pass != $data[0]["password"]) {
+				return false;
+			}else {
+				return true;
+			}
+		}
+
+	}
+
+	function paramsIsZero() {
+		$params = array();
+		return $params;
 	}
 	
 	function testSQLNullValue($sqlData) {
