@@ -1,4 +1,7 @@
-<?php require_once('inc/top_layout.php'); ?>
+<?php
+	session_start();
+	require_once('inc/top_layout.php'); 
+?>
 
 <p>Sed ut perspiciatis unde omnis iste 
 	natus error sit voluptatem accusantium doloremque laudantium, 

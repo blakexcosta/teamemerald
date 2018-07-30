@@ -3,24 +3,47 @@
 	require_once('inc/top_layout.php'); 
 	require_once('inc/functions.php');
 
+	//Checks to see if the login error is present
 	if(isset($_SESSION['loginError'])) {
+		//Set the login value from the session variable and store into a new variable
 		$loginError = $_SESSION['loginError'];
+
+		//Unset or remove the value of the session variable
 		unset($_SESSION['loginError']);
 	}
 
+	//If the sign in button was pressed, verify the user
 	if(isset($_POST['login-submit'])) {
-		$result = verifyUser($_POST['raihn-email'], $_POST['raihn-password']);
+		//First verifies the user's email
+		$result = verifyEmail($_POST['raihn-email']);
 		if($result == true) {
-			header("Location: ./index.php");
+			//If the email is correct, then verify the password
+			$result2 = verifyPassword($_POST['raihn-password'], $_POST['raihn-email']);
+			if($result2 == true) {
+				//Sets a session variable to store the user's email
+				$_SESSION['email'] = $_POST['raihn-email'];
+				header("Location: ./index.php");
+			}else {
+				//Create login error that will be saved as a session variable
+				$_SESSION['loginError'] = "<div class='alert alert-danger'>
+												<strong>Error!</strong> Incorrect email or password!
+											</div>";
+				
+				//Redirect the user back to the login page
+				header("Location: login.php");
+			}
 		}else {
-			$_SESSION['loginError'] = "<div class='error-msg'>Incorrect Email or Password!</div>";
+			$_SESSION['loginError'] = "<div class='alert alert-danger'>
+												<strong>Error!</strong> Incorrect email or password!
+											</div>";
 			header("Location: login.php");
 		}
 	}
 ?>
-	<?php 
+	<?php
+		//If there's a login error message, display it here 
 		if(isset($loginError)) { 
-			echo $loginError;
+			 echo $loginError;
 		}
 	?>
 	<form method="post" id="login-form" action="login.php">
@@ -42,7 +65,7 @@
 				<label class="form-check-label" for="gridCheck">Remember Me</label>
 			</div>
 		</div>
-		<div id="login-button">
+		<div id="submit-button">
 			<button id="login-submit" name="login-submit" type="submit" class="btn btn-primary">Sign In</button>
 		</div>	
 	</form>
