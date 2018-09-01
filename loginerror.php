@@ -1,4 +1,4 @@
-<?php require_once('inc/top_layout.php'); ?>
+<?php require_once("../inc/top_layout.php"); ?>
 
 <div class="container" id="error-container">
 	<div class="alert alert-danger">
@@ -6,4 +6,4 @@
  	</div>
 </div>
 
-<?php require_once('inc/bottom_layout.php'); ?>
+<?php require_once("../inc/bottom_layout.php"); ?>

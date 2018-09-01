@@ -1,7 +1,14 @@
 <?php
 	session_start();
-	require_once('inc/top_layout.php'); 
-	require_once('inc/functions.php'); 
+	require_once("./inc/top_layout.php"); 
+	require_once("./inc/Controller/User.class.php"); 
+	$user = new User();
+
+	if(isset($_SESSION['resetPassMsg'])) {
+		$resetPassMsg = $_SESSION['resetPassMsg'];
+
+		unset($_SESSION['resetPassMsg']);
+	}
 
 	//Checks to see if there's a password error message present
 	if(isset($_SESSION['pwdMsg'])) {
@@ -14,26 +21,18 @@
 
 	//If the create password button is submitted
 	if(isset($_POST['pass-submit'])) {
-		$result = verifyPassword($_POST['curr-password'], $_SESSION['email']);
+		$result = $user->verifyCredentials($_SESSION['email'], $_POST['curr-password']);
 		if($result == true) {
-			$result2 = confirmPassword($_POST['new-password'], $_POST['conf-password']);
-			if($result2 == true) {
-				$updtPwdResult = changePassword($_POST['new-password'], $_SESSION['email']);
-				if($updtPwdResult == true) {
-					$_SESSION['pwdMsg'] = "<div class='alert alert-success'>
-											  <strong>Success!</strong> Password set!
-											</div>";
-					header("Location: setuppassword.php");
-				}else {
-					$_SESSION['pwdMsg'] = "<div class='alert alert-danger'>
-												<strong>Error!</strong> Trouble setting password. Please contact admin!
-											</div>";
-					header("Location: setuppassword.php");
-				}
+			$updtPwdResult = $user->changePassword($_POST['new-password'], $_SESSION['email']);
+			if($updtPwdResult == true) {
+				$_SESSION['pwdMsg'] = "<div class='alert alert-success'>
+										  <strong>Success!</strong> Password set!
+										</div>";
+				header("Location: setuppassword.php");
 			}else {
 				$_SESSION['pwdMsg'] = "<div class='alert alert-danger'>
-												<strong>Error!</strong> Confirmed password doesn't match the new password
-											</div>";
+											<strong>Error!</strong> Trouble setting password. Please contact admin!
+										</div>";
 				header("Location: setuppassword.php");
 			}
 		}else {
@@ -49,29 +48,38 @@
 		if(isset($pwdMsg)) { 
 			 echo $pwdMsg;
 		}
+
+		if(isset($resetPassMsg)) {
+			echo $resetPassMsg;
+		}
 	?>
 	<form method="post" id="login-form" action="setuppassword.php">
 		<div class="form-group row">
 			<label for="raihn-password" class="col-sm-2 col-form-label">Current Password</label>
 			<div class="col-sm-10">
-			  <input type="password" class="form-control" id="curr-password" name="curr-password" placeholder="Password" required>
+				<div class="pw-toggle-group">
+			  		<input type="password" class="form-control" id="curr-password" name="curr-password" required>
+					<a id="regPwToggleLink"><i class="fa fa-eye"></i> Show</a>
+				</div>
 			</div>
 		</div>
 		<div class="form-group row">
-			<label for="raihn-password" class="col-sm-2 col-form-label">New Password</label>
+			<label for="new-password" class="col-sm-2 col-form-label">New Password</label>
 			<div class="col-sm-10">
-			  <input type="password" class="form-control" id="new-password" name="new-password" placeholder="Password" required>
+			  <input type="password" class="form-control" id="new-password" name="new-password" required>
+			  <p id="eight-chars-msg"><strong>Password must be 8 characters long</strong><span id="done-word-new"><strong>: DONE!</strong></span></p>
 			</div>
 		</div>
 		<div class="form-group row">
-			<label for="raihn-password" class="col-sm-2 col-form-label">Confirm New Password</label>
+			<label for="conf-password" class="col-sm-2 col-form-label">Confirm New Password</label>
 			<div class="col-sm-10">
-			  <input type="password" class="form-control" id="conf-password" name="conf-password" placeholder="Password" required>
+			  <input type="password" class="form-control" id="conf-password" name="conf-password" required>
+			  <p id="pass-confirm-msg"><strong>Passwords must match</strong><span id="done-word-conf"><strong>: DONE!</strong></span></p>
 			</div>
 		</div>
 		<div id="submit-button">
-			<button id="pass-submit" name="pass-submit" type="submit" class="btn btn-primary">Create Password</button>
+			<button id="pass-submit" name="pass-submit" type="submit" class="btn btn-primary" disabled>Create Password</button>
 		</div>	
 	</form>
 
-<?php require_once('inc/bottom_layout.php'); ?>
+<?php require_once("./inc/bottom_layout.php"); ?>

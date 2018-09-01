@@ -5,6 +5,9 @@
 
 		<!-- Minified Bootstrap v3.7.7 CSS -->
 		<link rel="stylesheet" type="text/css" href="./css/bootstrap.min.css">
+	
+		<!-- Minified Font Awesome CSS -->
+		<link rel="stylesheet" type="text/css" href="./css/font-awesome.min.css">
 		
 		<!-- Main custom CSS -->
 		<link rel="stylesheet" type="text/css" href="./css/styles.css">
@@ -39,24 +42,39 @@
 		      	<li class="nav-item">
 		        	<a class="nav-link" href="./index.php">Home</span></a>
 		      	</li>
-		      	<li class="nav-item">
-	        		<a class="nav-link" href="#">Profile</a>
-		      	</li>
-	      		<li class="nav-item">
-		        	<a class="nav-link" href="#">Dashboard</a>
-		      	</li>
-		      	<li class="nav-item">
-		        	<a class="nav-link" href="./busdriverroster.php">Bus Driver Roster</a>
-		      	</li>
-		      	<li class="nav-item">
-		        	<a class="nav-link" href="./congregationroster.php">Host Congregation Roster</a>
-		      	</li>
-		      	<li class="nav-item">
-		        	<a class="nav-link" href="./congregationcoordinators.php">Congregation Coordinators</a>
-		      	</li>
+		      	<?php /* if logged in */ if(isset($_SESSION['email'])): ?>
+		      		<?php /* if logged in */ if(isset($_SESSION['role']) && ($_SESSION['role'] == "Bus Driver" || $_SESSION['role'] == "Admin")): ?>
+				      	<li class="nav-item">
+				        	<a class="nav-link" href="./busdriverroster.php">Bus Driver Roster</a>
+				      	</li>
+			      	<?php endif; ?>
+			      	<?php /* if logged in */ if(isset($_SESSION['role']) && ($_SESSION['role'] == "Congregation" || $_SESSION['role'] == "Admin")): ?>
+				      	<li class="nav-item">
+				        	<a class="nav-link" href="./congregationroster.php">Host Congregation Roster</a>
+				      	</li>
+				      	<li class="nav-item">
+				        	<a class="nav-link" href="./congregationcoordinators.php">Congregation Coordinators</a>
+				      	</li>
+				      	<li class="nav-item">
+				        	<a class="nav-link" href="./inputblackouts.php">Input Blackouts</a>
+				      	</li>
+			      	<?php endif; ?>
+			      	<?php /* if logged in */ if(isset($_SESSION['role']) && $_SESSION['role'] == "Admin"): ?>
+			      		<li class="nav-item">
+				        	<a class="nav-link" href="./insertDateData.php">Insert Date Data</a>
+				      	</li>
+			      	<?php endif; ?>
+			      	<li class="nav-item">
+			        	<a class="nav-link" href="./setuppassword.php">Change Password</a>
+			      	</li>
+			      	<li class="nav-item">
+			        	<a class="nav-link" href="./logout.php">Logout</a>
+			      	</li>
+		      	<?php else: ?>
 		      	<li class="nav-item">
 		        	<a class="nav-link" href="./login.php">Login</a>
 		      	</li>
+		      	<?php endif; ?>
 			</ul>
 	  	</div>
 	</nav>
