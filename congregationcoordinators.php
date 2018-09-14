@@ -7,8 +7,8 @@
 <?php 
 	$congregation = new Congregation();
 
-    //Gets the data for all host congregations in MySQL
-    $congregation->getHostCongregationRoster(); 
+  	//Gets the data for all host congregation coordinators in MySQL
+	$congregation->getCongregationCoordinators();
 ?>
 
 <?php require_once("./inc/bottom_layout.php"); ?>
