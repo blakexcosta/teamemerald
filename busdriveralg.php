@@ -4,14 +4,14 @@
    //check how many drivers have submitted their blackout dates
 	function getBusDriverBlackoutCount() {
 
-   }
+	}
 
-   
+
    //First, grab the bus drivers and their associated blackout dates
    //DriverID, date, timeofday
 
    function getBlackouts(){
-      
+
    }
 
 
@@ -42,7 +42,7 @@
 
    /*
    This is the main scheduling function
-   
+
 
 
    */
