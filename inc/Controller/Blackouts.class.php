@@ -202,9 +202,10 @@
                     if($noConflictingDate == true) {
                         $blackoutWeekStart = "2018-09-16";
                         $blackoutWeekEnd = date("Y-m-d",strtotime("+6 days",strtotime($blackoutWeekStart)));
+                        $congID = $congregationBlackoutCount[$h]["congID"];
 
                         $event = new Google_Service_Calendar_Event(array(
-                            'summary' => 'Test Event',
+                            'summary' => $this->congregation->getCongregationName($congID),
                             'location' => '123 Fake Street',
                             'description' => 'This is a test event',
                             'start' => array(
