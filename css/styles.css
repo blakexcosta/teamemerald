@@ -18,20 +18,76 @@
 	font-family: "Freight Sans Book";
 }
 
+.forgot-submit {
+	width: 40%;
+	margin: 5% auto;
+}
+
+.forgot-submit p {
+	text-align: center;
+	color: #CC2936;
+	font-weight: bold;
+}
+
+.pw-toggle-group {
+  position: relative; 
+}
+
+.pw-toggle-group a {
+  position: absolute;
+  right: 1em;
+  top: 0.5em;
+  color: #23527C; 
+}
+
+.pw-toggle-group a.pw-hide {
+  color: #23527C; 
+}
+
+.pw-toggle-group a:hover,
+.pw-toggle-group a:focus {
+  cursor: pointer;
+  text-decoration: none; 
+}
+
 /* IDs */
+#done-word-conf {
+	color: #549F93;
+	display: none;
+}
+
+#done-word-new {
+	color: #549F93;
+	display: none;
+}
+
+#eight-chars-msg {
+	color: #CC2936;
+	display: none;
+}
+
 #error-container {
 	text-align: center;
 	top: 50%;
 	margin-top: 10%;
 }
 
-#login-button {
-	text-align: center;
+#insert-date-form {
+	width: 60%;
+	margin: 5% auto;
 }
 
 #login-form {
 	width: 40%;
 	margin: 5% auto;
+}
+
+#login-form p {
+	text-align: center;
+}
+
+#login-form a {
+	text-decoration: none;
 }
 
 #logo {
@@ -64,6 +120,21 @@
 	margin-top: -15px;
 }
 
+#main-body {
+	width: 70%;
+	margin: 2% auto;
+}
+
+#pass-confirm-msg {
+	color: #CC2936;
+	display: none;
+}
+
+#prev-btn {
+	display: none;
+	margin-right: 5px;
+}
+
 #rmembr-chckbox {
 	text-align: center;
 }
@@ -75,6 +146,10 @@
 	color: white;
 }
 
+#submit-button {
+	text-align: center;
+}
+
 #title-section {
 	height: 200px;
 	background-color: rgb(13,106,168);
@@ -82,6 +157,34 @@
 }
 
 /* BOOTSTRAP OVERRIDES */
+
+.alert-danger {
+	width: 50%;
+	text-align: center;
+	margin: 0 auto;
+}
+
+.alert-success {
+	width: 50%;
+	text-align: center;
+	margin: 0 auto;
+}
+
+.alert-warning {
+	width: 50%;
+	text-align: center;
+	margin: 0 auto;
+}
+
+.btn-info, .btn-info:active, .btn-info:visited {
+	background-color: rgb(13,106,168);
+	border-color: rgb(13,106,168);
+}
+
+.btn-info:hover {
+	background-color: rgb(13,120,180);
+	border-color: rgb(13,120,180);
+}
 
 .form-group {
 	margin-top: 30px;
@@ -100,5 +203,7 @@
 	float: left;
 	margin-left: 15px;
 } 
+
+
 
 
