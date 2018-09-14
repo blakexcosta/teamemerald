@@ -5,12 +5,12 @@
 	    // specify your own database credentials
 	    private $host = "localhost";
 	    private $db_name = "raihn";
-	    private $username = "bxp9452";
-	    private $password = "citrinebryan";
+	    private $username = "root";
+	    private $password = 'yukinositaRed21';
 	    public $conn;
 
 	    public function __construct() {
-
+            ini_set('max_execution_time', 300);
 	    }
 	 
 	    // get the database connection

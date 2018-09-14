@@ -1,8 +1,14 @@
 <?php 
+	require_once("./inc/Data/db.class.php");
+	$this->db = new Database();
+
+	echo getCongBlackouts();
 
 	//First, grab congregations and their blackout dates
 	function getCongBlackouts() {
-
+		$sqlQuery = "SELECT * FROM congregation_blackout";
+		$data = $this->db->executeQuery($sqlQuery,paramsIsZero(),"select");
+		return $data;
 	}
 
 	//Second, loop through all congregations with their blackout dates and

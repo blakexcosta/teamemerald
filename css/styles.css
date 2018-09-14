@@ -18,6 +18,17 @@
 	font-family: "Freight Sans Book";
 }
 
+.forgot-submit {
+	width: 40%;
+	margin: 5% auto;
+}
+
+.forgot-submit p {
+	text-align: center;
+	color: #CC2936;
+	font-weight: bold;
+}
+
 .pw-toggle-group {
   position: relative; 
 }
@@ -69,6 +80,14 @@
 #login-form {
 	width: 40%;
 	margin: 5% auto;
+}
+
+#login-form p {
+	text-align: center;
+}
+
+#login-form a {
+	text-decoration: none;
 }
 
 #logo {

@@ -12,10 +12,10 @@
 		unset($_SESSION['insertResult']);
 	}
 
-	/*if(isset($_POST['submit']) && isset($_POST['blackoutWeek'])) {
+	if(isset($_POST['blackoutSubmit']) && isset($_POST['blackoutWeek'])) {
 		$_SESSION['insertResult'] = $calendar->loadCalendarYear($_POST['blackoutWeek']);
 		header("Location: inputblackouts.php");
-	}*/
+	}
 ?>
 
 <?php 
@@ -48,16 +48,16 @@
 	        </a>
     	</h4>
       </div>
-      <!-- <form action="inputblackouts.php" method="post"> -->
+       <form action="inputblackouts.php" method="post">
 	      <div class="modal-body"> 
 	        <div class="modal-checkboxes">
 			</div> 
 	      </div>
 	      <div class="modal-footer">
-			<input id="blackoutSubmit" type="submit" class="btn btn-default" name="submit" value="Submit"/>
+			<input id="blackoutSubmit" type="submit" class="btn btn-default" name="blackoutSubmit" value="Submit"/>
 	        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
 	      </div>
-      <!-- </form> -->
+       </form>
     </div>
 
   </div>

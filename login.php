@@ -65,12 +65,7 @@
 				</div>
 			</div>
 		</div>
-	  	<div class="form-group">
-	    	<div class="form-check" id="rmembr-chckbox">
-				<input class="form-check-input" type="checkbox" id="gridCheck">
-				<label class="form-check-label" for="gridCheck">Remember Me</label>
-			</div>
-		</div>
+        <p><a href="forgotpassword.php?state=email">Forgot Password</a></p>
 		<div id="submit-button">
 			<button id="login-submit" name="login-submit" type="submit" class="btn btn-primary">Sign In</button>
 		</div>	
