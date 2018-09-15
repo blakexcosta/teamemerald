@@ -8,6 +8,37 @@
 			$this->db = new Database();
 		}
 
+			/* function to grab the bus driver data from MySQL
+	 * echos back a formatted HTML Bootstrap table of the MySQL return results
+	 */
+		function getBusDriverBlackout() {
+			$sqlQuery = "SELECT * FROM bus_blackout";
+			$data = $this->db->executeQuery($sqlQuery, paramsIsZero(), "select");
+			
+			//define an associative array
+			$blackouts = array();
+
+			// for($i = 0; $i < sizeof($data); $i++) {
+			// 	$driverId = testSQLNullValue($data[$i]['driverID']);
+			// 	$date = testSQLNullValue($data[$i]['date']);
+			// 	$timeOfDay = testSQLNullValue($data[$i]['timeOfDay']);
+
+			// 	$values = array($date, $timeOfDay);
+
+			// 	$result[$row['name']] = $row['id'];
+
+			// 	$blackouts[$driverId] = 
+			// }
+
+			return $data;
+
+
+
+			// return $driver
+			// echo $date;
+			// echo $timeOfDay;
+		}//end getBusDriverData
+
 		/* function to grab the bus driver data from MySQL
 		 * echos back a formatted HTML Bootstrap table of the MySQL return results
 		 */

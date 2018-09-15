@@ -47,6 +47,12 @@
 				      	<li class="nav-item">
 				        	<a class="nav-link" href="./busdriverroster.php">Bus Driver Roster</a>
 				      	</li>
+							<li class="nav-item">
+				        	<a class="nav-link" href="./inputblackouts.php">Input Blackouts</a>
+				      	</li>
+							<li class="nav-item">
+				        	<a class="nav-link" href="./testBlackoutsPage.php">Test Blackouts</a>
+				      	</li>
 			      	<?php endif; ?>
 			      	<?php /* if logged in */ if(isset($_SESSION['role']) && ($_SESSION['role'] == "Congregation" || $_SESSION['role'] == "Admin")): ?>
 				      	<li class="nav-item">
