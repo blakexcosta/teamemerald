@@ -1,7 +1,7 @@
-$(document).ready(function() { 
-	//GLOBAL VARIABLES 
+$(document).ready(function() {
+	//GLOBAL VARIABLES
 
-	//Global varaible storing data retrieved from ajax call in blackout-date-sbmit 
+	//Global varaible storing data retrieved from ajax call in blackout-date-sbmit
 	var blackoutWeekDates;
 
 	//If the user clicks inside the "confirm password" field, show message
@@ -90,7 +90,7 @@ $(document).ready(function() {
 
 	//password field show/hide listener
 	$(".pw-toggle-group a").click(function() {
-		var current = $(this).html();		
+		var current = $(this).html();
 		switch (current){
 			case ('<i class="fa fa-eye"></i> Show'):
 				$(this).html('<i class="fa fa-eye-slash"></i> Hide').addClass("pw-hide").parent().find("input").attr("type", "text");
@@ -120,8 +120,8 @@ $(document).ready(function() {
 	}));
 
 
-	//FUNCTIONS 
-	
+	//FUNCTIONS
+
 	function createCustomDateRangeArray() {
 		var firstIndex = getCurrRotationsFirstWeek();
 		var lastIndex = firstIndex + 12;
@@ -136,7 +136,7 @@ $(document).ready(function() {
 		for(var i = 0; i <= 12; i++) {
 			if(data[i]['holiday'] == 1){
 				var label = $("<label>").addClass("checkbox-inline");
-				
+
 				var input = $("<input>").attr("type","checkbox");
 				input.attr("name","blackoutWeek[]");
 				input.attr("id","blackoutWeek");
@@ -145,12 +145,12 @@ $(document).ready(function() {
 				label.append("<strong>Week "+data[i]['weekNumber']+
 					"	("+data[i]['startDate']+" to "
 						+data[i]['endDate']+") HOLIDAY!</strong>");
-				
+
 				$(".modal-checkboxes").append(label);
 				$(".modal-checkboxes").append("<br />");
 			}else {
 				var label = $("<label>").addClass("checkbox-inline");
-				
+
 				var input = $("<input>").attr("type","checkbox");
 				input.attr("name","blackoutWeek[]");
 				input.attr("id","blackoutWeek");
@@ -159,7 +159,7 @@ $(document).ready(function() {
 				label.append("Week "+data[i]['weekNumber']+
 					"	("+data[i]['startDate']+" to "
 						+data[i]['endDate']+")");
-				
+
 				$(".modal-checkboxes").append(label);
 				$(".modal-checkboxes").append("<br />");
 			}

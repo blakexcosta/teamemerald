@@ -1,4 +1,4 @@
-<?php 
+<?php
 	session_start();
 	require_once("./inc/top_layout.php");
 	require_once("./inc/Controller/Calendar.class.php");
@@ -12,13 +12,13 @@
 		unset($_SESSION['insertResult']);
 	}
 
-	/*if(isset($_POST['submit']) && isset($_POST['blackoutWeek'])) {
+	if(isset($_POST['blackoutSubmit']) && isset($_POST['blackoutWeek'])) {
 		$_SESSION['insertResult'] = $calendar->loadCalendarYear($_POST['blackoutWeek']);
 		header("Location: inputblackouts.php");
-	}*/
+	}
 ?>
 
-<?php 
+<?php
 	if(isset($insertResult)) {
 		var_dump($insertResult);
 	}
@@ -39,7 +39,7 @@
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal">&times;</button>
         <h4 class="modal-title">
-			<a href="#" id="prev-btn" class="btn btn-info btn-sm"> 
+			<a href="#" id="prev-btn" class="btn btn-info btn-sm">
 	          <span class="glyphicon glyphicon-chevron-left"></span> Prev
 	        </a>
         	<?php echo "Rotation: <span id='rot-number'>".$initialRotation."</span>"; ?> (Weeks are from Sunday to Saturday)
@@ -48,19 +48,19 @@
 	        </a>
     	</h4>
       </div>
-      <!-- <form action="inputblackouts.php" method="post"> -->
-	      <div class="modal-body"> 
+       <form action="inputblackouts.php" method="post">
+	      <div class="modal-body">
 	        <div class="modal-checkboxes">
-			</div> 
+			</div>
 	      </div>
 	      <div class="modal-footer">
-			<input id="blackoutSubmit" type="submit" class="btn btn-default" name="submit" value="Submit"/>
+			<input id="blackoutSubmit" type="submit" class="btn btn-default" name="blackoutSubmit" value="Submit"/>
 	        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
 	      </div>
-      <!-- </form> -->
+       </form>
     </div>
 
   </div>
-</div>   
+</div>
 
 <?php require_once("./inc/bottom_layout.php"); ?>

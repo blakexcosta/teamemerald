@@ -1,6 +1,6 @@
-<?php 
+<?php
 	session_start();
-	require_once("./inc/top_layout.php"); 
+	require_once("./inc/top_layout.php");
 	require_once("./inc/Controller/User.class.php");
 	$user = new User();
 
@@ -19,7 +19,7 @@
 		$result = $user->verifyCredentials($_POST['raihn-email'], $_POST['raihn-password']);
 		if($result == true) {
 			$needsNewPass = $user->needsNewPass($_POST['raihn-email']);
-			if($needsNewPass) {	
+			if($needsNewPass) {
 				$_SESSION['email'] = $_POST['raihn-email'];
 				$_SESSION['role'] = $user->getUserRole($_POST['raihn-email']);
 				$_SESSION['resetPassMsg'] = "<div class='alert alert-warning'>
@@ -37,15 +37,15 @@
 			$_SESSION['loginMsg'] = "<div class='alert alert-danger'>
 											<strong>Error!</strong> Incorrect email or password!
 										</div>";
-			
+
 			//Redirect the user back to the login page
 			header("Location: login.php");
 		}
 	}
 ?>
 	<?php
-		//If there's a login message, display it here 
-		if(isset($loginMsg)) { 
+		//If there's a login message, display it here
+		if(isset($loginMsg)) {
 			 echo $loginMsg;
 		}
 	?>
@@ -65,15 +65,10 @@
 				</div>
 			</div>
 		</div>
-	  	<div class="form-group">
-	    	<div class="form-check" id="rmembr-chckbox">
-				<input class="form-check-input" type="checkbox" id="gridCheck">
-				<label class="form-check-label" for="gridCheck">Remember Me</label>
-			</div>
-		</div>
+        <p><a href="forgotpassword.php?state=email">Forgot Password</a></p>
 		<div id="submit-button">
 			<button id="login-submit" name="login-submit" type="submit" class="btn btn-primary">Sign In</button>
-		</div>	
+		</div>
 	</form>
 
 <?php require_once("./inc/bottom_layout.php"); ?>

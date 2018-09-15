@@ -18,25 +18,36 @@
 	font-family: "Freight Sans Book";
 }
 
+.forgot-submit {
+	width: 40%;
+	margin: 5% auto;
+}
+
+.forgot-submit p {
+	text-align: center;
+	color: #CC2936;
+	font-weight: bold;
+}
+
 .pw-toggle-group {
-  position: relative; 
+  position: relative;
 }
 
 .pw-toggle-group a {
   position: absolute;
   right: 1em;
   top: 0.5em;
-  color: #23527C; 
+  color: #23527C;
 }
 
 .pw-toggle-group a.pw-hide {
-  color: #23527C; 
+  color: #23527C;
 }
 
 .pw-toggle-group a:hover,
 .pw-toggle-group a:focus {
   cursor: pointer;
-  text-decoration: none; 
+  text-decoration: none;
 }
 
 /* IDs */
@@ -69,6 +80,14 @@
 #login-form {
 	width: 40%;
 	margin: 5% auto;
+}
+
+#login-form p {
+	text-align: center;
+}
+
+#login-form a {
+	text-decoration: none;
 }
 
 #logo {
@@ -183,8 +202,4 @@
  .navbar-toggle {
 	float: left;
 	margin-left: 15px;
-} 
-
-
-
-
+}

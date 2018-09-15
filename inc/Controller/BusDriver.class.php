@@ -14,7 +14,7 @@
 		function getBusDriverBlackout() {
 			$sqlQuery = "SELECT * FROM bus_blackout";
 			$data = $this->db->executeQuery($sqlQuery, paramsIsZero(), "select");
-			
+
 			//define an associative array
 			$blackouts = array();
 
@@ -27,7 +27,7 @@
 
 			// 	$result[$row['name']] = $row['id'];
 
-			// 	$blackouts[$driverId] = 
+			// 	$blackouts[$driverId] =
 			// }
 
 			return $data;
