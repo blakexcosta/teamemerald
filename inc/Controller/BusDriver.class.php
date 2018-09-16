@@ -15,9 +15,6 @@
 			$sqlQuery = "SELECT * FROM bus_blackout";
 			$data = $this->db->executeQuery($sqlQuery, paramsIsZero(), "select");
 
-			//define an associative array
-			$blackouts = array();
-
 			// for($i = 0; $i < sizeof($data); $i++) {
 			// 	$driverId = testSQLNullValue($data[$i]['driverID']);
 			// 	$date = testSQLNullValue($data[$i]['date']);
@@ -32,12 +29,22 @@
 
 			return $data;
 
-
-
-			// return $driver
-			// echo $date;
-			// echo $timeOfDay;
 		}//end getBusDriverData
+
+		//function to get the bus drivers in order of most black out dates to least
+		function getMostBlackouts(){
+			$sqlQuery = "SELECT driverID FROM bus_blackout GROUP BY driverID ORDER BY COUNT(driverID) desc";
+
+			$data = $this->db->executeQuery($sqlQuery, paramsIsZero(), "select");
+
+			return $data;
+		}
+
+
+
+
+
+
 
 		/* function to grab the bus driver data from MySQL
 		 * echos back a formatted HTML Bootstrap table of the MySQL return results
