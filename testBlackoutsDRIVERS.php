@@ -35,6 +35,7 @@
 // array
 // 	2018-09-01AM -> {driverID, date,timeOfDay}
 
+<<<<<<< HEAD
 		$bus = new BusDriver();
 
 		//this gets an array of the drivers with the most to least blackout dates
@@ -43,6 +44,10 @@
 		echo "<pre>";
 		print_r ($data);
 		echo "</pre>";
+=======
+
+
+>>>>>>> 33a68588490591f9a0ce0f388252c23e17df9ad4
 
 
 		$list=array();
@@ -79,6 +84,11 @@
 		// echo "<pre>";
 		 for ($i=1;$i<sizeof($list)+1;$i++){
 
+<<<<<<< HEAD
+=======
+			 // echo $list[$i-1];
+			 // echo "<br>";
+>>>>>>> 33a68588490591f9a0ce0f388252c23e17df9ad4
 
 			 // this is our key $list[$i-1];
 			 //Get the key of $list[$i-1] = orig."AM"
@@ -89,6 +99,10 @@
 				 $draftSchedule[$list[$i-1]] = [2, $list[$i-1]];
 			 }
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 33a68588490591f9a0ce0f388252c23e17df9ad4
 			 for($j=0;$j<sizeof($allBlackouts[2]);$j++){
 				 $currentBlackoutDay = (int)(substr($allBlackouts[2][$j]->{'date'}, strrpos($allBlackouts[2][$j]->{'date'}, '-') + 1));
 
