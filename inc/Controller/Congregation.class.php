@@ -1,7 +1,7 @@
 <?php
 	class Congregation {
 		private $db;
-		
+
 		function __construct() {
 			require_once(__DIR__."/../Data/db.class.php");
 			require_once(__DIR__."/../functions.php");

@@ -1,4 +1,4 @@
-<?php 
+<?php
 	require_once("./inc/Data/db.class.php");
 	$this->db = new Database();
 
@@ -37,14 +37,14 @@
 	}
 
 	//Fifth, start at the first week, looking first at the congregation who has the most blacked out weeks
-			//Compare the week they're about to be scheduled for to the last week they were scheduled 
+			//Compare the week they're about to be scheduled for to the last week they were scheduled
 				//Make sure that the week they're about to be scheduled for is at least 10 weeks apart from the last time they were scheduled
 					//If the week is scheduled at least 10 weeks apart:
 						//If there's a holiday for that week:
 							//Check if the congregation did the holiday last
 								//If the congregation hasn't already done the holiday:
 									//insert the holiday into the Congregation table for the respective congregation
-								//Else: 
+								//Else:
 									//don't schedule the congregation
 						//Else:
 							//Schedule the congregation
@@ -56,6 +56,6 @@
 	}
 
 	function getCongregations() {
-		//Get the total number of Congregations 
+		//Get the total number of Congregations
 	}
 ?>

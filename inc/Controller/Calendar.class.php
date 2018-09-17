@@ -22,7 +22,7 @@
 			$thanksgivingDate = date("Y-m-d",strtotime("fourth thursday of november ".$year));
 			$christmasDate = date("Y-m-d",strtotime("25 december ".$year));
 
-			$holidayArray = array($easterDate, $memorialDayDate, $independenceDayDate, $laborDayDate, 
+			$holidayArray = array($easterDate, $memorialDayDate, $independenceDayDate, $laborDayDate,
 									$thanksgivingDate, $christmasDate);
 
 			$isThereAHoliday = false;
@@ -105,7 +105,7 @@
 	     * @return $data[0]['MAX(rotation_number)'] - the maximum rotation number
 	     */
 	    function getMaximumRotationNumber() {
-	    	$sqlQuery = "SELECT MAX(rotation_number) FROM DATE_RANGE"; 
+	    	$sqlQuery = "SELECT MAX(rotation_number) FROM DATE_RANGE";
 	    	$data = $this->db->executeQuery($sqlQuery, paramsIsZero(), "select");
 	    	if($data[0]['MAX(rotation_number)']) {
 	    		return $data[0]['MAX(rotation_number)'];
@@ -122,12 +122,12 @@
             $memorialDayDate = date("Y-m-d", strtotime("last monday of may ".$year));
             return $memorialDayDate;
         }//end getMemorialDay
- 
+
 	    /* function to get the lowest rotation number in MySQL
 	     * @return $data[0]['MIN(rotation_number)'] - the minimum rotation number
 	     */
 	    function getMinimumRotationNumber() {
-	    	$sqlQuery = "SELECT MIN(rotation_number) FROM DATE_RANGE"; 
+	    	$sqlQuery = "SELECT MIN(rotation_number) FROM DATE_RANGE";
 	    	$data = $this->db->executeQuery($sqlQuery, paramsIsZero(), "select");
 	    	if($data[0]['MIN(rotation_number)']) {
 	    		return $data[0]['MIN(rotation_number)'];
@@ -192,9 +192,9 @@
         }//end getTotalNumberOfRotations
 
 	    /* function to calculate the total number of weeks inputted into the database
-	     * @param $startYear - the start year for the number of weeks needed 
+	     * @param $startYear - the start year for the number of weeks needed
 	     *						comes from figuring out the start year of the next rotation needed
-	     * @param $finalYear - the calculated end year of the number of weeks needed 
+	     * @param $finalYear - the calculated end year of the number of weeks needed
 	     * @param $startDateNxtRotation - the start date of the next rotation needed
 	     */
 	    function getTotalNumOfWks($startYear, $finalYear, $startDateNxtRotation) {
@@ -239,7 +239,7 @@
 	     * @param boolean - true or false if the tested year has 53 weeks
 	     */
 	    function has53Weeks($year){
-	    	$daysInFebruary = cal_days_in_month(CAL_GREGORIAN, 2, $year); 
+	    	$daysInFebruary = cal_days_in_month(CAL_GREGORIAN, 2, $year);
 			$dayYearStartsOn = new DateTime();
 			$dayYearStartsOn->setTimestamp(mktime(0,0,0,1,1,$year));
 			$dayOfTheWeek = $dayYearStartsOn->format("w");
@@ -292,13 +292,13 @@
 					return $params2;
 				}
 			/*}*/
-			return true;			
+			return true;
 		}//end insertCalendarEvent
 
 	    /* function to insert date range data to the date_range table in MySQL
 	     * @param $strtDateNxtRotation - the start date of the next rotation needed
 	     * @param $numberOfYears - the number of years worth data that's wanted to be inserted
-	     * @param $startYear - the start year for the number of weeks needed 
+	     * @param $startYear - the start year for the number of weeks needed
 	     *						comes from figuring out the start year of the next rotation needed
 	     * @param $nxtRotationNumber - th
 	     */
@@ -335,7 +335,7 @@
 						$result = $this->db->executeQuery($insertQuery, $params, "insert");
 						if($result == 0) {
 							$insertDataMsg = "Error";
-						}	
+						}
 					}
 					$sundayOfRotation = date("Y-m-d", strtotime("+7 day",strtotime($sundayOfRotation)));
 				}
@@ -408,6 +408,6 @@
 		    // The Y ( 4 digits year ) returns TRUE for any integer with any number of digits, changing the comparison from == to === fixes the issue.
 		    return $d && $d->format($format) === $date;
 		}//end validateDate
-		
+
 	}
 ?>

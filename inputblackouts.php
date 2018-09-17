@@ -1,4 +1,4 @@
-<?php 
+<?php
 	session_start();
 	require_once("./inc/top_layout.php");
 	require_once("./inc/Controller/Calendar.class.php");
@@ -18,7 +18,7 @@
 	}
 ?>
 
-<?php 
+<?php
 	if(isset($insertResult)) {
 		var_dump($insertResult);
 	}
@@ -39,7 +39,7 @@
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal">&times;</button>
         <h4 class="modal-title">
-			<a href="#" id="prev-btn" class="btn btn-info btn-sm"> 
+			<a href="#" id="prev-btn" class="btn btn-info btn-sm">
 	          <span class="glyphicon glyphicon-chevron-left"></span> Prev
 	        </a>
         	<?php echo "Rotation: <span id='rot-number'>".$initialRotation."</span>"; ?> (Weeks are from Sunday to Saturday)
@@ -49,9 +49,9 @@
     	</h4>
       </div>
        <form action="inputblackouts.php" method="post">
-	      <div class="modal-body"> 
+	      <div class="modal-body">
 	        <div class="modal-checkboxes">
-			</div> 
+			</div>
 	      </div>
 	      <div class="modal-footer">
 			<input id="blackoutSubmit" type="submit" class="btn btn-default" name="blackoutSubmit" value="Submit"/>
@@ -61,6 +61,6 @@
     </div>
 
   </div>
-</div>   
+</div>
 
 <?php require_once("./inc/bottom_layout.php"); ?>

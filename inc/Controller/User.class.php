@@ -25,7 +25,7 @@
 			}else {
 				return false;
 			}
-			
+
 		}//end changePassword
 
 		/* function to get the user ID from MySQL
@@ -82,8 +82,8 @@
 										</head>
 										<body>
 											<p>
-												We have received a Reset Password request for your account.  
-												To reset your password, simply click the link below and enter your new password.  
+												We have received a Reset Password request for your account.
+												To reset your password, simply click the link below and enter your new password.
 												If you did not request a new password or you no longer need to reset your password, you may simply ignore this email.
 											</p>
 											<br/>
