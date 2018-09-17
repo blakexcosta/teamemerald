@@ -1,3 +1,10 @@
+<!DOCTYPE html>
+<html lang="en">
+
+
+
+
+
 <?php
 	session_start();
 	require_once("./inc/top_layout.php");
@@ -9,6 +16,13 @@
 	// $blackouts = new Blackouts();
 ?>
 
+
+
+	<iframe src="https://calendar.google.com/calendar/embed?src=raihnbusdriver%40gmail.com&ctz=America%2FNew_York" style="border: 0" width="800" height="600" frameborder="0" scrolling="no"></iframe>
+
+
+</html>
+
 <?php
 	// $data = $blackouts->getCongBlackouts();
 	// for ($i=0; $i < sizeof($data); $i++) {
@@ -18,7 +32,6 @@
 		$array[$key] = $value;
 		return $array;
 	}
-
 
 
 
@@ -35,7 +48,6 @@
 // array
 // 	2018-09-01AM -> {driverID, date,timeOfDay}
 
-<<<<<<< HEAD
 		$bus = new BusDriver();
 
 		//this gets an array of the drivers with the most to least blackout dates
@@ -44,10 +56,6 @@
 		echo "<pre>";
 		print_r ($data);
 		echo "</pre>";
-=======
-
-
->>>>>>> 33a68588490591f9a0ce0f388252c23e17df9ad4
 
 
 		$list=array();
@@ -84,27 +92,18 @@
 		// echo "<pre>";
 		 for ($i=1;$i<sizeof($list)+1;$i++){
 
-<<<<<<< HEAD
-=======
-			 // echo $list[$i-1];
-			 // echo "<br>";
->>>>>>> 33a68588490591f9a0ce0f388252c23e17df9ad4
 
 			 // this is our key $list[$i-1];
 			 //Get the key of $list[$i-1] = orig."AM"
 			 //loop through each day while checking if they are blacked out for that day.
 			 //this will go through all the first driver's blackout date
 
-			 if (sizeof($allBlackouts[2]) == 0){
-				 $draftSchedule[$list[$i-1]] = [2, $list[$i-1]];
+			 if (sizeof($allBlackouts[9]) == 0){
+				 $draftSchedule[$list[$i-1]] = [9, $list[$i-1]];
 			 }
 
-<<<<<<< HEAD
-=======
-
->>>>>>> 33a68588490591f9a0ce0f388252c23e17df9ad4
-			 for($j=0;$j<sizeof($allBlackouts[2]);$j++){
-				 $currentBlackoutDay = (int)(substr($allBlackouts[2][$j]->{'date'}, strrpos($allBlackouts[2][$j]->{'date'}, '-') + 1));
+			 for($j=0;$j<sizeof($allBlackouts[9]);$j++){
+				 $currentBlackoutDay = (int)(substr($allBlackouts[9][$j]->{'date'}, strrpos($allBlackouts[9][$j]->{'date'}, '-') + 1));
 
 				//check if primary== backup$
 				 // checks if the key exists in the draft schedule (if the day is already scheduled)
@@ -118,8 +117,8 @@
 					 // echo "<br>";
 
 					 //remove that blackout date
-					 unset($allBlackouts[2][$j]);
-					 $allBlackouts[2] = array_values($allBlackouts[2]);
+					 unset($allBlackouts[9][$j]);
+					 $allBlackouts[9] = array_values($allBlackouts[9]);
 
 					 break;
 				 }
@@ -134,7 +133,7 @@
 					 /*
 					 * 2 is hard coded which stands for BusDriverID
 					 */
-					 $draftSchedule[$list[$i-1]] = [2, $list[$i-1]];
+					 $draftSchedule[$list[$i-1]] = [9, $list[$i-1]];
 
 					 break;
 				 }
