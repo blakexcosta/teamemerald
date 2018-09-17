@@ -36,9 +36,9 @@ class CalendarBus {
         $date = $value[1];
 
         $event = new Google_Service_Calendar_Event(array(
-            'summary' => 'HOWDY',
-            'location' => '123 Fake Street',
-            'description' => $driverID . ' is driving.',
+            'summary' => 'John Smith',
+            'location' => 'Host Congregation 1',
+            'description' => 'Park on the right side of the street',
             'start' => array(
                 'timeZone' => 'America/New_York',
                 'dateTime' => $date."T09:00:00",
