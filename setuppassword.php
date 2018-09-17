@@ -1,7 +1,7 @@
 <?php
 	session_start();
-	require_once("./inc/top_layout.php"); 
-	require_once("./inc/Controller/User.class.php"); 
+	require_once("./inc/top_layout.php");
+	require_once("./inc/Controller/User.class.php");
 	$user = new User();
 
 	if(isset($_SESSION['resetPassMsg'])) {
@@ -44,8 +44,8 @@
 	}
 ?>
 	<?php
-		//If there's a current password error message, display it here 
-		if(isset($pwdMsg)) { 
+		//If there's a current password error message, display it here
+		if(isset($pwdMsg)) {
 			 echo $pwdMsg;
 		}
 
@@ -79,7 +79,7 @@
 		</div>
 		<div id="submit-button">
 			<button id="pass-submit" name="pass-submit" type="submit" class="btn btn-primary" disabled>Create Password</button>
-		</div>	
+		</div>
 	</form>
 
 <?php require_once("./inc/bottom_layout.php"); ?>

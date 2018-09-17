@@ -1,4 +1,4 @@
-<?php 
+<?php
 	session_start();
 	require_once("./inc/top_layout.php");
 	require_once("./inc/Controller/Blackouts.class.php");

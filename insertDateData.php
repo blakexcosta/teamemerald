@@ -1,4 +1,4 @@
-<?php 
+<?php
 	session_start();
 	require_once("./inc/top_layout.php");
 	require_once("./inc/Controller/Calendar.class.php");
@@ -22,7 +22,7 @@
 				if($calendar->validateDate($_POST['start-year'], 'Y')) {
 					//Check if the next rotation number is greater than 0
 					if($_POST['nxt-rotation-num'] >= 0) { //Needs to add check for being greater than most recent rotation completed
-						$_SESSION['data-msg'] = $calendar->insertDateRange($_POST['start-date'], $_POST['num-years-wanted'], 
+						$_SESSION['data-msg'] = $calendar->insertDateRange($_POST['start-date'], $_POST['num-years-wanted'],
 																$_POST['start-year'], $_POST['nxt-rotation-num']);
 						if($_SESSION['data-msg']) {
 							$_SESSION['data-msg'] = "<div class='alert alert-success'>
@@ -97,7 +97,7 @@
 		</div>
 		<div id="submit-button">
 			<button id="data-submit" name="data-submit" type="submit" class="btn btn-primary">Insert Data</button>
-		</div>	
+		</div>
 	</form>
 
 <?php require_once("./inc/bottom_layout.php"); ?>
