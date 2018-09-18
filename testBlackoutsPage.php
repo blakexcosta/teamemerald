@@ -47,7 +47,7 @@
 		<div class="form-check">
 			<input class="form-check-input" type="checkbox" value="2018-09-09" name="blackoutWeek[]" id="blackoutWeek">
 			<label class="form-check-label" for="defaultCheck1">
-				2018-09-09
+                Week 3 (2018-09-09 to 2018-09-15)
 			</label>
 		</div>
 		<button id="blackout-submit" name="blackout-submit"  type="submit" class="btn btn-primary">Submit</button>
