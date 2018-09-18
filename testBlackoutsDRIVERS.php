@@ -36,11 +36,6 @@
 
 
 
-
-	// echo "<pre>";
-	// print_r(getAllBlackout());
-	// echo "<pre>";
-
 			//testing for Sept, 2018
 			$schedule = new Schedule();
 
@@ -53,9 +48,9 @@
 		//this gets an array of the drivers with the most to least blackout dates
 		$data = $bus->getMostBlackouts();
 
-		echo "<pre>";
-		print_r ($data);
-		echo "</pre>";
+		//echo "<pre>";
+		//print_r ($data);
+		//echo "</pre>";
 
 
 		$list=array();
@@ -152,13 +147,14 @@
 
 	} //end of function create draft schedule
 
+    $blackoutsTEST = getAllBlackout();
+ echo "<pre>";
+ print_r ($blackoutsTEST[9]);
+ echo "<pre>";
 
 
 
 
-
-	//$blackouts3 = getAllBlackout();
-	//print_r( $blackouts3[1]);
 
 
 
