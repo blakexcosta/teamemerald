@@ -113,6 +113,8 @@ CREATE TABLE `congregation` (
   `congName` varchar(100) CHARACTER SET latin1 DEFAULT NULL,
   `congAddress` varchar(100) CHARACTER SET latin1 DEFAULT NULL,
   `comments` varchar(255) CHARACTER SET latin1 DEFAULT NULL,
+  `lastDateServed` date DEFAULT NULL,
+  `lastHolidayServed` date DEFAULT NULL,
   PRIMARY KEY (`congID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -123,7 +125,7 @@ CREATE TABLE `congregation` (
 
 LOCK TABLES `congregation` WRITE;
 /*!40000 ALTER TABLE `congregation` DISABLE KEYS */;
-INSERT INTO `congregation` VALUES (1,'DUPC','123 Fake Street',NULL),(2,'First Presbyterian Pittsford','222 Street Street',NULL),(3,'St. Paul\'s Episcopal','654 Fake Road',NULL),(4,'Two Saints','555 Fake Lane',NULL),(5,'First Universalist',NULL,NULL),(6,'Incarnate World',NULL,NULL),(7,'Assumption',NULL,NULL),(8,'Asbury Methodist',NULL,NULL),(9,'Mary Magdalene',NULL,NULL),(10,'First Unitarian',NULL,NULL),(11,'Temple Sinai',NULL,NULL),(12,'Third Presbyterian',NULL,NULL),(13,'New Hope Free Methodist',NULL,NULL);
+INSERT INTO `congregation` VALUES (1,'DUPC','123 Fake Street',NULL,'2017-12-03','2017-09-03'),(2,'First Presbyterian Pittsford','222 Street Street',NULL,'2017-12-10',NULL),(3,'St. Paul\'s Episcopal','654 Fake Road',NULL,'2017-11-26','2017-05-28'),(4,'Two Saints','555 Fake Lane',NULL,'2017-12-17',NULL),(5,'First Universalist',NULL,NULL,'2018-01-07',NULL),(6,'Incarnate World',NULL,NULL,'2018-01-21','2017-04-09'),(7,'Assumption',NULL,NULL,'2018-02-11',NULL),(8,'Asbury Methodist',NULL,NULL,'2017-12-31','2017-12-31'),(9,'Mary Magdalene',NULL,NULL,'2018-01-28','2017-04-16'),(10,'First Unitarian',NULL,NULL,'2018-01-14','2017-07-02'),(11,'Temple Sinai',NULL,NULL,'2017-12-24','2017-12-24'),(12,'Third Presbyterian',NULL,NULL,'2018-02-18','2017-11-19'),(13,'New Hope Free Methodist',NULL,NULL,'2018-02-04',NULL);
 /*!40000 ALTER TABLE `congregation` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -331,4 +333,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-09-17 21:29:06
+-- Dump completed on 2018-09-17 21:48:12
