@@ -17,7 +17,7 @@
 
 class Google_Service_CloudFunctions_ListFunctionsResponse extends Google_Collection
 {
-  protected $collection_key = 'functions';
+  protected $collection_key = 'Functions.class';
   protected $functionsType = 'Google_Service_CloudFunctions_CloudFunction';
   protected $functionsDataType = 'array';
   public $nextPageToken;

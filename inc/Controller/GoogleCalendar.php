@@ -2,6 +2,7 @@
 require_once(__DIR__ .'/../../vendor/autoload.php');
 
 class GoogleCalendar {
+
     function getClient() {
         $client = new Google_Client();
         $client->setApplicationName('Google Calendar API PHP Quickstart');
@@ -43,5 +44,6 @@ class GoogleCalendar {
             file_put_contents($credentialsPath, json_encode($client->getAccessToken()));
         }
         return $client;
-    }
-}
+    }//end getClient
+
+}//end GoogleCalendar

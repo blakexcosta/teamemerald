@@ -1,5 +1,1 @@
-<<<<<<< HEAD
-{"access_token":"ya29.GlsZBiECSCaRuMozR0ISD5pCOlwycFSChw4BYVWFy84aC4RhUuKFhjJG4aooEr4rrH4O3PrvvCzYTFrTIBoJxhxkha7yTXNKVhnKOW2Suvvt4mZ5ky2d4HYMaRrF","expires_in":3600,"scope":"https:\/\/www.googleapis.com\/auth\/calendar","token_type":"Bearer","created":1537047569}
-=======
-{"access_token":"ya29.GlsZBmd9Q9akhi266udxD-FttSsveG53PL4dncXPORlHJq3s_0eq2BZ5a908cN03JwYSlHt37QdsCPVEjcnqzZVkJAAq5OvC_ZB2P2zr3cQgPuQJj61wmdl4T9SY","expires_in":3600,"refresh_token":"1\/NTWtsdGX4KRiZmEfUc_9V3-FoPfKFzgK73FpkYH3EIc","scope":"https:\/\/www.googleapis.com\/auth\/calendar","token_type":"Bearer","created":1537042560}
->>>>>>> 33a68588490591f9a0ce0f388252c23e17df9ad4
+{"access_token":"ya29.GlscBj6MDo1MWbojNee9tsffE-R-FwOuoOr8Dclngoc4LxARNgOM-FR3Ln78LZpDp0m1fwTcAXVn2tvhYSy__rRGKCA3cLrnIn5i1l-RGOmDp2omUyUtChhBl5RT","expires_in":3600,"refresh_token":"1\/M6qGtxKJkvIl3778omM0jxe-d5TaIMsitVlW-5BNtipKtcStwhhbBSkqt4W_GCLO","scope":"https:\/\/www.googleapis.com\/auth\/calendar","token_type":"Bearer","created":1537310175}

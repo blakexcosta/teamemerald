@@ -36,12 +36,14 @@ $(document).ready(function() {
 
 	//If the user clicks inside the "new password" field, show message
 	$("#new-password").focus(function() {
-		$(this).next("p").css("display", "inline");
+        $("#eight-chars-msg").css("display", "inline");
+        $("#spec-chars-msg").css("display", "inline");
 	});
 
 	//If the user clicks outside the "new password" field, hide message
 	$("#new-password").focusout(function() {
-		$(this).next("p").css("display", "none");
+		$("#eight-chars-msg").css("display", "none");
+        $("#spec-chars-msg").css("display", "none");
 	});
 
 	//While the user is typing inside the "new password" field, check if password is 8 characters

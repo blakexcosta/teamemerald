@@ -18,9 +18,9 @@ class CalendarBus {
   //pass in the final schedule so that we can push it
   function scheduleDrivers($schedule){
 
-    echo "<pre>";
-    print_r ($schedule);
-    echo "<pre>";
+//    echo "<pre>";
+//    print_r ($schedule);
+//    echo "<pre>";
 
 
     //parse the date out of the $schedule associative array

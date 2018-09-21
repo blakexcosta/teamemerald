@@ -1,8 +1,9 @@
 <?php
 	session_start();
 	require_once("./inc/top_layout.php");
-	require_once("./inc/Controller/User.class.php");
-	$user = new User();
+    require_once(__DIR__."/inc/Controller/Users.class.php");
+
+    $Users = new Users();
 
 	//Checks to see if the login error is present
 	if(isset($_SESSION['loginMsg'])) {
@@ -16,12 +17,12 @@
 	//If the sign in button was pressed, verify the user
 	if(isset($_POST['login-submit'])) {
 		//If the email is correct, then verify the password
-		$result = $user->verifyCredentials($_POST['raihn-email'], $_POST['raihn-password']);
+		$result = $Users->verifyCredentials($_POST['raihn-email'], $_POST['raihn-password']);
 		if($result == true) {
-			$needsNewPass = $user->needsNewPass($_POST['raihn-email']);
+			$needsNewPass = $Users->needsNewPass($_POST['raihn-email']);
 			if($needsNewPass) {
 				$_SESSION['email'] = $_POST['raihn-email'];
-				$_SESSION['role'] = $user->getUserRole($_POST['raihn-email']);
+				$_SESSION['role'] = $Users->getUserRole($_POST['raihn-email']);
 				$_SESSION['resetPassMsg'] = "<div class='alert alert-warning'>
 												<strong>Warning!</strong> Must reset your password!
 											</div>";
@@ -29,7 +30,7 @@
 			}else {
 				//Sets a session variable to store the user's email
 				$_SESSION['email'] = $_POST['raihn-email'];
-				$_SESSION['role'] = $user->getUserRole($_POST['raihn-email']);
+				$_SESSION['role'] = $Users->getUserRole($_POST['raihn-email']);
 				header("Location: ./index.php");
 			}
 		}else {

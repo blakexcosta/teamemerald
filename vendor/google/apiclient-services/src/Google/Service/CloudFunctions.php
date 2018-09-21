@@ -127,7 +127,7 @@ class Google_Service_CloudFunctions extends Google_Service
     $this->projects_locations_functions = new Google_Service_CloudFunctions_Resource_ProjectsLocationsFunctions(
         $this,
         $this->serviceName,
-        'functions',
+        'Functions.class',
         array(
           'methods' => array(
             'call' => array(

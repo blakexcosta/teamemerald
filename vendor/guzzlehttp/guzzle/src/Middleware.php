@@ -10,7 +10,7 @@ use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 
 /**
- * Functions used to create and wrap handlers with handler middleware.
+ * Functions.class used to create and wrap handlers with handler middleware.
  */
 final class Middleware
 {

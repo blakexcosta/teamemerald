@@ -1,14 +1,14 @@
 <?php
 	session_start();
     require_once("./inc/top_layout.php");
-    require_once("./inc/Controller/Congregation.class.php");
+	require_once(__DIR__."/inc/Controller/CongregationCoordinator.class.php");
+
+	$CongregationCoordinator = new CongregationCoordinator();
 ?>
 
 <?php
-	$congregation = new Congregation();
-
   	//Gets the data for all host congregation coordinators in MySQL
-	$congregation->getCongregationCoordinators();
+	$CongregationCoordinator->getCongregationCoordinators();
 ?>
 
 <?php require_once("./inc/bottom_layout.php"); ?>

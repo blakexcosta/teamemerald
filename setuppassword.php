@@ -1,8 +1,9 @@
 <?php
 	session_start();
 	require_once("./inc/top_layout.php");
-	require_once("./inc/Controller/User.class.php");
-	$user = new User();
+    require_once(__DIR__."/inc/Controller/Users.class.php");
+
+    $Users = new Users();
 
 	if(isset($_SESSION['resetPassMsg'])) {
 		$resetPassMsg = $_SESSION['resetPassMsg'];
@@ -21,9 +22,9 @@
 
 	//If the create password button is submitted
 	if(isset($_POST['pass-submit'])) {
-		$result = $user->verifyCredentials($_SESSION['email'], $_POST['curr-password']);
+		$result = $Users->verifyCredentials($_SESSION['email'], $_POST['curr-password']);
 		if($result == true) {
-			$updtPwdResult = $user->changePassword($_POST['new-password'], $_SESSION['email']);
+			$updtPwdResult = $Users->changePassword($_POST['new-password'], $_SESSION['email']);
 			if($updtPwdResult == true) {
 				$_SESSION['pwdMsg'] = "<div class='alert alert-success'>
 										  <strong>Success!</strong> Password set!
