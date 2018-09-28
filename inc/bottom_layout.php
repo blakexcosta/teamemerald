@@ -4,6 +4,12 @@
 		<!-- Minified Bootstrap v3.7.7 JS -->
 		<script type="text/javascript" src="./js/bootstrap.min.js"></script>
 
+        <!-- Moment JS -->
+        <script type="text/javascript" src="./js/moment.js"></script>
+
+        <!-- Minified FullCalendar JS -->
+        <script type="text/javascript" src="./js/fullcalendar.min.js"></script>
+
 		<!-- Custom Javascript File -->
 		<script type="text/javascript" src="./js/app.js"></script>
 	</body>

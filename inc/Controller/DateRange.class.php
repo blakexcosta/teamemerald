@@ -24,14 +24,16 @@ class DateRange {
      */
     function containsHoliday($year, $sundayOfRotation, $saturdayOfRotation) {
         $easterDate = date("Y-m-d",$this->get_easter_datetime($year)->getTimestamp()); //date will be incremented in a loop
+        $sundayBeforeEaster = date("Y-m-d", strtotime("-7 days", strtotime($easterDate)));
         $memorialDayDate = date("Y-m-d", strtotime("last monday of may ".$year));
         $independenceDayDate = date("Y-m-d",strtotime("4 july ".$year));
         $laborDayDate = date("Y-m-d",strtotime("first monday of september ".$year));
         $thanksgivingDate = date("Y-m-d",strtotime("fourth thursday of november ".$year));
         $christmasDate = date("Y-m-d",strtotime("25 december ".$year));
+        $newYearsDate = date("Y-m-d",strtotime("1 january ".$year));
 
-        $holidayArray = array($easterDate, $memorialDayDate, $independenceDayDate, $laborDayDate,
-            $thanksgivingDate, $christmasDate);
+        $holidayArray = array($sundayBeforeEaster, $easterDate, $memorialDayDate, $independenceDayDate, $laborDayDate,
+            $thanksgivingDate, $christmasDate, $newYearsDate);
 
         $isThereAHoliday = false;
         for($i = 0; $i < sizeof($holidayArray); $i++) {
@@ -52,6 +54,34 @@ class DateRange {
         return $christmasDate;
     }//end getChristmas
 
+    /* function to fetch all the date ranges from the date range table
+     * @return $result - all the date range data from MySQL
+     * @return null - return nothing if no data was retrieved
+     * */
+    function getDateRanges($orderByVar) {
+        $sqlQuery = "SELECT * FROM date_range ORDER BY ".$orderByVar;
+        $result = $this->DB->executeQuery($sqlQuery, $this->Functions->paramsIsZero(), "select");
+        if($result) {
+            return $result;
+        }else {
+            return null;
+        }
+    }//end getDateRanges
+
+    /* function to get the distinct rotation numbers
+     * @return $result - each distinct rotation number from MySQL
+     * $return null - return nothing if no data was retrieved
+     * */
+    function getDistinctRotationNums() {
+        $sqlQuery = "SELECT DISTINCT rotation_number FROM date_range";
+        $result = $this->DB->executeQuery($sqlQuery, $this->Functions->paramsIsZero(), "select");
+        if($result) {
+            return $result;
+        }else {
+            return null;
+        }
+    }//end getDistinctRotationNums
+
     /* function that finds Easter for any given year
      * @param $year - the year that you want to find Easter in
      * @return $base - non timestamp value of Easter for a given year
@@ -66,20 +96,6 @@ class DateRange {
             //Add exception code here
         }
     }//end get_easter_datetime
-
-    /* function to fetch all the date ranges from the date range table
-     * @return $result - all the date range data from MySQL
-     * @return null - return nothing if no data was retrieved
-     * */
-    function getDateRanges($orderByVar) {
-        $sqlQuery = "SELECT * FROM date_range ORDER BY ".$orderByVar;
-        $result = $this->DB->executeQuery($sqlQuery, $this->Functions->paramsIsZero(), "select");
-        if($result) {
-            return $result;
-        }else {
-            return null;
-        }
-    }//end getDateRanges
 
     /* function to get Independence day for any given year
      * @param $year - the desired year
@@ -134,6 +150,15 @@ class DateRange {
         }
     }//end getMinimumRotationNumber
 
+    /* function to get New Years date
+     * @param $year - the desired year
+     * @return $newYearsDate - the date of New Years for a given year in in yyyy-mm-dd format
+     * */
+    function getNewYears($year) {
+        $newYearsDate = date("Y-m-d",strtotime("1 january ".$year));
+        return $newYearsDate;
+    }//end getNewYears
+
     /* function to get the rotation week number for a particular date
      * @param $startDate - the date you would like to find the week number for
      * @return $result[0]["weekNumber"] - the desired rotation week number of the date
@@ -149,6 +174,32 @@ class DateRange {
             return null;
         }
     }//end getRotationNumber
+
+    /* function to get the start date values based on the rotation number
+     * @param $rotNum - the rotation number of the start dates
+     * @return $result - all the start dates returned from MySQL
+     * @return null - return null if nothing is returned
+     * */
+    function getStartDateBasedRotation($rotNum) {
+        $sqlQuery = "SELECT startDate FROM date_range WHERE rotation_number = :rotNum";
+        $params = array(':rotNum' => $rotNum);
+        $result = $this->DB->executeQuery($sqlQuery, $params, "select");
+        if($result) {
+            return $result;
+        }else {
+            return null;
+        }
+    }//end getStartDateBasedRotation
+
+    /* function to get the date of the sunday before easter
+     * @param $year - the desired year
+     * @return $sundayBeforeEaster - the date of the sunday before Easter for given year in yyyy-mm-dd format
+     * */
+    function getSundayBeforeEaster($year) {
+        $easterDate = date("Y-m-d",$this->get_easter_datetime($year)->getTimestamp()); //date will be incremented in a loop
+        $sundayBeforeEaster = date("Y-m-d", strtotime("-7 days", strtotime($easterDate)));
+        return $sundayBeforeEaster;
+    }//end getSundayBeforeEaster
 
     /* function to get Thanksgiving for any given year
      * @param $year - the desired year
@@ -239,19 +290,24 @@ class DateRange {
      * */
     function identifyHoliday($year, $date) {
         $easterDate = date("Y-m-d",$this->get_easter_datetime($year)->getTimestamp()); //date will be incremented in a loop
+        $sundayBeforeEaster = date("Y-m-d", strtotime("-7 days", strtotime($easterDate)));
         $memorialDayDate = date("Y-m-d", strtotime("last monday of may ".$year));
         $independenceDayDate = date("Y-m-d",strtotime("4 july ".$year));
         $laborDayDate = date("Y-m-d",strtotime("first monday of september ".$year));
         $thanksgivingDate = date("Y-m-d",strtotime("fourth thursday of november ".$year));
         $christmasDate = date("Y-m-d",strtotime("25 december ".$year));
+        $newYearsDate = date("Y-m-d",strtotime("1 january ".$year));
 
         $holidayArray = array(
+            "SundayBeforeEaster" => $sundayBeforeEaster,
             "Easter" => $easterDate,
             "Memorial" => $memorialDayDate,
             "Independence" => $independenceDayDate,
             "Labor" => $laborDayDate,
             "Thanksgiving" => $thanksgivingDate,
-            "Christmas" => $christmasDate);
+            "Christmas" => $christmasDate,
+            "NewYears" => $newYearsDate
+        );
 
         //If the date entered matches a date for a holiday, return the name of the holiday
         foreach ($holidayArray as $holiday => $value) {
@@ -307,7 +363,7 @@ class DateRange {
                     $params = array(':weekNum' => $i, ':startDate' => $sundayOfRotation, ':endDate' => $saturdayOfRotation,
                         ':holiday' => 1, ':rotNum' => $nxtRotationNumber);
                     $result = $this->DB->executeQuery($insertQuery, $params, "insert");
-                    if($result == 0) {
+                    if($result < 0) {
                         $insertDataMsg = "Error";
                     }
                 }else {
@@ -315,7 +371,7 @@ class DateRange {
                     $params = array(':weekNum' => $i, ':startDate' => $sundayOfRotation, ':endDate' => $saturdayOfRotation,
                         ':holiday' => 0, ':rotNum' => $nxtRotationNumber);
                     $result = $this->DB->executeQuery($insertQuery, $params, "insert");
-                    if($result == 0) {
+                    if($result < 0) {
                         $insertDataMsg = "Error";
                     }
                 }

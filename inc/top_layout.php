@@ -9,6 +9,9 @@
 		<!-- Minified Font Awesome CSS -->
 		<link rel="stylesheet" type="text/css" href="./css/font-awesome.min.css">
 
+        <!-- Minified FullCalendar CSS -->
+        <link rel="stylesheet" type="text/css" href="./css/fullcalendar.min.css">
+
 		<!-- Main custom CSS -->
 		<link rel="stylesheet" type="text/css" href="./css/styles.css">
 </head>

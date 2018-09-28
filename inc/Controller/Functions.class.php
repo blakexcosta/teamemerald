@@ -11,6 +11,18 @@ class Functions {
 
     }
 
+    /* function to move one index to another
+     * @param $array - the array that has indexes you want to move
+     * @param $a - the index you want to move from
+     * @param $b - the index you want to move to
+     * @return $array - the array with newly moved indexes
+     * */
+    function moveElement(&$array, $a, $b) {
+        $out = array_splice($array, $a, 1);
+        array_splice($array, $b, 0, $out);
+        return $array;
+    }//end moveElement
+
     /* function to set the second param for the executeQuery function as an empty array
      * @return $params - returns an empty array
      */

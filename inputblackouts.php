@@ -18,6 +18,7 @@
 	if(isset($_POST['blackoutSubmit']) && isset($_POST['blackoutWeek'])) {
 		$insertBlackout = $CongregationBlackout->insertBlackout($_POST['blackoutWeek'], $_SESSION['email']);
 		if($insertBlackout) {
+		    $_SESSION['insertBlackout'] = $insertBlackout;
             $_SESSION['insertResult'] = "<div class='alert alert-success'>
 											<strong>Success!</strong> Blackouts inserted!
 										</div>";
@@ -36,10 +37,6 @@
 		echo $insertResult;
 	}
 ?>
-
-<iframe src="https://calendar.google.com/calendar/embed?showTitle=0&amp;height=600&amp;wkst=1&amp;bgcolor=%23FFFFFF&amp;src=raihncongregation%40gmail.com&amp;color=%231B887A&amp;ctz=America%2FNew_York" style="border-width:0" width="800" height="600" frameborder="0" scrolling="no"></iframe>
-
-<br>
 
 <!-- Trigger the modal with a button -->
 <button type="button" id="blackout-date-sbmit" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">Enter Blackout Dates</button>

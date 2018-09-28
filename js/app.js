@@ -1,8 +1,32 @@
 $(document).ready(function() {
 	//GLOBAL VARIABLES
 
-	//Global varaible storing data retrieved from ajax call in blackout-date-sbmit
-	var blackoutWeekDates;
+    //Global variable storing data retrieved from ajax call in blackout-date-sbmit
+    var blackoutWeekDates;
+
+    //Global variable storing the final schedule from ajax call in show-calendar
+    var fullSchedule;
+
+    $('#calendar').fullCalendar({
+        eventSources : [
+        	"inc/Controller/getFullCongSchedule.php",
+            "inc/Controller/getFlaggedCongregations.php"
+		]
+    });
+
+    // function(start, end, timezone, callback) {
+    //     $.ajax({
+    //         type: "post",
+    //         url: "inc/Controller/getFullCongSchedule.php",
+    //         dataType: "json",
+    //         success: function(data) {
+    //             callback(data);
+    //         },
+    //         error: function(XMLHttpRequest, textStatus, errorThrown) {
+    //             alert(textStatus);
+    //         }
+    //     });
+    // }
 
 	//If the user clicks inside the "confirm password" field, show message
 	$("#conf-password").focus(function() {
@@ -120,6 +144,21 @@ $(document).ready(function() {
 		  	}
 		});
 	}));
+
+    $("#show-calendar").one("click",(function() {
+        $.ajax({
+            type: "post",
+            url: "inc/Controller/getFullCongSchedule.php",
+            dataType: "json",
+            success: function(data) {
+                //Sets the returned data as a global variable
+                fullSchedule = data;
+            },
+            error: function(XMLHttpRequest, textStatus, errorThrown) {
+                alert(textStatus);
+            }
+        });
+    }));
 
 
 	//FUNCTIONS

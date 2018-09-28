@@ -13,28 +13,28 @@
 		 * @return null - return nothing if no data was returned
 		 * */
 		function getCongregations() {
-            $sqlQuery = "SELECT * FROM congregation";
-            $result = $this->DB->executeQuery($sqlQuery, $this->Functions->paramsIsZero(), "select");
-            if($result) {
-                return $result;
-            }else {
-                return null;
-            }
-        }//end getCongregations
+        $sqlQuery = "SELECT * FROM congregation";
+        $result = $this->DB->executeQuery($sqlQuery, $this->Functions->paramsIsZero(), "select");
+        if($result) {
+            return $result;
+        }else {
+            return null;
+        }
+    }//end getCongregations
 
-        /* function to get the address of a congregation in the database
-         * @return $result[0]['congAddress'] - the address of the congregation
-         * @return null - return nothing if no data was returned
-         * */
-        function getCongregationAddress($congID) {
-            $sqlQuery = "SELECT congAddress FROM congregation WHERE congID = :congID";
-            $params = array(":congID" => $congID);
-            $result = $this->DB->executeQuery($sqlQuery, $params, "select");
-            if($result) {
-                return $result[0]["congAddress"];
-            }else {
-                return null;
-            }
+    /* function to get the address of a congregation in the database
+     * @return $result[0]['congAddress'] - the address of the congregation
+     * @return null - return nothing if no data was returned
+     * */
+    function getCongregationAddress($congID) {
+        $sqlQuery = "SELECT congAddress FROM congregation WHERE congID = :congID";
+        $params = array(":congID" => $congID);
+        $result = $this->DB->executeQuery($sqlQuery, $params, "select");
+        if($result) {
+            return $result[0]["congAddress"];
+        }else {
+            return null;
+        }
 		}//end getCongregationAddress
 
         /* function to get the comments of a congregation in the database
@@ -51,6 +51,20 @@
                 return null;
             }
         }//end getCongregationComments
+
+        /* function to get all the congregation IDs
+         * @return $result - all the congregation IDs
+         * @return null - return nothing if no data was returned
+         * */
+        function getCongregationID() {
+            $sqlQuery = "SELECT congID FROM congregation";
+            $result = $this->DB->executeQuery($sqlQuery, $this->Functions->paramsIsZero(), "select");
+            if($result) {
+                return $result;
+            }else {
+                return null;
+            }
+        }//end getCongregationID
 
         /* function to get a congregation name from MySQL
          * @param $congID - the congregation ID that will be used to help find the name

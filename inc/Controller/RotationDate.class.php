@@ -19,7 +19,7 @@ class RotationDate {
      * */
     function insertRotationNum() {
         $sqlQuery = "SELECT DISTINCT rotation_number FROM date_range";
-        $result = $this->DB->executeQuery($sqlQuery, paramsIsZero(),"select");
+        $result = $this->DB->executeQuery($sqlQuery, $this->Functions->paramsIsZero(),"select");
         $insertResult = true;
 
         if($result) {
