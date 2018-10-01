@@ -9,7 +9,9 @@
 class CongregationBlackout {
     function __construct() {
         require_once(__DIR__."/../Data/db.class.php");
+        require_once(__DIR__."/DateRange.class.php");
         require_once(__DIR__."/Functions.class.php");
+        $this->DateRange = new DateRange();
         $this->DB = new Database();
         $this->Functions = new Functions();
     }
@@ -97,6 +99,20 @@ class CongregationBlackout {
         return $sortedBlackouts;
     }//end getBlackouts
 
+    /* function to get the distinct rotation numbers from congregation blackouts table
+     * @return $result - if data was successfully fetched return the data
+     * @return null - return no data if no data successfully fetched
+     * */
+    function getDistinctRotationNums() {
+        $sqlQuery = "SELECT DISTINCT rotation_number FROM congregation_blackout";
+        $result = $this->DB->executeQuery($sqlQuery, $this->Functions->paramsIsZero(), "select");
+        if($result) {
+            return $result;
+        }else {
+            return null;
+        }
+    }//end getDistinctRotationNums
+
     //Forth, check to see if more than 5 host congregations have a week blacked out
     //Schedule that week first
     /* function that checks to see if a blackout week has more than 5 congregations blacking it out
@@ -109,21 +125,6 @@ class CongregationBlackout {
         return $sortedDates;
     }//end moreThan5Congregations
 
-    /* Hard coded function
-     * */
-    /*function insertBlackout($blackoutWeekArr) {
-        $weekNumber = $this->calendar->getWeekNumber($blackoutWeekArr[0]);
-        $congID = 1;
-        $sqlQuery = "INSERT INTO congregation_blackout VALUES (:congID, :weekNumber, :startDate)";
-        $params = array(":congID" => $congID, ":weekNumber" => $weekNumber, ":startDate" => $blackoutWeekArr[0]);
-        $result = $this->DB->executeQuery($sqlQuery, $params, "insert");
-        if($result > 0) {
-            return true;
-        }else {
-            return false;
-        }
-    }*/
-
     function insertBlackout($blackoutWeek, $email) {
         //Get the congregation ID of the current user logged in
         $sqlQuery = "SELECT congID FROM congregation_coordinator WHERE coordinatorEmail = :email";
@@ -133,18 +134,18 @@ class CongregationBlackout {
         if($result){
             for($i = 0; $i < sizeof($blackoutWeek); $i++) {
 
-                //Get the rotation number of the date that was submitted
-                $sqlQuery2 = "SELECT weekNumber FROM date_range WHERE startDate = :startDate";
-                $params2 = array(":startDate" => $blackoutWeek[$i]);
-                $result2 = $this->DB->executeQuery($sqlQuery2, $params2, "select");
+                //Get the week number of the date that was submitted
+                $result2 = $this->DateRange->getWeekNumber($blackoutWeek[$i]);
 
-                if($result2) {
+                $result3 = $this->DateRange->getRotationNumber($blackoutWeek[$i]);
+
+                if($result2 && $result3) {
                     //Insert the blackout date to MySQL
-                    $sqlQuery3 = "INSERT INTO congregation_blackout VALUES (:congID, :weekNumber, :srtDate)";
-                    $params3 = array(":congID" => $result[0]["congID"], ":weekNumber" => $result2[0]["weekNumber"],
-                                    ":srtDate" => $blackoutWeek[$i]);
-                    $result3 = $this->DB->executeQuery($sqlQuery3, $params3, "insert");
-                    if($result3 < 0) {
+                    $sqlQuery3 = "INSERT INTO congregation_blackout VALUES (:congID, :weekNumber, :startDate, :rotNum)";
+                    $params3 = array(":congID" => $result[0]["congID"], ":weekNumber" => $result2,
+                                    ":startDate" => $blackoutWeek[$i], ":rotNum" => $result3);
+                    $result4 = $this->DB->executeQuery($sqlQuery3, $params3, "insert");
+                    if($result4 < 0) {
                         return false;
                     }
                 }else {
@@ -154,24 +155,6 @@ class CongregationBlackout {
         }else {
             return false;
         }
-        /*$blackoutWeekNumArray = array();
-        for($i = 0; $i < sizeof($blackoutWeek); $i++) {
-            if(date('w', strtotime($blackoutWeek[$i])) == 0) {
-                $ddate = $blackoutWeek[$i];
-                $date = new DateTime($ddate);
-                $week = $date->format("W");
-                $week++;
-                if($week == 53) {
-                    $week = 01;
-                }
-                array_push($blackoutWeekNumArray, "Weeknumber: $week");
-            }else {
-                $ddate = $blackoutWeek[$i];
-                $date = new DateTime($ddate);
-                $week = $date->format("W");
-                array_push($blackoutWeekNumArray, "Weeknumber: $week");
-            }
-        }*/
         return true;
     }//end insertBlackout
 

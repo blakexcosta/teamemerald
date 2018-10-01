@@ -243,14 +243,34 @@ class CongregationSchedule {
     //Else: return false
 
     //Then go to the next most blacked out congregation
+
+    /* function to actually schedule congregations to the database
+     * @return bool - return true or false if the congregations were successfully inserted
+     * */
     function scheduleCongregations() {
         //Congregation blackout count data sorted
         $congregationBlackoutCount = $this->CongregationBlackout->getCongBlackoutCount();
 
+
+        $startDateList = $this->DateRange->getStartDateBasedRotation(53);
+
         //Date blackout count data sorted
         $dateBlackoutCount = $this->CongregationBlackout->dateBlackoutCount();
+        $justBlackoutStartDates = array();
+        for($i = 0; $i < sizeof($dateBlackoutCount); $i++) {
+            array_push($justBlackoutStartDates, $dateBlackoutCount[$i]['startDate']);
+        }
 
-        /*$finalHostCongScheduleArr = array();*/
+        for($e = 0; $e < sizeof($startDateList); $e++) {
+            if(!in_array($startDateList[$e]['startDate'], $justBlackoutStartDates)) {
+                $tempArray = array(
+                    'startDate' => $startDateList[$e]['startDate'],
+                    'count' => 0
+                );
+                array_push($dateBlackoutCount, $tempArray);
+            }
+        }
+        $scheduleCreated = true;
         for ($i = 0; $i < sizeof($dateBlackoutCount); $i++) {
             for ($h = 0; $h < sizeof($congregationBlackoutCount); $h++) {
                 //Get an array of a single congregation's list of blackout weeks
@@ -309,15 +329,6 @@ class CongregationSchedule {
                             $scheduledWeekNum = $this->DateRange->getWeekNumber($dateBlackoutCount[$i]["startDate"]);
                             $scheduledRotationNum = $this->DateRange->getRotationNumber($dateBlackoutCount[$i]["startDate"]);
 
-                            /*//Create array holding the information of the congregation about to be scheduled
-                            $congregationScheduledArr = array(
-                                "congName" => $this->Congregation->getCongregationName($congID),
-                                "startDate" => $scheduledStartDate,
-                                "weekNumber" => $scheduledWeekNum,
-                                "rotationNumber" => $scheduledRotationNum
-                            );
-                            //Push array of congregation info into larger array that will contain all scheduled congregations
-                            array_push($finalHostCongScheduleArr, $congregationScheduledArr);*/
                             $insertedIntoCongSch = $this->insertNewScheduledCong($congID, $scheduledStartDate, $scheduledWeekNum, $scheduledRotationNum, 0);
 
                             if ($insertedIntoCongSch == true) {
@@ -325,9 +336,14 @@ class CongregationSchedule {
                                 unset($congregationBlackoutCount[$h]);
                                 $congregationBlackoutCount = array_values($congregationBlackoutCount);
 
+                                if($h == 12) {
+                                    $congregationBlackoutCount = $this->CongregationBlackout->getCongBlackoutCount();
+                                }
+
                                 break;
                             } else {
-                                //No!!
+                                $scheduleCreated = false;
+                                return $scheduleCreated;
                             }
                         } else {
                             //First, identify which holiday it is
@@ -373,24 +389,20 @@ class CongregationSchedule {
                                 $scheduledWeekNum = $this->DateRange->getWeekNumber($dateBlackoutCount[$i]["startDate"]);
                                 $scheduledRotationNum = $this->DateRange->getRotationNumber($dateBlackoutCount[$i]["startDate"]);
 
-                                /*//Create array holding the information of the congregation about to be scheduled
-                                $congregationScheduledArr = array(
-                                    "congName" => $this->Congregation->getCongregationName($congID),
-                                    "startDate" => $scheduledStartDate,
-                                    "weekNumber" => $scheduledWeekNum,
-                                    "rotationNumber" => $scheduledRotationNum
-                                );
-                                //Push array of congregation info into larger array that will contain all scheduled congregations
-                                array_push($finalHostCongScheduleArr, $congregationScheduledArr);*/
                                 $insertedIntoCongSch = $this->insertNewScheduledCong($congID, $scheduledStartDate, $scheduledWeekNum, $scheduledRotationNum, 1);
 
                                 if ($insertedIntoCongSch == true) {
                                     unset($congregationBlackoutCount[$h]);
                                     $congregationBlackoutCount = array_values($congregationBlackoutCount);
 
+                                    if($h == 12) {
+                                        $congregationBlackoutCount = $this->CongregationBlackout->getCongBlackoutCount();
+                                    }
+
                                     break;
                                 } else {
-                                    //No!!
+                                    $scheduleCreated = false;
+                                    return $scheduleCreated;
                                 }
                             }
                         }
@@ -398,27 +410,7 @@ class CongregationSchedule {
                 }
             }
         }
-
-        /*//All the congregations from MySQL
-        $allCongList = $this->Congregation->getCongregations();
-
-        //Array to store all the names for the host congregations
-        $finalHostCongSchNames = array();
-
-        $flaggedCongregations = array();
-
-        for($e = 0; $e < sizeof($finalHostCongScheduleArr); $e++) {
-            array_push($finalHostCongSchNames, $finalHostCongScheduleArr[$e]['congName']);
-        }
-        for($e = 0; $e < sizeof($allCongList); $e++) {
-            if(!in_array($allCongList[$e]['congName'], $finalHostCongSchNames)) {
-                array_push($flaggedCongregations, $allCongList[$e]['congName']);
-            }
-        }
-
-        $this->FlaggedHostCongregations = $flaggedCongregations;
-        $this->FinalHostCongSchedule = $finalHostCongScheduleArr;
-        return $this->FinalHostCongSchedule;*/
+        return $scheduleCreated;
     }//end scheduleCongregations
 
 }//end CongregationSchedule
