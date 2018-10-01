@@ -256,11 +256,16 @@ class CongregationSchedule {
 
         //Date blackout count data sorted
         $dateBlackoutCount = $this->CongregationBlackout->dateBlackoutCount();
+
+        //Grab start dates from dateBlackoutCount and store in separate array
+        //Used for figuring if start dates weren't blacked out
         $justBlackoutStartDates = array();
         for($i = 0; $i < sizeof($dateBlackoutCount); $i++) {
             array_push($justBlackoutStartDates, $dateBlackoutCount[$i]['startDate']);
         }
 
+        //Figure out which start dates weren't blacked out
+        //If a start date wasn't blacked out, add it to the dateBlackoutCount array with a count of 0
         for($e = 0; $e < sizeof($startDateList); $e++) {
             if(!in_array($startDateList[$e]['startDate'], $justBlackoutStartDates)) {
                 $tempArray = array(
@@ -270,6 +275,8 @@ class CongregationSchedule {
                 array_push($dateBlackoutCount, $tempArray);
             }
         }
+
+        //Boolean variable used to check if the schedule was created
         $scheduleCreated = true;
         for ($i = 0; $i < sizeof($dateBlackoutCount); $i++) {
             for ($h = 0; $h < sizeof($congregationBlackoutCount); $h++) {
