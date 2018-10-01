@@ -1,10 +1,13 @@
 <?php
 	session_start();
 	require_once("./inc/top_layout.php");
-	require_once("./inc/Controller/Calendar.class.php");
-	$calendar = new Calendar();
-	$initialRotation = $calendar->getMinimumRotationNumber();
-	$maximumRotation = $calendar->getMaximumRotationNumber();
+    require_once(__DIR__."/inc/Controller/CongregationBlackout.class.php");
+    require_once(__DIR__."/inc/Controller/DateRange.class.php");
+
+    $DateRange = new DateRange();
+    $CongregationBlackout = new CongregationBlackout();
+
+	$initialRotation = $DateRange->getMinimumRotationNumber();
 
 	if(isset($_SESSION['insertResult'])) {
 		$insertResult = $_SESSION['insertResult'];
@@ -13,20 +16,27 @@
 	}
 
 	if(isset($_POST['blackoutSubmit']) && isset($_POST['blackoutWeek'])) {
-		$_SESSION['insertResult'] = $calendar->loadCalendarYear($_POST['blackoutWeek']);
-		header("Location: inputblackouts.php");
+		$insertBlackout = $CongregationBlackout->insertBlackout($_POST['blackoutWeek'], $_SESSION['email']);
+		if($insertBlackout) {
+		    $_SESSION['insertBlackout'] = $insertBlackout;
+            $_SESSION['insertResult'] = "<div class='alert alert-success'>
+											<strong>Success!</strong> Blackouts inserted!
+										</div>";
+            header("Location: inputblackouts.php");
+        }else {
+            $_SESSION['insertResult'] = "<div class='alert alert-danger'>
+											<strong>Success!</strong> Blackouts inserted!
+										</div>";
+            header("Location: inputblackouts.php");
+        }
 	}
 ?>
 
 <?php
 	if(isset($insertResult)) {
-		var_dump($insertResult);
+		echo $insertResult;
 	}
 ?>
-
-<iframe src="https://calendar.google.com/calendar/embed?showTitle=0&amp;height=600&amp;wkst=1&amp;bgcolor=%23FFFFFF&amp;src=raihncongregation%40gmail.com&amp;color=%231B887A&amp;ctz=America%2FNew_York" style="border-width:0" width="800" height="600" frameborder="0" scrolling="no"></iframe>
-
-<br>
 
 <!-- Trigger the modal with a button -->
 <button type="button" id="blackout-date-sbmit" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">Enter Blackout Dates</button>

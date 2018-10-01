@@ -1,8 +1,9 @@
 <?php
     session_start();
     require_once("./inc/top_layout.php");
-    require_once("./inc/Controller/User.class.php");
-    $user = new User();
+    require_once(__DIR__."/inc/Controller/Users.class.php");
+
+    $Users = new Users();
 
     //Checks to see if there's a reset error message present
     if(isset($_SESSION['resetMsg'])) {
@@ -25,8 +26,8 @@
     //If the send email button is submitted
     if(isset($_POST['email-sub-btn'])) {
         //Verify the email
-        if($user->verifyEmail($_POST['raihn-email'])) {
-            if($user->sendResetPassEmail($_POST['raihn-email'])){
+        if($Users->verifyEmail($_POST['raihn-email'])) {
+            if($Users->sendResetPassEmail($_POST['raihn-email'])){
                 $_SESSION['resetMsg'] = '<div class="alert alert-msg alert-success text-center">Password reset link has been sent to: ' .$email. '</div>';
                 header("Location: forgotpassword.php?state=email");
             }else{
@@ -40,8 +41,7 @@
     }
 
     if(isset($_POST['pass-submit'])) {
-        var_dump($user->changePassword($_POST['new-password'], $_GET['email']));
-        if($user->changePassword($_POST['new-password'], $_GET['email'])) {
+        if($Users->changePassword($_POST['new-password'], $_GET['email'])) {
             $_SESSION['pwdMsg'] = "<div class='alert alert-success'>
 										  <strong>Success!</strong> Password set!
 										</div>";
