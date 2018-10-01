@@ -175,5 +175,33 @@
             }
         }//end setLastHolidayServed
 
+        /* function to update the lastDateServed column in MySQL
+         * @param $lastDateServed - the new lastDateServed value
+         * @param $lastHolidayServed - the new holiday date, if the date is a holiday
+         * @param $congID - the ID of the congregation you're trying to change
+         * @return boolean - return true or false based on if the table was successfully updated
+         * */
+        function updateLastDatesServed($lastDateServed, $lastHolidayServed, $congID) {
+            if($lastHolidayServed == "") {
+                $sqlQuery = "UPDATE congregation_schedule SET lastDateServed = :lastDateServed WHERE congID = :congID";
+                $params = array(":lastDateServed" => $lastDateServed, ":congID" => $congID);
+                $result = $this->DB->executeQuery($sqlQuery, $params, "update");
+                if($result > 0) {
+                    return true;
+                }else {
+                    return false;
+                }
+            }else {
+                $sqlQuery = "UPDATE congregation_schedule SET lastDateServed = :lastDateServed, lastHolidayServed = :lastHolidayServed WHERE congID = :congID";
+                $params = array(":lastDateServed" => $lastDateServed,":lastHolidayServed" => $lastHolidayServed,":congID" => $congID);
+                $result = $this->DB->executeQuery($sqlQuery, $params, "update");
+                if($result > 0) {
+                    return true;
+                }else {
+                    return false;
+                }
+            }
+        }//end updateLastDatesServed
+
 	}//end Congregation
 ?>

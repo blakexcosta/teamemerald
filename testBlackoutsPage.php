@@ -5,6 +5,7 @@
     require_once(__DIR__."/inc/Controller/CongregationSchedule.class.php");
     $CongregationBlackout = new CongregationBlackout();
     $CongregationSchedule = new CongregationSchedule();
+
 	if(isset($_SESSION['eventMsg'])) {
 		$eventMsg = $_SESSION['eventMsg'];
 		unset($_SESSION['eventMsg']);
@@ -21,8 +22,12 @@
         /*$insertResult = $CongregationBlackout->insertBlackout($_POST['blackoutWeek']);*/
         /*if($insertResult) {*/
             $scheduleResult = $CongregationSchedule->scheduleCongregations();
+//            var_dump($scheduleResult);
             if($scheduleResult) {
                 $_SESSION['eventMsg'] = "<h3>Schedule Created</h3>";
+                header("Location: testBlackoutsPage.php");
+            }else {
+                $_SESSION['eventMsg'] = "<h3>Error!</h3>";
                 header("Location: testBlackoutsPage.php");
             }
         /*}*/
@@ -30,7 +35,6 @@
     if(isset($eventMsg)) {
         echo $eventMsg;
 	}
-	/*printf('Event created: %s\n', $event->htmlLink);*/
 
 ?>
 	<!--<iframe src="https://calendar.google.com/calendar/embed?showTitle=0&amp;height=600&amp;wkst=1&amp;bgcolor=%23FFFFFF&amp;src=raihncongregation%40gmail.com&amp;color=%231B887A&amp;ctz=America%2FNew_York" style="border-width:0" width="1000" height="600" frameborder="0" scrolling="no"></iframe>

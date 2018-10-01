@@ -52,6 +52,25 @@ class CongregationBlackout {
         return $countedArray;
     }//end countValues
 
+    //Forth, check to see if more than 5 host congregations have a week blacked out
+    //Schedule that week first
+    /* function that checks to see if a blackout week has more than 5 congregations blacking it out
+     * @return $datesMoreThanFive - array holding start dates for blackout weeks with more than 5 congregations blacking it out
+     * */
+    function dateBlackoutCount() {
+        $result = $this->getCongBlackouts("startDate");
+        $countedBlackedOutDates = $this->countValues($result,$result[0]["startDate"],"startDate", "count");
+        $sortedDates = $this->Functions->sortArray($countedBlackedOutDates,"startDate","count");
+        return $sortedDates;
+    }//end dateBlackoutCount
+
+    function dateBlackoutCountForOneRotation($rotNum) {
+        $result = $this->getCongBlackoutsByRotation($rotNum,"startDate");
+        $countedBlackedOutDates = $this->countValues($result,$result[0]["startDate"],"startDate", "count");
+        $sortedDates = $this->Functions->sortArray($countedBlackedOutDates,"startDate","count");
+        return $sortedDates;
+    }//end dateBlackoutCount
+
     /* function that gets blackout weeks for one congregation
      * @param $id - the id of congregation
      * @return $result - the blackout week data fetched from MySQL
@@ -84,6 +103,24 @@ class CongregationBlackout {
         }
     }//end getCongBlackouts
 
+    //First, grab congregations and their blackout dates
+    /* function that fetches all data from congregation_blackouts
+     * @param $rotNum - the desired rotation number to get blackouts for
+     * @param $orderByVar - variable used to help order the incoming select query
+     * @return $result - if data was successfully fetched return the data
+     * @return null - return no data if no data successfully fetched
+     * */
+    function getCongBlackoutsByRotation($rotNum, $orderByVar) {
+        $sqlQuery = "SELECT * FROM congregation_blackout WHERE rotation_number = :rotNum ORDER BY ".$orderByVar;
+        $params = array(":rotNum" => $rotNum);
+        $result = $this->DB->executeQuery($sqlQuery, $params, "select");
+        if($result) {
+            return $result;
+        }else {
+            return null;
+        }
+    }//end getCongBlackoutsByRotation
+
     //Second, loop through all congregations with their blackout dates and
     //count out each date that's blacked out
 
@@ -112,18 +149,6 @@ class CongregationBlackout {
             return null;
         }
     }//end getDistinctRotationNums
-
-    //Forth, check to see if more than 5 host congregations have a week blacked out
-    //Schedule that week first
-    /* function that checks to see if a blackout week has more than 5 congregations blacking it out
-     * @return $datesMoreThanFive - array holding start dates for blackout weeks with more than 5 congregations blacking it out
-     * */
-    function dateBlackoutCount() {
-        $result = $this->getCongBlackouts("startDate");
-        $countedBlackedOutDates = $this->countValues($result,$result[0]["startDate"],"startDate", "count");
-        $sortedDates = $this->Functions->sortArray($countedBlackedOutDates,"startDate","count");
-        return $sortedDates;
-    }//end moreThan5Congregations
 
     function insertBlackout($blackoutWeek, $email) {
         //Get the congregation ID of the current user logged in
