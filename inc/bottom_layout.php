@@ -16,7 +16,5 @@
 		<!-- Custom Javascript File -->
 		<script type="text/javascript" src="./js/createBusCalendar.js"></script>
 
-		<!-- Custom Javascript File -->
-		<script type="text/javascript" src="./js/createBusBlackouts.js"></script>
 	</body>
 </html>

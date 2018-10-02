@@ -40,9 +40,9 @@
   $calendarWithBackups = $schedule->createDraftSchedule($mostBlackouts, $driverNames, $blackouts, $result);
 
   $fullScheduleArray = array_merge_recursive($result, $calendarWithBackups);
-  //
+  
   $calendarBus = new CalendarBus();
-  //
+  
   $scheduleArrayForm = $calendarBus->scheduleDrivers($fullScheduleArray);
 
   // echo "<pre>";

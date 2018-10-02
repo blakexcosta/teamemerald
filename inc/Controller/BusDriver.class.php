@@ -1,19 +1,20 @@
 <?php
 	class BusDriver {
+		private $db;
 
 		function __construct() {
-            require_once(__DIR__."/RequiredObjects.class.php");
-            $this->RequiredObjects = new RequiredObjects();
-            $this->DB = $this->RequiredObjects->getObject("DB");
-            $this->Functions = $this->RequiredObjects->getObject("Functions");
+			require_once(__DIR__."/../Data/db.class.php");
+			require_once(__DIR__."/Functions.class.php");
+			$this->db = new Database();
+			$this->Functions = new Functions();
 		}
 
-		/* function to grab the bus driver data from MySQL
-		 * echos back a formatted HTML Bootstrap table of the MySQL return results
-		 */
+			/* function to grab the bus driver data from MySQL
+	 * echos back a formatted HTML Bootstrap table of the MySQL return results
+	 */
 		function getBusDriverBlackout() {
 			$sqlQuery = "SELECT * FROM bus_blackout";
-			$data = $this->DB->executeQuery($sqlQuery, $this->Functions->paramsIsZero(), "select");
+			$data = $this->db->executeQuery($sqlQuery, $this->Functions->paramsIsZero(), "select");
 
 			// for($i = 0; $i < sizeof($data); $i++) {
 			// 	$driverId = testSQLNullValue($data[$i]['driverID']);
@@ -31,13 +32,81 @@
 
 		}//end getBusDriverData
 
+		function getAllBlackout(){
+
+			$data = $this->getBusDriverBlackout();
+
+			//associative array with driverID mapped to array
+			$blackout_final = array();
+
+			$tempDriveriD = -5;
+
+			$blackouts = array();
+
+			for($i = 0; $i < sizeof($data); $i++) {
+				$driverId = $this->Functions->testSQLNullValue($data[$i]['driverID']);
+				$date = $this->Functions->testSQLNullValue($data[$i]['date']);
+				$timeOfDay = $this->Functions->testSQLNullValue($data[$i]['timeOfDay']);
+
+				//$object = (object) [$date => $timeOfDay];
+				$object = (object) ['date' => $date, 'timeof' => $timeOfDay];
+
+
+				//if the driverid and the temp are the same
+				if ($driverId == $tempDriveriD){
+					$blackouts[] = $object;
+					$blackout_final[$driverId] = $blackouts;
+				}
+				else{
+					//create new key for assoc array
+					unset($blackouts);
+					$blackouts[] = $object;
+					$blackout_final[$driverId] = $blackouts;
+				}
+
+				$tempDriveriD = $data[$i]['driverID'];
+			}
+			return $blackout_final;
+		}
+
 		//function to get the bus drivers in order of most black out dates to least
+
 		function getMostBlackouts(){
 			$sqlQuery = "SELECT driverID FROM bus_blackout GROUP BY driverID ORDER BY COUNT(driverID) desc";
 
-			$data = $this->DB->executeQuery($sqlQuery, $this->Functions->paramsIsZero(), "select");
+			$data = $this->db->executeQuery($sqlQuery, $this->Functions->paramsIsZero(), "select");
 
 			return $data;
+		}
+
+
+		//this gets an array of [driverID] => 1, [drivingLimit] => 4
+		function getDriverLimits(){
+			$sql = "SELECT driverID, drivingLimit FROM bus_driver";
+
+			$data = $this->db->executeQuery($sql, $this->Functions->paramsIsZero(), "select");
+
+			return $data;
+
+		}
+
+		function getNumberOfBusDrivers(){
+			$sql = "SELECT count(driverID) FROM bus_driver";
+
+			$driverCount = $this->db->executeQuery($sql, $this->Functions->paramsIsZero(), "select");
+
+			$numDrivers = $driverCount[0]['count(driverID)'];
+
+			return $numDrivers;
+		}
+
+		function getAllDriverNames(){
+			$sql = "SELECT driverID, name FROM bus_driver";
+
+			$driverName = $this->db->executeQuery($sql, $this->Functions->paramsIsZero(), "select");
+
+
+			return $driverName;
 		}
 
 		/* function to grab the bus driver data from MySQL
@@ -45,7 +114,7 @@
 		 */
 		function getBusDriverData() {
 			$sqlQuery = "SELECT * FROM BUS_DRIVER";
-			$data = $this->DB->executeQuery($sqlQuery, $this->Functions->paramsIsZero(), "select");
+			$data = $this->db->executeQuery($sqlQuery, $this->Functions->paramsIsZero(), "select");
 			$bigString = "<table class='table'>";
 				$bigString .= "<thead>";
 					$bigString .= "<tr>";

@@ -6,7 +6,7 @@
 ?>
 
 
-    <div id='calendar'>
+    <div id='busCalendar'>
 
     </div>
 

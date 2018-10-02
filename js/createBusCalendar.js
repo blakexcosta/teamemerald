@@ -2,7 +2,7 @@ $(document).ready(function() {
 
 
 
-    $('#calendar').fullCalendar({
+    $('#busCalendar').fullCalendar({
         eventSources : [
             {
                 url: '../getFullBusSchedule.php'
