@@ -9,8 +9,12 @@
 		<!-- Minified Font Awesome CSS -->
 		<link rel="stylesheet" type="text/css" href="./css/font-awesome.min.css">
 
+		<link rel="stylesheet" type="text/css" href="./css/fullcalendar.css">
+		
 		<!-- Main custom CSS -->
 		<link rel="stylesheet" type="text/css" href="./css/styles.css">
+
+
 </head>
 <body>
 	<div id="title-section">

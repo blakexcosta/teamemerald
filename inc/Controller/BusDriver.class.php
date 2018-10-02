@@ -31,7 +31,45 @@
 
 		}//end getBusDriverData
 
+		function getAllBlackout(){
+
+			$data = $this->getBusDriverBlackout();
+
+			//associative array with driverID mapped to array
+			$blackout_final = array();
+
+			$tempDriveriD = -5;
+
+			$blackouts = array();
+
+			for($i = 0; $i < sizeof($data); $i++) {
+				$driverId = testSQLNullValue($data[$i]['driverID']);
+				$date = testSQLNullValue($data[$i]['date']);
+				$timeOfDay = testSQLNullValue($data[$i]['timeOfDay']);
+
+				//$object = (object) [$date => $timeOfDay];
+				$object = (object) ['date' => $date, 'timeof' => $timeOfDay];
+
+
+				//if the driverid and the temp are the same
+				if ($driverId == $tempDriveriD){
+					$blackouts[] = $object;
+					$blackout_final[$driverId] = $blackouts;
+				}
+				else{
+					//create new key for assoc array
+					unset($blackouts);
+					$blackouts[] = $object;
+					$blackout_final[$driverId] = $blackouts;
+				}
+
+				$tempDriveriD = $data[$i]['driverID'];
+			}
+			return $blackout_final;
+		}
+
 		//function to get the bus drivers in order of most black out dates to least
+
 		function getMostBlackouts(){
 			$sqlQuery = "SELECT driverID FROM bus_blackout GROUP BY driverID ORDER BY COUNT(driverID) desc";
 
@@ -41,10 +79,34 @@
 		}
 
 
+		//this gets an array of [driverID] => 1, [drivingLimit] => 4
+		function getDriverLimits(){
+			$sql = "SELECT driverID, drivingLimit FROM bus_driver";
+
+			$data = $this->db->executeQuery($sql, paramsIsZero(), "select");
+
+			return $data;
+
+		}
+
+		function getNumberOfBusDrivers(){
+			$sql = "SELECT count(driverID) FROM bus_driver";
+
+			$driverCount = $this->db->executeQuery($sql, paramsIsZero(), "select");
+
+			$numDrivers = $driverCount[0]['count(driverID)'];
+
+			return $numDrivers;
+		}
+
+		function getAllDriverNames(){
+			$sql = "SELECT driverID, name FROM bus_driver";
+
+			$driverName = $this->db->executeQuery($sql, paramsIsZero(), "select");
 
 
-
-
+			return $driverName;
+		}
 
 		/* function to grab the bus driver data from MySQL
 		 * echos back a formatted HTML Bootstrap table of the MySQL return results
