@@ -1,7 +1,6 @@
 $(document).ready(function() {
 	//GLOBAL VARIABLES
 
-
     //Global variable storing the final schedule from ajax call in show-calendar
     // var fullSchedule;
     //
@@ -10,8 +9,7 @@ $(document).ready(function() {
     $('#calendar').fullCalendar({
         eventSources : [
             {
-                url: '../getFullBusSchedule.php',
-                textColor: 'black'
+                url: '../getFullBusSchedule.php'
             }
         ]
     });

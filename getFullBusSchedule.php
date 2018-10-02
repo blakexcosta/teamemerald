@@ -39,9 +39,9 @@
 
   $scheduleArrayForm = $calendarBus->scheduleDrivers($fullScheduleArray);
 
-  // echo "<pre>";
-  // print_r($scheduleArrayForm);
-  // echo "<pre>";
+  echo "<pre>";
+  print_r($scheduleArrayForm);
+  echo "<pre>";
 
 
   echo json_encode($scheduleArrayForm);
