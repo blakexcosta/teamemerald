@@ -68,6 +68,11 @@
                             <a class="nav-link" href="./testBlackoutsPage.php">Test Blackout Congregation</a>
                         </li>
 			      	<?php endif; ?>
+                    <?php if(isset($_SESSION['role']) && $_SESSION['role'] == "Congregation Admin"): ?>
+                        <li class="nav-item">
+                            <a class="nav-link" href="./adminCongSchedule.php">Admin Congregation Schedule</a>
+                        </li>
+                    <?php endif; ?>
 			      	<?php /* if logged in */ if(isset($_SESSION['role']) && $_SESSION['role'] == "Admin"): ?>
 			      		<li class="nav-item">
 				        	<a class="nav-link" href="./insertDateData.php">Insert Date Data</a>
