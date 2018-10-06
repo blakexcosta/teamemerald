@@ -46,7 +46,7 @@
 		        	<a class="nav-link" href="./index.php">Home</span></a>
 		      	</li>
 		      	<?php /* if logged in */ if(isset($_SESSION['email'])): ?>
-		      		<?php /* if logged in */ if(isset($_SESSION['role']) && ($_SESSION['role'] == "Bus Driver" || $_SESSION['role'] == "Admin")): ?>
+		      		<?php /* if logged in */ if(isset($_SESSION['role']) && ($_SESSION['role'] == "Bus Driver" || $_SESSION['role'] == "Bus Driver Admin" || $_SESSION['role'] == "Admin")): ?>
 				      	<li class="nav-item">
 				        	<a class="nav-link" href="./busdriverroster.php">Bus Driver Roster</a>
 				      	</li>
@@ -54,7 +54,7 @@
                             <a class="nav-link" href="./testBlackoutsDRIVERS.php">Test Blackout Drivers</a>
                         </li>
 			      	<?php endif; ?>
-			      	<?php /* if logged in */ if(isset($_SESSION['role']) && ($_SESSION['role'] == "Congregation" || $_SESSION['role'] == "Admin")): ?>
+			      	<?php /* if logged in */ if(isset($_SESSION['role']) && ($_SESSION['role'] == "Congregation" || $_SESSION['role'] == "Congregation Admin" || $_SESSION['role'] == "Admin" )): ?>
 				      	<li class="nav-item">
 				        	<a class="nav-link" href="./congregationroster.php">Host Congregation Roster</a>
 				      	</li>
