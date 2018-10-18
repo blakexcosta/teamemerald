@@ -15,7 +15,7 @@
 		unset($_SESSION['insertResult']);
 	}
 
-	if(isset($_POST['blackoutSubmit']) && isset($_POST['blackoutWeek'])) {
+	/*if(isset($_POST['blackoutSubmit']) && isset($_POST['blackoutWeek'])) {
 		$insertBlackout = $CongregationBlackout->insertBlackout($_POST['blackoutWeek'], $_SESSION['email']);
 		if($insertBlackout) {
             $_SESSION['insertResult'] = "<div class='alert alert-success'>
@@ -28,7 +28,7 @@
 										</div>";
             header("Location: inputblackouts.php");
         }
-	}
+	}*/
 ?>
 
 <?php
@@ -36,40 +36,33 @@
 		echo $insertResult;
 	}
 ?>
-
-<!-- Trigger the modal with a button -->
-<button type="button" id="blackout-date-sbmit" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">Enter Blackout Dates</button>
-<!-- Modal -->
-<div id="myModal" class="modal fade" role="dialog">
-  <div class="modal-dialog">
-
-    <!-- Modal content-->
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 class="modal-title">
-			<a href="#" id="prev-btn" class="btn btn-info btn-sm">
-	          <span class="glyphicon glyphicon-chevron-left"></span> Prev
-	        </a>
-        	<?php echo "Rotation: <span id='rot-number'>".$initialRotation."</span>"; ?> (Weeks are from Sunday to Saturday)
-        	<a href="#" id="nxt-btn" class="btn btn-info btn-sm">
-	          Next <span class="glyphicon glyphicon-chevron-right"></span>
-	        </a>
-    	</h4>
-      </div>
-       <form action="inputblackouts.php" method="post">
-	      <div class="modal-body">
-	        <div class="modal-checkboxes">
-			</div>
-	      </div>
-	      <div class="modal-footer">
-			<input id="blackoutSubmit" type="submit" class="btn btn-default" name="blackoutSubmit" value="Submit"/>
-	        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-	      </div>
-       </form>
+<!-- Blackout content-->
+<div id="blackout-content">
+    <div class="blackout-header">
+        <h4 class="blackout-title">
+            <a href="#" id="prev-btn" class="btn btn-info btn-sm">
+                <span class="glyphicon glyphicon-chevron-left"></span> Prev
+            </a>
+            <?php echo "Rotation: <span id='rot-number'>".$initialRotation."</span> (Weeks are from Sunday to Saturday)"; ?>
+            <a href="#" id="nxt-btn" class="btn btn-info btn-sm">
+                Next <span class="glyphicon glyphicon-chevron-right"></span>
+            </a>
+        </h4>
+        <?php echo "<p>Entering blackouts for user: <span id='curr-user'>".$_SESSION['email']."</span></p>"; ?>
     </div>
+    <hr align="left"/>
+    <!--<form action="inputblackouts.php" method="post">-->
+        <div class="blackout-body">
+            <div class="blackout-checkboxes">
+            </div>
+        </div>
+        <div class="blackout-footer">
+            <input id="blackoutSubmit" type="submit" class="btn btn-primary" name="blackoutSubmit" value="Submit Blackouts"/>
+        </div>
+    <!--</form>-->
+</div>
+<div id="calendar">
 
-  </div>
 </div>
 
 <?php require_once("./inc/bottom_layout.php"); ?>

@@ -153,6 +153,22 @@ class CongregationBlackout {
         }
     }//end getCongBlackoutsByRotation
 
+    /* function that fetches all data from congregation_blackouts by start date
+     * @param $startDate - the desired start date to get blackouts for
+     * @return $result - if data was successfully fetched return the data
+     * @return null - return no data if no data successfully fetched
+     * */
+    function getCongBlackoutsByStartDate($startDate) {
+        $sqlQuery = "SELECT * FROM congregation_blackout WHERE startDate = :startDate";
+        $params = array(":startDate" => $startDate);
+        $result = $this->DB->executeQuery($sqlQuery, $params, "select");
+        if($result) {
+            return $result;
+        }else {
+            return null;
+        }
+    }//end getCongBlackoutsByStartDate
+
     //Second, loop through all congregations with their blackout dates and
     //count out each date that's blacked out
 
@@ -223,6 +239,8 @@ class CongregationBlackout {
 
         if($result){
             for($i = 0; $i < sizeof($blackoutWeek); $i++) {
+                //This if handles if the congregation chose "No Blackouts"
+                //Incoming data for no blackouts will look like: 1970-01-01-53
                 if(strlen($blackoutWeek[$i]) > 10) {
                     $rotationNum = substr($blackoutWeek[$i], 11);
                     $blackoutWeekStartDate = substr($blackoutWeek[$i], 0, 10);

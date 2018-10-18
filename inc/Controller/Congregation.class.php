@@ -80,6 +80,22 @@
             }
         }//end getCongregationID
 
+        /* function to get the congregation ID by congregation name
+         * @param $congName - the name of the congregation
+         * @return $result - the desired congregation ID
+         * @return null - return nothing if no data was returned
+         * */
+        function getCongregationIDByName($congName) {
+            $sqlQuery = "SELECT congID FROM congregation WHERE congName = :congName";
+            $params = array(":congName" => $congName);
+            $result = $this->DB->executeQuery($sqlQuery, $params, "select");
+            if($result) {
+                return $result[0]["congID"];
+            }else {
+                return null;
+            }
+        }//end getCongregationIDByName
+
         /* function to get a congregation name from MySQL
          * @param $congID - the congregation ID that will be used to help find the name
 		 * @return $result - data from MySQL holding congregation name

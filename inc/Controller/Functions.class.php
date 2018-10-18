@@ -11,6 +11,11 @@ class Functions {
 
     }
 
+    function addSevenDays($date) {
+        $newDate = date("Y-m-d", strtotime("+7 days", strtotime($date)));
+        return $newDate;
+    }//end addSevenDays
+
     /* function to sift through values of one array and see if they're missing in another array
      * normally used with MySQL data
      * @param $arr1 - the array that has all the values you want to search for in the other array
@@ -49,11 +54,11 @@ class Functions {
     }//end paramsIsZero
 
     /* function that sorts an associative array from greatest to least value
-		 * @param $array - the chosen array to be sorted
-		 * @param $key - the name of the key that will be used to help compare two values in the associative array
-		 * @param $value - the name of the value that be used to help compare two values in the associative array
-		 * @return $array - the chosen array but sorted from greatest to least
-		 * */
+     * @param $array - the chosen array to be sorted
+     * @param $key - the name of the key that will be used to help compare two values in the associative array
+     * @param $value - the name of the value that be used to help compare two values in the associative array
+     * @return $array - the chosen array but sorted from greatest to least
+     * */
     function sortArray($array, $key, $value) {
         for($i = 0; $i < sizeof($array); $i++) {
             for($h = 0; $h < sizeof($array) - $i - 1; $h++) {
@@ -69,6 +74,25 @@ class Functions {
         }
         return $array;
     }//end sortArray
+
+    /* function that sorts an associative array from least to greatest value
+     * @param $array - the chosen array to be sorted
+     * @param $key - the name of the key that will be used to help compare two values in the associative array
+     * @return $array - the chosen array but sorted from greatest to least
+     * */
+    function sort2DArray($array, $key) {
+        for($i = 0; $i < sizeof($array); $i++) {
+            for($h = 0; $h < sizeof($array) - $i - 1; $h++) {
+                if ($array[$h][$key] > $array[$h + 1][$key]) {
+                    $tempArr = $array[$h];
+                    $array[$h] = $array[$h + 1];
+                    $array[$h + 1] = $tempArr;
+                }
+            }
+        }
+        return $array;
+    }//end sort2DArray
+
 
     /* function to test if the MySQL values that was fetch is null
      * @param $sqlData - data that was fetched from MySQL

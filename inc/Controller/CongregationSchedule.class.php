@@ -24,6 +24,36 @@ class CongregationSchedule {
         $this->FlaggedHostCongregations = null;
     }
 
+    function createCompleteSchArray() {
+        $flaggedCongregations = $this->getFlaggedCongregations();
+        $fullCongSch = $this->getFullScheduleInArrayForm();
+
+        if(sizeof($flaggedCongregations) == 0) {
+            return $fullCongSch;
+        }else {
+            $dates = array();
+            for($i = 0; $i < sizeof($fullCongSch); $i++) {
+                $tempArr = array(
+                                "title" => $fullCongSch['title'],
+                                "start" => $fullCongSch['start'],
+                                "end" => $fullCongSch['end'],
+                                "holiday" => $fullCongSch['holiday'],
+                                "flagged" => "No");
+                array_push($dates, $tempArr);
+            }
+
+            for($i = 0; $i < sizeof($fullCongSch); $i++) {
+                $tempArr = array(
+                    "title" => $flaggedCongregations['title'],
+                    "start" => $flaggedCongregations['start'],
+                    "end" => $flaggedCongregations['end'],
+                    "flagged" => "Yes");
+                array_push($dates, $tempArr);
+            }
+            return $dates;
+        }
+    }
+
     /* function to delete a data from the congregation_schedule in the SQL table
      * @return boolean - return true or false if the data was successfully deleted
      * */
@@ -52,6 +82,20 @@ class CongregationSchedule {
         }
     }//end getCongIDsByRotation
 
+    /* function to get the distinct rotation numbers from congregation blackouts table
+     * @return $result - if data was successfully fetched return the data
+     * @return null - return no data if no data successfully fetched
+     * */
+    function getDistinctRotationNums() {
+        $sqlQuery = "SELECT DISTINCT rotationNumber FROM congregation_schedule";
+        $result = $this->DB->executeQuery($sqlQuery, $this->Functions->paramsIsZero(), "select");
+        if($result) {
+            return $result;
+        }else {
+            return null;
+        }
+    }//end getDistinctRotationNums
+
     /* function to get the congregations that weren't scheduled
      * @return $flaggedCongregations - all the congregations not scheduled
      * */
@@ -67,7 +111,7 @@ class CongregationSchedule {
         //All the start dates for each rotation number in the final congregation schedule
         $allStartDates = array();
         for($i = 0; $i < sizeof($rotationNums); $i++) {
-            $startDates = $this->DateRange->getStartDateBasedRotation($rotationNums[$i]['rotationNumber']);
+            $startDates = $this->DateRange->getStartDateBasedRotWithoutZero($rotationNums[$i]['rotationNumber']);
             for($h = 0; $h < sizeof($startDates); $h++) {
                 array_push($allStartDates, $startDates[$h]['startDate']);
             }
@@ -148,12 +192,25 @@ class CongregationSchedule {
             $scheduledEndDate = date("Y-m-d",strtotime("+7 days",strtotime($fullSchedule[$i]['startDate'])));
 
             //Create array holding the information of the congregation about to be scheduled
-            $congregationScheduledArr = array(
-                "title" => $this->Congregation->getCongregationName($fullSchedule[$i]['congID']),
-                "start" => $fullSchedule[$i]['startDate'],
-                "end" => $scheduledEndDate
-            );
-            array_push($finalHostCongScheduleArr, $congregationScheduledArr);
+            if($fullSchedule[$i]['holiday'] == 1) {
+                $congregationScheduledArr = array(
+                    "title" => $this->Congregation->getCongregationName($fullSchedule[$i]['congID']),
+                    "start" => $fullSchedule[$i]['startDate'],
+                    "end" => $scheduledEndDate,
+                    "holiday" => "Yes",
+                    "rotationNumber" => $fullSchedule[$i]["rotationNumber"]
+                );
+                array_push($finalHostCongScheduleArr, $congregationScheduledArr);
+            }else {
+                $congregationScheduledArr = array(
+                    "title" => $this->Congregation->getCongregationName($fullSchedule[$i]['congID']),
+                    "start" => $fullSchedule[$i]['startDate'],
+                    "end" => $scheduledEndDate,
+                    "holiday" => "No",
+                    "rotationNumber" => $fullSchedule[$i]["rotationNumber"]
+                );
+                array_push($finalHostCongScheduleArr, $congregationScheduledArr);
+            }
         }
         return $finalHostCongScheduleArr;
     }//end getFullScheduleInArrayForm
@@ -259,12 +316,12 @@ class CongregationSchedule {
         }
     }//end getStartDatesByRotation
 
-    /* function to get the start dates in the congregation schedule without any parameters
+    /* function to get the start dates in the congregation schedule
      * @return $result - the start dates from congregation_schedule
      * @return null - return no data if no data successfully fetched
      * */
-    function getStartDatesNoParams() {
-        $sqlQuery = "SELECT startDate FROM congregation_schedule";
+    function getStartDates($orderByVar) {
+        $sqlQuery = "SELECT startDate FROM congregation_schedule ORDER BY ".$orderByVar;
         $result = $this->DB->executeQuery($sqlQuery, $this->Functions->paramsIsZero(), "select");
         if($result) {
             return $result;
@@ -598,5 +655,23 @@ class CongregationSchedule {
             return false;
         }
     }//end scheduledHolidayAYearAgo
+
+    /* function to update where a congregation is scheduled
+     * @param $startDate - the start date you're scheduling the new congregation on
+     * @param $congName - the new congregation you're scheduling
+     * @param $rotation - the rotation number you're scheduling
+     * @return boolean - return true or false if the schedule was updated
+     * */
+    function updateSchedule($startDate, $congName, $rotation) {
+        $congID = $this->Congregation->getCongregationIDByName($congName);
+        $sqlQuery = "UPDATE congregation_schedule SET congID = :congID WHERE startDate = :startDate AND rotationNumber = :rotNum";
+        $params = array(":congID" => $congID, ":startDate" => $startDate, ":rotNum" => $rotation);
+        $result = $this->DB->executeQuery($sqlQuery, $params, "update");
+        if($result > 0) {
+            return true;
+        }else {
+            return false;
+        }
+    }//end updateSchedule
 
 }//end CongregationSchedule

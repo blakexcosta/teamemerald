@@ -9,13 +9,47 @@
 	src: url('../fonts/Freight Sans Book Italic.otf');
 }
 
+/* CORE ELEMENTS */
+hr {
+	border: 1px solid rgb(204,204,204);
+	width: 70%;
+}
+
 /* CLASSES */
+.blackout-checkboxes {
+	font-size: 1.25vw;
+}
+
+.blackout-checkboxes input {
+	display: inline-block;
+	vertical-align: middle;
+	height: 15px;
+	width: 15px;
+}
+
+.blackout-title {
+	font-size: 1.25vw;
+}
+
+.checkmark {
+	height: 25px;
+	width: 25pc;
+}
+
+.congNames {
+	width: 30%;
+}
+
 .custom-bg {
 	background-color: rgb(204,204,204);
 }
 
 .custom-bg li {
 	font-family: "Freight Sans Book";
+}
+
+.edited-congs {
+	margin-top: 5%;
 }
 
 .forgot-submit {
@@ -27,6 +61,17 @@
 	text-align: center;
 	color: #CC2936;
 	font-weight: bold;
+}
+
+.loader {
+	border: 16px solid #f3f3f3;
+	border-radius: 50%;
+	border-top: 16px solid #0D6AA8;
+	width: 120px;
+	height: 120px;
+	-webkit-animation: spin 2s linear infinite; /* Safari */
+	animation: spin 2s linear infinite;
+	margin: 5% auto;
 }
 
 .pw-toggle-group {
@@ -50,7 +95,39 @@
   text-decoration: none;
 }
 
+.rotation-head {
+	background-color: #0D6AA8;
+}
+
+.tbl-heading {
+	color: white;
+}
+
 /* IDs */
+#admin-cong-buttons {
+	text-align: center;
+}
+
+#admin-finalize {
+	margin-left: 1%;
+}
+
+#blackout-content {
+	float: left;
+	width: 45%;
+	margin-left: 3%;
+}
+
+#blackoutSubmit {
+	margin-top: 2%;
+}
+
+#calendar {
+	float: right;
+	width: 45%;
+	margin-right: 3%;
+}
+
 #done-word-conf {
 	color: #549F93;
 	display: none;
@@ -152,8 +229,20 @@
 
 #title-section {
 	height: 200px;
-	background-color: rgb(13,106,168);
+	background-color: #0D6AA8;
 	position: relative;
+}
+
+/* KEYFRAMES */
+/* Safari */
+@-webkit-keyframes spin {
+	0% { -webkit-transform: rotate(0deg); }
+	100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+	0% { transform: rotate(0deg); }
+	100% { transform: rotate(360deg); }
 }
 
 /* BOOTSTRAP OVERRIDES */
@@ -184,6 +273,16 @@
 .btn-info:hover {
 	background-color: rgb(13,120,180);
 	border-color: rgb(13,120,180);
+}
+
+.btn-success, .btn-success:active, .btn-success:visited {
+	background-color: rgb(2,195,154);
+	border-color: rgb(2,195,154);
+}
+
+.btn-success:hover {
+	background-color: rgb(2,166,139);
+	border-color: rgb(2,166,139);
 }
 
 .form-group {

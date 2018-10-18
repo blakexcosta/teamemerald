@@ -1,42 +1,108 @@
 $(document).ready(function() {
-	//GLOBAL VARIABLES
+	//Global Variables
+	var blackoutWeekDates;
 
-    //Global variable storing data retrieved from ajax call in blackout-date-sbmit
-    var blackoutWeekDates;
-
-    //Global variable storing the final schedule from ajax call in show-calendar
-    var fullSchedule;
-
-    $('#calendar').fullCalendar({
-        eventSources : [
-        	"inc/Controller/getFullCongSchedule.php",
-            "inc/Controller/getFlaggedCongregations.php"
-		]
+	$("#blackoutSubmit").on("click", function() {
+        var congBlackouts = [];
+        $(".blackoutWeek:checked").each(function(i) {
+            congBlackouts.push($(this).val());
+        });
+        var currUserEmail = $("#curr-user").text();
+        var insertResult = postData({congBlackoutData: congBlackouts, email: currUserEmail}, "inc/Controller/insertcongblackoutdata.php");
+        $.when(insertResult).then(function(congInsertResult) {
+            console.log(congInsertResult);
+        }).fail(function (XMLHttpRequest, textStatus, errorThrown) {
+            console.log(textStatus);
+        });
+        // console.log(congBlackouts);
     });
 
-/*    $.ajax({
-		type: "post",
-		url: "inc/Controller/getFullCongSchedule.php",
-		dataType: "json",
-		success: function(data) {
-			console.log(data);
-		},
-		error: function(XMLHttpRequest, textStatus, errorThrown) {
-			console.log(textStatus);
-		}
+	$("body").on("click", "#admin-submit", function() {
+		var editedDivs = $("tr").filter(function() {
+            var editedColor = $(this).css("background-color");
+            return editedColor === "rgb(255, 202, 58)" || editedColor === "#FFCA3A";
+		});
+        $("#modalLabel").text("Nothing Changed");
+        if(editedDivs) {
+        	editedDivs.each(function(i) {
+        		var optionVals = editedDivs.eq(i).children("td").eq(1).children("select").val().split(",");
+        		var editedCong = $("<div>").attr("class","edited-congs");
+
+        		var startDateHeading = $("<p>").append($("<strong>").text("Start Date: "));
+                startDateHeading.append($("<span>").attr("class","updated-start-date").text(optionVals[2]));
+
+                var newCongHeading = $("<p>").append($("<strong>").text("New Congregation: "));
+                newCongHeading.append($("<span>").attr("class","updated-cong-name").text(optionVals[0]));
+
+                var rotationHeading = $("<p>").append($("<strong>").text("Rotation: "));
+                rotationHeading.append($("<span>").attr("class","updated-rotation").text(optionVals[1]));
+
+        		editedCong.append(startDateHeading);
+        		editedCong.append(newCongHeading);
+        		editedCong.append(rotationHeading);
+
+                $("#modalLabel").text("Please Confirm Changes");
+        		$(".modal-body").append(editedCong);
+			});
+        }
 	});
 
-    $.ajax({
-        type: "post",
-        url: "inc/Controller/getFlaggedCongregations.php",
-        dataType: "json",
-        success: function(data) {
-            console.log(data);
-        },
-        error: function(XMLHttpRequest, textStatus, errorThrown) {
-            console.log(textStatus);
+    //On selection of one of the check marks for the host congregation blackouts
+    $("body").on("change", ".blackoutWeek", function() {
+        $('#calendar').fullCalendar('gotoDate', this.value);
+    });
+
+    //The "Ok" button when the admin clicks to update changes made to the schedule
+    $("body").on("click", "#conf-ok-btn", function() {
+        window.location.replace("adminCongSchedule.php");
+    });
+
+    //When an admin changes a congregation, change the background
+    $("body").on("change", "select", function() {
+    	var currentCong = $(this).find(".curr-sch-cong").val().split(",");
+    	var newCong = $(this).val().split(",");
+    	if(newCong[0] !== currentCong[0]) {
+            $(this).parent().parent().css("background-color","#FFCA3A");
+		}else {
+            $(this).parent().parent().css("background-color","");
+		}
+    });
+
+    //Full calendar congregation blackout inputs
+    $('#calendar').fullCalendar({
+
+    });
+
+    $("#conf-data-cancel").on("click", function() {
+        $(".modal-body").empty();
+        $("#modalLabel").css("color","");
+	});
+
+    //Send data to PHP file to be updated in the database
+    $("#conf-data-save").on("click", function() {
+        var updatedStartDates = $(".updated-start-date");
+        var updatedCongNames = $(".updated-cong-name");
+        var updatedRotations = $(".updated-rotation");
+
+        var updatedCongData = [];
+        for(var i = 0; i < updatedCongNames.length; i++) {
+            var updatedCong = {};
+            updatedCong.startDate = updatedStartDates.eq(i).text();
+            updatedCong.congName = updatedCongNames.eq(i).text();
+            updatedCong.rotation = updatedRotations.eq(i).text();
+            updatedCongData.push(updatedCong);
         }
-    });*/
+        var updateData = postData({updatedData: updatedCongData},"inc/Controller/updateCongSch.php")
+        $.when(updateData).then(function(updateDataResult) {
+            $("#modalLabel").text("Success: Changes Made!").css("color","#549F93");
+            $(".modal-footer").empty();
+            var okButton = $("<button>").attr({"type":"button","id":"conf-ok-btn"}).addClass("btn btn-success").text("Ok");
+            $(".modal-footer").append(okButton);
+            // console.log(updateDataResult);
+        }).fail(function (XMLHttpRequest, textStatus, errorThrown) {
+            $("#modalLabel").text("Fail: Changes Not Made! Contact Admin!").css("color","#D63230");
+        });
+	});
 
 	//If the user clicks inside the "confirm password" field, show message
 	$("#conf-password").focus(function() {
@@ -100,7 +166,7 @@ $(document).ready(function() {
 		$("#rot-number").text(rotNumber+1);
 
 		var dateRanges = createCustomDateRangeArray();
-		$(".modal-checkboxes").empty();
+		$(".blackout-checkboxes").empty();
 		displayBlackoutRanges(dateRanges);
 
 		if(parseInt($("#rot-number").text()) == getMaxRotationNumber()){
@@ -116,7 +182,7 @@ $(document).ready(function() {
 		$("#rot-number").text(rotNumber-1);
 
 		var dateRanges = createCustomDateRangeArray();
-		$(".modal-checkboxes").empty();
+		$(".blackout-checkboxes").empty();
 		displayBlackoutRanges(dateRanges);
 
 		if(parseInt($("#rot-number").text()) == getMinRotationNumber()){
@@ -139,23 +205,7 @@ $(document).ready(function() {
 		}
 	});
 
-	$("#blackout-date-sbmit").one("click",(function() {
-		$.ajax({
-			type: "post",
-			url: "inc/Controller/fetchblackoutweeks.php",
-			dataType: "json",
-			success: function(data) {
-				//Sets the returned data as a global variable
-				blackoutWeekDates = data;
-				displayBlackoutRanges(data);
-			},
-			error: function(XMLHttpRequest, textStatus, errorThrown) {
-			     alert(textStatus);
-		  	}
-		});
-	}));
-
-    $("#show-calendar").one("click",(function() {
+    /*$("#show-calendar").on("click",(function() {
         $.ajax({
             type: "post",
             url: "inc/Controller/getFullCongSchedule.php",
@@ -168,8 +218,165 @@ $(document).ready(function() {
                 alert(textStatus);
             }
         });
-    }));
+    }));*/
 
+	//AJAX CALLS
+
+	//Modular way to get data
+	var getData = function(params, url) {
+		if(params.length == 0) {
+            return $.ajax({
+                type: "get",
+                dataType: 'json',
+                url: url
+            });
+		}else {
+            return $.ajax({
+                type: "get",
+                data: params,
+                dataType: 'json',
+                url: url
+            });
+		}
+	}
+
+	var postData = function(params, url) {
+        if(params.length == 0) {
+            return $.ajax({
+                type: "post",
+                dataType: 'json',
+                url: url
+            });
+        }else {
+            return $.ajax({
+                type: "post",
+                data: params,
+                dataType: 'json',
+                url: url
+            });
+        }
+    }
+
+	//Fetch the dates for congregations to input their blackouts on
+	var blackoutWeekDates = getData({},"inc/Controller/fetchblackoutweeks.php");
+	$.when(blackoutWeekDates).then(function(blackoutWeeks) {
+		blackoutWeekDates = blackoutWeeks;
+        displayBlackoutRanges(blackoutWeeks);
+	}).fail(function (XMLHttpRequest, textStatus, errorThrown) {
+        console.log(textStatus);
+    });
+
+	//Setup the admin congregation schedule
+    var getRotationNums = getData({},"inc/Controller/fetchScheduledRotationNums.php"),
+        getFullSchedule = getData({},"inc/Controller/fetchfullschedule.php"),
+        eligibleCongregations = getData({},"inc/Controller/fetchEligibleCongregations.php");
+
+    $.when(getRotationNums,getFullSchedule,eligibleCongregations).then(function(rotationNums, fullSchedule, eligibleCongs) {
+    	$(".loader").hide();
+    	var startDates = Object.keys(eligibleCongs[0]);
+    	startDates = startDates.sort(function (a, b) {
+            return new Date(a).getTime() - new Date(b).getTime()
+        });
+    	var table = $("<table>").addClass("table");
+        table.attr("id","final-cong-schedule");
+        var rotationCount = startDates.length / 13;
+
+        var weekCount = 0;
+        var congCount = 0;
+        for(var i = 0; i < rotationCount; i++) {
+            var tableHead = $("<thead>");
+            tableHead.addClass("rotation-head");
+            var tableRow = $("<tr>");
+            var tableHeading1 = $("<th>").attr("scope", "col").addClass("tbl-heading");
+            tableHeading1.text("Start Date");
+            var tableHeading2 = $("<th>").attr("scope", "col").addClass("tbl-heading");
+            tableHeading2.text("Rotation #"+rotationNums[0][i]["rotationNumber"]);
+            var tableHeading3 = $("<th>").attr("scope", "col").addClass("tbl-heading");
+            tableHeading3.text("Approved Schedule as of:");
+
+            tableRow.append(tableHeading1);
+            tableRow.append(tableHeading2);
+            tableRow.append(tableHeading3);
+            tableHead.append(tableRow);
+
+            table.append(tableHead);
+
+            var tableBody = $("<tbody>");
+            for(var h = weekCount; h < weekCount + 13; h++) {
+                var tableBodyRow = $("<tr>");
+                tableBodyRow.addClass("scheduled-date");
+
+                var tableData = $("<td>");
+                if(fullSchedule[0][h]["holiday"] === "Yes"){
+                    var strongTag = $("<strong>");
+                    strongTag.text(fullSchedule[0][h]["start"]+" HOLIDAY!");
+                    tableData.append(strongTag);
+				}else {
+                    tableData.text(fullSchedule[0][h]["start"]);
+				}
+
+				var tableData2 = $("<td>").addClass("congName").attr("id","cong"+congCount);
+
+                var selectOption = $("<select>").addClass("form-control congNames");
+                selectOption.append(createHeader("Currently Scheduled"));
+
+                var firstOption = $("<option>").addClass("curr-sch-cong").attr({"selected": "selected","value": fullSchedule[0][h]["title"]
+																			+","+rotationNums[0][i]["rotationNumber"]}).text(fullSchedule[0][h]["title"]);
+                selectOption.append(firstOption);
+
+                selectOption.append(createSpaceOption());
+
+                selectOption.append(createHeader("Eligible Congregations"));
+
+                for (var k = 0; k < eligibleCongs[0][startDates[h]].length; k++) {
+                    if (eligibleCongs[0][startDates[h]][k]["eligible"] !== "No") {
+                        var eligibleOption = $("<option>").attr("value", eligibleCongs[0][startDates[h]][k]["title"]+","+rotationNums[0][i]["rotationNumber"]+
+																","+fullSchedule[0][h]["start"]).text(eligibleCongs[0][startDates[h]][k]["title"]);
+                        selectOption.append(eligibleOption);
+                    }
+                }
+
+                selectOption.append(createSpaceOption());
+
+                var divider = $("<option>").attr("disabled", "disabled");
+                divider.text("──────────");
+                selectOption.append(divider);
+
+                selectOption.append(createSpaceOption());
+
+                selectOption.append(createHeader("Ineligible Congregations"));
+
+                for (var k = 0; k < eligibleCongs[0][startDates[h]].length; k++) {
+                    if (eligibleCongs[0][startDates[h]][k]["eligible"] === "No") {
+                        var ineligibleOption = $("<option>").attr("value", eligibleCongs[0][startDates[h]][k]["title"]+","+rotationNums[0][i]["rotationNumber"]+
+																","+fullSchedule[0][h]["start"]).text(eligibleCongs[0][startDates[h]][k]["title"]);
+                        selectOption.append(ineligibleOption);
+                    }
+                }
+                tableData2.append(selectOption);
+
+                var tableData3 = $("<td>");
+                tableData3.text("");
+
+                tableBodyRow.append(tableData);
+                tableBodyRow.append(tableData2);
+                tableBodyRow.append(tableData3);
+
+                tableBody.append(tableBodyRow);
+                congCount++;
+            }
+            weekCount+=13;
+
+            table.append(tableBody);
+        }
+        $("#admin-schedule").append(table);
+        var adminButtons = $("<div>").attr("id","admin-cong-buttons");
+        adminButtons.append($("<button>").attr({"id": "admin-submit", "type": "submit", "data-toggle": "modal", "data-target":"#conf-data-submit"}).addClass("btn btn-primary").text("Submit Changes"));
+        adminButtons.append($("<button>").attr({"id": "admin-finalize", "type": "submit"}).addClass("btn btn-success").text("Finalize Schedule"));
+        $("#admin-schedule").append(adminButtons);
+	}).fail(function (XMLHttpRequest, textStatus, errorThrown) {
+		console.log(textStatus);
+	});
 
 	//FUNCTIONS
 
@@ -183,6 +390,14 @@ $(document).ready(function() {
 		return dateRanges;
 	}//end createCustomDateRangeArray
 
+	function createHeader(text) {
+		return $("<option>").attr("disabled", "disabled").text(text);
+	}//end createHeader
+
+	function createSpaceOption() {
+        return $("<option>").attr("disabled", "disabled").text("");
+	}//end createSpaceOption
+
 	function displayBlackoutRanges(data) {
 		for(var i = 0; i <= 12; i++) {
 			if(data[i]['holiday'] == 1) {
@@ -193,15 +408,15 @@ $(document).ready(function() {
 
                     var input = $("<input>").attr("type", "checkbox");
                     input.attr("name", "blackoutWeek[]");
-                    input.attr("id", "blackoutWeek");
+                    input.attr("class", "blackoutWeek");
                     input.attr("value", data[i]['startDate']);
                     label.append(input);
                     label.append("<strong>Week " + data[i]['weekNumber'] +
                         "	(" + data[i]['startDate'] + " to "
                         + data[i]['endDate'] + ") HOLIDAY!</strong>");
 
-                    $(".modal-checkboxes").append(label);
-                    $(".modal-checkboxes").append("<br />");
+                    $(".blackout-checkboxes").append(label);
+                    $(".blackout-checkboxes").append("<br />");
                 }
 			}else {
                 if(data[i]['startDate'] == "1970-01-01") {
@@ -211,15 +426,15 @@ $(document).ready(function() {
 
                     var input = $("<input>").attr("type", "checkbox");
                     input.attr("name", "blackoutWeek[]");
-                    input.attr("id", "blackoutWeek");
+                    input.attr("class", "blackoutWeek");
                     input.attr("value", data[i]['startDate']);
                     label.append(input);
                     label.append("Week " + data[i]['weekNumber'] +
                         "	(" + data[i]['startDate'] + " to "
                         + data[i]['endDate'] + ")");
 
-                    $(".modal-checkboxes").append(label);
-                    $(".modal-checkboxes").append("<br />");
+                    $(".blackout-checkboxes").append(label);
+                    $(".blackout-checkboxes").append("<br />");
                 }
 			}
 			if(i == 12) {
@@ -227,13 +442,13 @@ $(document).ready(function() {
 
                 var input = $("<input>").attr("type","checkbox");
                 input.attr("name","blackoutWeek[]");
-                input.attr("id","blackoutWeek");
+                input.attr("class","blackoutWeek");
                 input.attr("value","1970-01-01-"+$("#rot-number").text());
                 label.append(input);
                 label.append("No Blackouts (Available for the whole rotation)");
 
-                $(".modal-checkboxes").append(label);
-                $(".modal-checkboxes").append("<br />");
+                $(".blackout-checkboxes").append(label);
+                $(".blackout-checkboxes").append("<br />");
 			}
 		}
 	}//end displayBlackoutRanges
