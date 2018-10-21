@@ -1,34 +1,11 @@
 <?php
 	session_start();
 	require_once("./inc/top_layout.php");
-    require_once(__DIR__."/inc/Controller/CongregationBlackout.class.php");
     require_once(__DIR__."/inc/Controller/DateRange.class.php");
 
     $DateRange = new DateRange();
-    $CongregationBlackout = new CongregationBlackout();
 
 	$initialRotation = $DateRange->getMinimumRotationNumber();
-
-	if(isset($_SESSION['insertResult'])) {
-		$insertResult = $_SESSION['insertResult'];
-
-		unset($_SESSION['insertResult']);
-	}
-
-	/*if(isset($_POST['blackoutSubmit']) && isset($_POST['blackoutWeek'])) {
-		$insertBlackout = $CongregationBlackout->insertBlackout($_POST['blackoutWeek'], $_SESSION['email']);
-		if($insertBlackout) {
-            $_SESSION['insertResult'] = "<div class='alert alert-success'>
-											<strong>Success!</strong> Blackouts inserted!
-										</div>";
-            header("Location: inputblackouts.php");
-        }else {
-            $_SESSION['insertResult'] = "<div class='alert alert-danger'>
-											<strong>Error!</strong> Blackouts not inserted!
-										</div>";
-            header("Location: inputblackouts.php");
-        }
-	}*/
 ?>
 
 <?php
@@ -57,12 +34,28 @@
             </div>
         </div>
         <div class="blackout-footer">
-            <input id="blackoutSubmit" type="submit" class="btn btn-primary" name="blackoutSubmit" value="Submit Blackouts"/>
+            <button id="blackoutSubmit" type="submit" class="btn btn-primary" name="blackoutSubmit" data-toggle="modal" data-target="#input-data-submit">Enter Blackouts</button>
         </div>
     <!--</form>-->
 </div>
 <div id="calendar">
 
+</div>
+<div class="modal fade" id="input-data-submit" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="modalLabel"></h4>
+            </div>
+            <div class="modal-body">
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="input-data-cancel" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+                <button type="button" id="input-data-save" class="btn btn-primary">Submit Blackouts</button>
+            </div>
+        </div>
+    </div>
 </div>
 
 <?php require_once("./inc/bottom_layout.php"); ?>

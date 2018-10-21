@@ -5,6 +5,13 @@
     $congBlackouts = $_POST['congBlackoutData'];
     $email = $_POST['email'];
 
-    $testArray = array("email" => $email);
+    $insertResult = $CongregationBlackout->insertBlackout($congBlackouts,$email);
+    if($insertResult) {
+        $insertResult = array(
+            "result" => $insertResult
+        );
+    }else {
+        echo "Error!";
+    }
 
-    echo json_encode($testArray);
+    echo json_encode($insertResult);

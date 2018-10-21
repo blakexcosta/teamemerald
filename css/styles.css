@@ -36,6 +36,10 @@ hr {
 	width: 25pc;
 }
 
+.cong-blackouts {
+	margin-top: 5%;
+}
+
 .congNames {
 	width: 30%;
 }
@@ -61,6 +65,11 @@ hr {
 	text-align: center;
 	color: #CC2936;
 	font-weight: bold;
+}
+
+.green-checkmark {
+    height: 25px;
+    width: 25px;
 }
 
 .loader {
@@ -95,6 +104,11 @@ hr {
   text-decoration: none;
 }
 
+.red-x {
+    height: 25px;
+    width: 25px;
+}
+
 .rotation-head {
 	background-color: #0D6AA8;
 }
@@ -104,6 +118,10 @@ hr {
 }
 
 /* IDs */
+#admin-blackouts-entered-buttons {
+	text-align: center;
+}
+
 #admin-cong-buttons {
 	text-align: center;
 }
@@ -116,6 +134,10 @@ hr {
 	float: left;
 	width: 45%;
 	margin-left: 3%;
+}
+
+#blackouts-per-rotation {
+	margin: 0 1%;
 }
 
 #blackoutSubmit {
@@ -223,6 +245,10 @@ hr {
 	color: white;
 }
 
+#sch-rot-nums-select {
+	margin-bottom: 7px;
+}
+
 #submit-button {
 	text-align: center;
 }
@@ -283,6 +309,19 @@ hr {
 .btn-success:hover {
 	background-color: rgb(2,166,139);
 	border-color: rgb(2,166,139);
+}
+
+.dropdown-menu a{
+	margin-left: 2px;
+	font-size: 16px;
+}
+
+.dropdown:hover .dropdown-menu {
+	display: block;
+}
+
+.dropdown:hover .dropdown-menu a:hover{
+	text-decoration: none;
 }
 
 .form-group {

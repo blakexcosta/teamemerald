@@ -46,7 +46,7 @@
 		        	<a class="nav-link" href="./index.php">Home</span></a>
 		      	</li>
 		      	<?php /* if logged in */ if(isset($_SESSION['email'])): ?>
-		      		<?php /* if logged in */ if(isset($_SESSION['role']) && ($_SESSION['role'] == "Bus Driver" || $_SESSION['role'] == "Bus Driver Admin" || $_SESSION['role'] == "Admin")): ?>
+		      		<?php /* if logged in as bus driver or admin */ if(isset($_SESSION['role']) && ($_SESSION['role'] == "Bus Driver" || $_SESSION['role'] == "Bus Driver Admin" || $_SESSION['role'] == "Admin")): ?>
 				      	<li class="nav-item">
 				        	<a class="nav-link" href="./busdriverroster.php">Bus Driver Roster</a>
 				      	</li>
@@ -54,7 +54,7 @@
                             <a class="nav-link" href="./testBlackoutsDRIVERS.php">Test Blackout Drivers</a>
                         </li>
 			      	<?php endif; ?>
-			      	<?php /* if logged in */ if(isset($_SESSION['role']) && ($_SESSION['role'] == "Congregation" || $_SESSION['role'] == "Congregation Admin" || $_SESSION['role'] == "Admin" )): ?>
+			      	<?php /* if logged in as congregation or admin */ if(isset($_SESSION['role']) && ($_SESSION['role'] == "Congregation" || $_SESSION['role'] == "Congregation Admin" || $_SESSION['role'] == "Admin" )): ?>
 				      	<li class="nav-item">
 				        	<a class="nav-link" href="./congregationroster.php">Host Congregation Roster</a>
 				      	</li>
@@ -64,16 +64,25 @@
 				      	<li class="nav-item">
 				        	<a class="nav-link" href="./inputblackouts.php">Input Blackouts</a>
 				      	</li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="./testBlackoutsPage.php">Test Blackout Congregation</a>
-                        </li>
 			      	<?php endif; ?>
-                    <?php if(isset($_SESSION['role']) && $_SESSION['role'] == ("Congregation Admin" || $_SESSION['role'] == "Admin")): ?>
-                        <li class="nav-item">
-                            <a class="nav-link" href="./adminCongSchedule.php">Admin Congregation Schedule</a>
+                    <?php /* if logged in as congregation admin or admin */ if(isset($_SESSION['role']) && $_SESSION['role'] == ("Congregation Admin" || $_SESSION['role'] == "Admin")): ?>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Admin Tools<b class="caret"></b>
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                                <a class="nav-link" href="./adminCongSchedule.php">Scheduled Rotations</a>
+                                <a class="nav-link" href="./viewenteredblackouts.php">Blackouts Entered</a>
+                            </div>
                         </li>
+                        <!--<li class="nav-item">
+                            <a class="nav-link" href="./adminCongSchedule.php">Scheduled Rotations</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="./viewenteredblackouts.php">Blackouts Entered</a>
+                        </li>-->
                     <?php endif; ?>
-			      	<?php /* if logged in */ if(isset($_SESSION['role']) && $_SESSION['role'] == "Admin"): ?>
+			      	<?php /* if logged in as admin */ if(isset($_SESSION['role']) && $_SESSION['role'] == "Admin"): ?>
 			      		<li class="nav-item">
 				        	<a class="nav-link" href="./insertDateData.php">Insert Date Data</a>
 				      	</li>

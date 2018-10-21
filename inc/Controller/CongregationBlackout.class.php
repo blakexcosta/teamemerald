@@ -136,6 +136,23 @@ class CongregationBlackout {
         }
     }//end getCongBlackoutsByRotation
 
+    /* function that fetches all distinct congIDs from congregation_blackouts
+     * @param $rotNum - the desired rotation number to get blackouts for
+     * @param $orderByVar - variable used to help order the incoming select query
+     * @return $result - if data was successfully fetched return the data
+     * @return null - return no data if no data successfully fetched
+     * */
+    function getCongBlackoutsDistinctCongIDByRotation($rotNum, $orderByVar) {
+        $sqlQuery = "SELECT DISTINCT congID FROM congregation_blackout WHERE rotation_number = :rotNum ORDER BY ".$orderByVar;
+        $params = array(":rotNum" => $rotNum);
+        $result = $this->DB->executeQuery($sqlQuery, $params, "select");
+        if($result) {
+            return $result;
+        }else {
+            return null;
+        }
+    }//end getCongBlackoutsByRotation
+
     /* function that fetches blackout dates that aren't a "no blackouts" date (1970-01-01)
      * @param $rotNum - the desired rotation number to get blackouts for
      * @param $orderByVar - variable used to help order the incoming select query

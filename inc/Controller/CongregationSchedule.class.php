@@ -267,11 +267,12 @@ class CongregationSchedule {
 
     /* function to get a schedule for each rotation
      * @param $rotationNum - the desired rotation number of schedule
+     * @param $orderByVar - variable to order the returned results by
      * @return $result - the schedule for a rotation number
      * @return null - return no data if no data successfully fetched
      * */
-    function getSchedulePerRotation($rotationNum) {
-        $sqlQuery = "SELECT * FROM congregation_schedule WHERE rotationNumber = :rotationNumber";
+    function getSchedulePerRotation($rotationNum, $orderByVar) {
+        $sqlQuery = "SELECT * FROM congregation_schedule WHERE rotationNumber = :rotationNumber ORDER BY ".$orderByVar;
         $params = array(":rotationNumber" => $rotationNum);
         $result = $this->DB->executeQuery($sqlQuery, $params, "select");
         if($result) {
