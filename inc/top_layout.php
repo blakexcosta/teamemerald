@@ -12,8 +12,18 @@
       <!-- Minified FullCalendar CSS -->
       <link rel="stylesheet" type="text/css" href="./css/fullcalendar.min.css">
 
+	  <!-- Page styles -->
+	  <link type='text/css' href='css/demo.css' rel='stylesheet' media='screen' />
+
+	  <!-- Contact Form CSS files -->
+	  <link type='text/css' href='css/contact.css' rel='stylesheet' media='screen' />
 		<!-- Main custom CSS -->
 		<link rel="stylesheet" type="text/css" href="./css/styles.css">
+		<!-- Latest compiled and minified CSS -->
+		<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+
+		<!-- Optional theme -->
+		<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
 </head>
 <body>
 	<div id="title-section">
@@ -42,9 +52,6 @@
 		</button>
 	  	<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 	    	<ul class="nav navbar-nav">
-		      	<li class="nav-item">
-		        	<a class="nav-link" href="./index.php">Home</span></a>
-		      	</li>
 		      	<?php /* if logged in */ if(isset($_SESSION['email'])): ?>
 		      		<?php /* if logged in */ if(isset($_SESSION['role']) && ($_SESSION['role'] == "Bus Driver" || $_SESSION['role'] == "Admin")): ?>
 				      	<li class="nav-item">
@@ -80,9 +87,6 @@
 			        	<a class="nav-link" href="./logout.php">Logout</a>
 			      	</li>
 		      	<?php else: ?>
-		      	<li class="nav-item">
-		        	<a class="nav-link" href="./login.php">Login</a>
-		      	</li>
 		      	<?php endif; ?>
 			</ul>
 	  	</div>
