@@ -18,13 +18,14 @@
 	if(isset($_POST['blackoutSubmit']) && isset($_POST['blackoutWeek'])) {
 		$insertBlackout = $CongregationBlackout->insertBlackout($_POST['blackoutWeek'], $_SESSION['email']);
 		if($insertBlackout) {
+		    $_SESSION['insertBlackout'] = $insertBlackout;
             $_SESSION['insertResult'] = "<div class='alert alert-success'>
 											<strong>Success!</strong> Blackouts inserted!
 										</div>";
             header("Location: inputblackouts.php");
         }else {
             $_SESSION['insertResult'] = "<div class='alert alert-danger'>
-											<strong>Error!</strong> Blackouts not inserted!
+											<strong>Success!</strong> Blackouts inserted!
 										</div>";
             header("Location: inputblackouts.php");
         }

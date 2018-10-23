@@ -191,22 +191,6 @@ class DateRange {
         }
     }//end getStartDateBasedRotation
 
-    /* function to get the start date values based on the rotation number without the week numbers of zero
-     * @param $rotNum - the rotation number of the start dates
-     * @return $result - all the start dates returned from MySQL
-     * @return null - return null if nothing is returned
-     * */
-    function getStartDateBasedRotWithoutZero($rotNum) {
-        $sqlQuery = "SELECT startDate FROM date_range WHERE NOT (weekNumber = :weekNumber) AND rotation_number = :rotNum";
-        $params = array(':weekNumber' => 0, ':rotNum' => $rotNum);
-        $result = $this->DB->executeQuery($sqlQuery, $params, "select");
-        if($result) {
-            return $result;
-        }else {
-            return null;
-        }
-    }//end getStartDateBasedRotWithoutZero
-
     /* function to get the date of the sunday before easter
      * @param $year - the desired year
      * @return $sundayBeforeEaster - the date of the sunday before Easter for given year in yyyy-mm-dd format
@@ -358,16 +342,16 @@ class DateRange {
      */
     function insertDateRange($strtDateNxtRotation, $numberOfYears, $startYear, $nxtRotationNumber) {
         $dateOfMonth = new DateTime();
-        $dateOfMonth->setTimestamp(strtotime($strtDateNxtRotation));
+        $dateOfMonth->setTimestamp(strtotime($strtDateNxtRotation)); //parameter
         $sundayOfRotation = $dateOfMonth->format("Y-m-d");
 
         $totalRotations = $this->getTotalNumOfWks($startYear, ($startYear + $numberOfYears), $sundayOfRotation) / 13;
         $totalRotationsRounded = round($totalRotations, 0, PHP_ROUND_HALF_DOWN);
 
         $insertDataMsg = "";
+        $finalRotation = $nxtRotationNumber + ($totalRotationsRounded - 1);
         $x = 1;
         while($x <= $totalRotationsRounded) {
-            //Insert date ranges per rotation (every 13 weeks)
             for($i = 1; $i <= 13; $i++){
                 $saturdayOfRotation = date("Y-m-d", strtotime("+6 day",strtotime($sundayOfRotation)));
                 if($sundayOfRotation <= ($startYear."-12-31") && ($startYear."-12-31") <= $saturdayOfRotation) {
@@ -393,14 +377,6 @@ class DateRange {
                 }
                 $sundayOfRotation = date("Y-m-d", strtotime("+7 day",strtotime($sundayOfRotation)));
             }
-            //Insert date ranges that serve as a 'no blackout' value
-            $insertQuery = "INSERT INTO date_range VALUES (:weekNum, :startDate, :endDate, :holiday, :rotNum)";
-            $params = array(':weekNum' => 0, ':startDate' => "1970-01-01", ':endDate' => null,
-                ':holiday' => null, ':rotNum' => $nxtRotationNumber);
-            $result = $this->DB->executeQuery($insertQuery, $params, "insert");
-            if($result < 0) {
-                $insertDataMsg = "Error";
-            }
             $nxtRotationNumber++;
             $x++;
         }
@@ -416,9 +392,9 @@ class DateRange {
      * @return $result - all the blackout week choices from the date range table
      */
     function showBlackoutWeeks() {
-        $sqlQuery = "SELECT * FROM DATE_RANGE WHERE NOT weekNumber = :weekNumber ORDER BY rotation_number";
-        $params = array(':weekNumber' => 0);
-        $result = $this->DB->executeQuery($sqlQuery, $params, "select");
+        $sqlQuery = "SELECT * FROM DATE_RANGE ORDER BY rotation_number";
+        //$params = array(':rotationNum' => $this->getMinimumRotationNumber());
+        $result = $this->DB->executeQuery($sqlQuery, $this->Functions->paramsIsZero(), "select");
         return $result;
     }
 

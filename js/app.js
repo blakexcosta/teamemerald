@@ -14,29 +14,19 @@ $(document).ready(function() {
 		]
     });
 
-/*    $.ajax({
-		type: "post",
-		url: "inc/Controller/getFullCongSchedule.php",
-		dataType: "json",
-		success: function(data) {
-			console.log(data);
-		},
-		error: function(XMLHttpRequest, textStatus, errorThrown) {
-			console.log(textStatus);
-		}
-	});
-
-    $.ajax({
-        type: "post",
-        url: "inc/Controller/getFlaggedCongregations.php",
-        dataType: "json",
-        success: function(data) {
-            console.log(data);
-        },
-        error: function(XMLHttpRequest, textStatus, errorThrown) {
-            console.log(textStatus);
-        }
-    });*/
+    // function(start, end, timezone, callback) {
+    //     $.ajax({
+    //         type: "post",
+    //         url: "inc/Controller/getFullCongSchedule.php",
+    //         dataType: "json",
+    //         success: function(data) {
+    //             callback(data);
+    //         },
+    //         error: function(XMLHttpRequest, textStatus, errorThrown) {
+    //             alert(textStatus);
+    //         }
+    //     });
+    // }
 
 	//If the user clicks inside the "confirm password" field, show message
 	$("#conf-password").focus(function() {
@@ -185,55 +175,34 @@ $(document).ready(function() {
 
 	function displayBlackoutRanges(data) {
 		for(var i = 0; i <= 12; i++) {
-			if(data[i]['holiday'] == 1) {
-                if(data[i]['startDate'] == "1970-01-01") {
+			if(data[i]['holiday'] == 1){
+				var label = $("<label>").addClass("checkbox-inline");
 
-                }else {
-                    var label = $("<label>").addClass("checkbox-inline");
+				var input = $("<input>").attr("type","checkbox");
+				input.attr("name","blackoutWeek[]");
+				input.attr("id","blackoutWeek");
+				input.attr("value",data[i]['startDate']);
+				label.append(input);
+				label.append("<strong>Week "+data[i]['weekNumber']+
+					"	("+data[i]['startDate']+" to "
+						+data[i]['endDate']+") HOLIDAY!</strong>");
 
-                    var input = $("<input>").attr("type", "checkbox");
-                    input.attr("name", "blackoutWeek[]");
-                    input.attr("id", "blackoutWeek");
-                    input.attr("value", data[i]['startDate']);
-                    label.append(input);
-                    label.append("<strong>Week " + data[i]['weekNumber'] +
-                        "	(" + data[i]['startDate'] + " to "
-                        + data[i]['endDate'] + ") HOLIDAY!</strong>");
-
-                    $(".modal-checkboxes").append(label);
-                    $(".modal-checkboxes").append("<br />");
-                }
+				$(".modal-checkboxes").append(label);
+				$(".modal-checkboxes").append("<br />");
 			}else {
-                if(data[i]['startDate'] == "1970-01-01") {
+				var label = $("<label>").addClass("checkbox-inline");
 
-                }else {
-                    var label = $("<label>").addClass("checkbox-inline");
+				var input = $("<input>").attr("type","checkbox");
+				input.attr("name","blackoutWeek[]");
+				input.attr("id","blackoutWeek");
+				input.attr("value",data[i]['startDate']);
+				label.append(input);
+				label.append("Week "+data[i]['weekNumber']+
+					"	("+data[i]['startDate']+" to "
+						+data[i]['endDate']+")");
 
-                    var input = $("<input>").attr("type", "checkbox");
-                    input.attr("name", "blackoutWeek[]");
-                    input.attr("id", "blackoutWeek");
-                    input.attr("value", data[i]['startDate']);
-                    label.append(input);
-                    label.append("Week " + data[i]['weekNumber'] +
-                        "	(" + data[i]['startDate'] + " to "
-                        + data[i]['endDate'] + ")");
-
-                    $(".modal-checkboxes").append(label);
-                    $(".modal-checkboxes").append("<br />");
-                }
-			}
-			if(i == 12) {
-                var label = $("<label>").addClass("checkbox-inline");
-
-                var input = $("<input>").attr("type","checkbox");
-                input.attr("name","blackoutWeek[]");
-                input.attr("id","blackoutWeek");
-                input.attr("value","1970-01-01-"+$("#rot-number").text());
-                label.append(input);
-                label.append("No Blackouts (Available for the whole rotation)");
-
-                $(".modal-checkboxes").append(label);
-                $(".modal-checkboxes").append("<br />");
+				$(".modal-checkboxes").append(label);
+				$(".modal-checkboxes").append("<br />");
 			}
 		}
 	}//end displayBlackoutRanges
