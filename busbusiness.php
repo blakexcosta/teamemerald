@@ -28,18 +28,27 @@
                 $allDrivers = array();
                 $cantDrive = array();
                 foreach($allBusDrivers as $value){
+                    //this is an array of all the drivers
                     $allDrivers[] = $value['driverID'];
                 }
 
-                foreach($result2 as $value2){
-                    $cantDrive[] = $value2['driverID'];
+                if($result2 != null){
+                    foreach($result2 as $value2){
+                        //this is an array of all the drivers that can't drive
+                        $cantDrive[] = $value2['driverID'];
+                    }
+                }
+                else{
+                    $cantDrive = ['driverID'=>'1'];
                 }
 
-                echo '<script language="javascript">';
-                echo 'alert("message successfully sent")';
-                echo '</script>';
-
                 $possibleDrivers = array_diff($allDrivers, $cantDrive);
+
+
+
+                if(count($cantDrive) == 1){
+                    $possibleDrivers[0]= '1';
+                }
 
                 //get driver names
                 foreach($possibleDrivers as $value){
@@ -47,6 +56,7 @@
                     $name = $db->getADriverName($value);
                     $driverNames[] = $name;
                 }
+
 
                 echo json_encode($driverNames);
 
