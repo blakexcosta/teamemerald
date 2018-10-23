@@ -67,26 +67,35 @@ $(document).ready(function() {
         }
 	});
 
+    $("body").on("click", "#admin-finalize", function() {
+        //Getting the rotation number
+        var rotNum = $(".tbl-heading").eq(1).attr("id").split("-");
+        $("#finalizeLabel").append($("<span>").attr("id","Rotation-"+rotNum[1]).text("Finalize rotation "+rotNum[1]+"?"));
+
+        var startDates = $(".start-date");
+        var congNames = $(".congName");
+
+        for(var i = 0; i < congNames.length; i++) {
+            var holiday = startDates.eq(i).text().substr(11,8);
+            if(holiday) {
+                $(".modal-body").append($("<p>").append($("<strong>").text(startDates.eq(i).text()+": "+congNames.eq(i).find(":selected").text())));
+            }else {
+                $(".modal-body").append($("<p>").text(startDates.eq(i).text()+": "+congNames.eq(i).find(":selected").text()));
+            }
+        }
+    });
+
     //On selection of one of the check marks for the host congregation blackouts
     $("body").on("change", ".blackoutWeek", function() {
         $('#calendar').fullCalendar('gotoDate', this.value);
     });
 
-    $("body").on("click", "#admin-finalize", function() {
-        //Getting the rotation number
-        var rotNum = $(".tbl-heading").eq(1).attr("id").split("-");
-        $("#finalizeLabel").attr("id",rotNum[1]).text("Are you sure you want to finalize rotation "+rotNum[1]+"?");
-
-        var startDates = $(".start-date");
-        var congNames = $(".congName");
-        // console.log(startDates);
-        for(var i = 0; i < congNames.length; i++) {
-            $(".modal-body").append($("<p>").text(startDates.eq(i).text()+": "+congNames.eq(i).find(":selected").text()));
-        }
-    });
-
     //The "Ok" button when the admin clicks to update changes made to the schedule
     $("body").on("click", "#conf-ok-btn", function() {
+        window.location.replace("adminCongSchedule.php");
+    });
+
+    $("body").on("click", "#finalize-ok-btn", function() {
         window.location.replace("adminCongSchedule.php");
     });
 
@@ -225,7 +234,7 @@ $(document).ready(function() {
 
             $("#rotation-sch-div").append(table);
             $("#admin-cong-buttons").append($("<button>").attr({"id": "admin-submit", "type": "submit", "data-toggle": "modal", "data-target":"#conf-data-submit"}).addClass("btn btn-primary").text("Submit Changes"));
-            $("#admin-cong-buttons").append($("<button>").attr({"id": "admin-finalize", "type": "submit"}).addClass("btn btn-success").text("Finalize Schedule"));
+            $("#admin-cong-buttons").append($("<button>").attr({"id": "admin-finalize", "type": "submit", "data-toggle": "modal", "data-target":"#conf-data-finalize"}).addClass("btn btn-success").text("Finalize Schedule"));
         }).fail(function (XMLHttpRequest, textStatus, errorThrown) {
             console.log(textStatus);
         });
@@ -339,7 +348,15 @@ $(document).ready(function() {
     });
 
     $("#conf-data-finalize").on("click", function() {
-        //var finalizeResult = postData({rotation_number: });
+        var spanTag = $(".finalized-title").children("span");
+        var rotNum = spanTag.eq(0).attr("id").split("-")
+        var finalizeResult = postData({rotation_number: rotNum[1]},"inc/Controller/finalizeschedule.php");
+        $.when(finalizeResult).then(function(result) {
+            $("#finalizeLabel").text("Success: Schedule Finalized").css("color","#549F93");
+            $(".modal-footer").empty();
+            var okButton = $("<button>").attr({"type":"button","id":"finalize-ok-btn"}).addClass("btn btn-success").text("Ok");
+            $(".modal-footer").append(okButton);
+        });
     });
 
     //Send data to PHP file to be updated in the database
@@ -356,6 +373,7 @@ $(document).ready(function() {
             updatedCong.rotation = updatedRotations.eq(i).text();
             updatedCongData.push(updatedCong);
         }
+        console.log(updatedCongNames);
         var updateData = postData({updatedData: updatedCongData},"inc/Controller/updateCongSch.php")
         $.when(updateData).then(function(updateDataResult) {
             $("#modalLabel").text("Success: Changes Made!").css("color","#549F93");

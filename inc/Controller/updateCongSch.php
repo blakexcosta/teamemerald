@@ -10,10 +10,4 @@
         array_push($status,$updateResult);
     }
 
-    foreach($status as &$result) {
-        if($result == false) {
-            echo "Error!";
-        }
-    }
-
     echo json_encode($status);
