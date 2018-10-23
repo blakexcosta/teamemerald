@@ -21,7 +21,7 @@ $(document).ready(function() {
                     var add_button_AM = '<a class="add_event_label"><div id="container"><div id="content"><div id="contact-form buttonAM"><input type="button" name="contact" id ="blackout-am" value="Blackout-AM" class="AM contact demo"/></div></div></div></a>';
                     var add_button_PM = '<a class="add_event_label"><div id="container"><div id="content"><div id="contact-form buttonPM"><input type="button" name="contact" id ="hi" value="Blackout-PM" class="PM contact demo"/></div></div></div></a>';
 
-                    var button = '<input type="button" name="contact" id ="hi" value="Blackoutdfsd-PM" class="PM contact demo"/>';
+                    var button = '<input type="button" name="contact" id ="hi" value="Blackout-PM" class="PM contact demo"/>';
 
                     $(this).append(button);
                     //$(this).append(add_button_PM);

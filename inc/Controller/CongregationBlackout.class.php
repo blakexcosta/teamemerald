@@ -65,7 +65,7 @@ class CongregationBlackout {
     }//end dateBlackoutCount
 
     function dateBlackoutCountForOneRotation($rotNum) {
-        $result = $this->getCongBlackoutsByRotation($rotNum,"startDate");
+        $result = $this->getCongBlackoutsByRotationWithBlackouts($rotNum,"startDate");
         $countedBlackedOutDates = $this->countValues($result,$result[0]["startDate"],"startDate", "count");
         $sortedDates = $this->Functions->sortArray($countedBlackedOutDates,"startDate","count");
         return $sortedDates;
@@ -103,7 +103,22 @@ class CongregationBlackout {
         }
     }//end getCongBlackouts
 
-    //First, grab congregations and their blackout dates
+    /* function that fetches all data from congregation_blackouts
+     * @param $orderByVar - variable used to help order the incoming select query
+     * @return $result - if data was successfully fetched return the data
+     * @return null - return no data if no data successfully fetched
+     * */
+    function getCongBlackoutsWithBlackouts($orderByVar) {
+        $sqlQuery = "SELECT * FROM congregation_blackout WHERE NOT weekNumber = :weekNum ORDER BY ".$orderByVar;
+        $params = array(":weekNum" => 0);
+        $result = $this->DB->executeQuery($sqlQuery, $params, "select");
+        if($result) {
+            return $result;
+        }else {
+            return null;
+        }
+    }//end getCongBlackoutsWithBlackouts
+
     /* function that fetches all data from congregation_blackouts
      * @param $rotNum - the desired rotation number to get blackouts for
      * @param $orderByVar - variable used to help order the incoming select query
@@ -121,6 +136,56 @@ class CongregationBlackout {
         }
     }//end getCongBlackoutsByRotation
 
+    /* function that fetches all distinct congIDs from congregation_blackouts
+     * @param $rotNum - the desired rotation number to get blackouts for
+     * @param $orderByVar - variable used to help order the incoming select query
+     * @return $result - if data was successfully fetched return the data
+     * @return null - return no data if no data successfully fetched
+     * */
+    function getCongBlackoutsDistinctCongIDByRotation($rotNum, $orderByVar) {
+        $sqlQuery = "SELECT DISTINCT congID FROM congregation_blackout WHERE rotation_number = :rotNum ORDER BY ".$orderByVar;
+        $params = array(":rotNum" => $rotNum);
+        $result = $this->DB->executeQuery($sqlQuery, $params, "select");
+        if($result) {
+            return $result;
+        }else {
+            return null;
+        }
+    }//end getCongBlackoutsByRotation
+
+    /* function that fetches blackout dates that aren't a "no blackouts" date (1970-01-01)
+     * @param $rotNum - the desired rotation number to get blackouts for
+     * @param $orderByVar - variable used to help order the incoming select query
+     * @return $result - if data was successfully fetched return the data
+     * @return null - return no data if no data successfully fetched
+     * */
+    function getCongBlackoutsByRotationWithBlackouts($rotNum, $orderByVar) {
+        $sqlQuery = "SELECT * FROM congregation_blackout WHERE NOT (weekNumber = :weekNum) AND rotation_number = :rotNum ORDER BY ".$orderByVar;
+        $params = array(":weekNum" => 0, ":rotNum" => $rotNum);
+        $result = $this->DB->executeQuery($sqlQuery, $params, "select");
+        if($result) {
+            return $result;
+        }else {
+            return null;
+        }
+    }//end getCongBlackoutsByRotation
+
+    /* function that fetches all data from congregation_blackouts by start date
+     * @param $startDate - the desired start date to get blackouts for
+     * @return $result - if data was successfully fetched return the data
+     * @return null - return no data if no data successfully fetched
+     * */
+    function getCongBlackoutsByStartDate($startDate) {
+        $sqlQuery = "SELECT * FROM congregation_blackout WHERE startDate = :startDate";
+        $params = array(":startDate" => $startDate);
+        $result = $this->DB->executeQuery($sqlQuery, $params, "select");
+        if($result) {
+            return $result;
+        }else {
+            return null;
+        }
+    }//end getCongBlackoutsByStartDate
+
     //Second, loop through all congregations with their blackout dates and
     //count out each date that's blacked out
 
@@ -134,7 +199,47 @@ class CongregationBlackout {
         $countedData = $this->countValues($result,$result[0]["congID"],"congID","count");
         $sortedBlackouts = $this->Functions->sortArray($countedData,"congID","count");
         return $sortedBlackouts;
-    }//end getBlackouts
+    }//end getCongBlackoutCount
+
+    /* function that gets the congregations with blackouts entered,
+     * counts the number of dates each congregation blacked out, then sorts them
+     * function helps determine which congregation has the most blackout/unavailability week
+     * @return $sortedBlackouts - sorted number of blackout dates entered for each congregation
+     * */
+    function getCongBlackoutCountWithBlackouts($rotNum) {
+        $result = $this->getCongBlackoutsByRotationWithBlackouts($rotNum,"congID");
+        $countedData = $this->countValues($result,$result[0]["congID"],"congID","count");
+        $sortedBlackouts = $this->Functions->sortArray($countedData,"congID","count");
+        return $sortedBlackouts;
+    }//end getCongBlackoutCountWithBlackouts
+
+    /* function that gets the congregations with blackouts entered,
+     * counts the number of dates each congregation blacked out, then sorts them
+     * function helps determine which congregation has the most blackout/unavailability week
+     * @return $sortedBlackouts - sorted number of blackout dates entered for each congregation
+     * */
+    function getCongBlackoutCountByRotationWithBlackouts() {
+        $result = $this->getCongBlackoutsWithBlackouts("congID");
+        $countedData = $this->countValues($result,$result[0]["congID"],"congID","count");
+        $sortedBlackouts = $this->Functions->sortArray($countedData,"congID","count");
+        return $sortedBlackouts;
+    }//end getCongBlackoutCountWithBlackouts
+
+    /* function that fetches all the congregations with no blackouts
+     * @param $orderByVar - variable used to help order the incoming select query
+     * @return $result - all the congregations with no blackouts
+     * @return null - return no data if no data successfully fetched
+     * */
+    function getCongsWithNoBlackouts($orderByVar) {
+        $sqlQuery = "SELECT * FROM congregation_blackout WHERE weekNumber = :weekNum ORDER BY ".$orderByVar;
+        $params = array(":weekNum" => 0);
+        $result = $this->DB->executeQuery($sqlQuery, $params, "select");
+        if($result) {
+            return $result;
+        }else {
+            return null;
+        }
+    }//end getCongsWithNoBlackouts
 
     /* function to get the distinct rotation numbers from congregation blackouts table
      * @return $result - if data was successfully fetched return the data
@@ -150,6 +255,11 @@ class CongregationBlackout {
         }
     }//end getDistinctRotationNums
 
+    /* function to insert blackouts for congregations
+     * @param $blackoutWeek - array containing all the blackout choices the congregation selected
+     * @param $email - the email of the logged in user
+     * @return boolean - return true or false if the blackout was inserted
+     * */
     function insertBlackout($blackoutWeek, $email) {
         //Get the congregation ID of the current user logged in
         $sqlQuery = "SELECT congID FROM congregation_coordinator WHERE coordinatorEmail = :email";
@@ -158,23 +268,38 @@ class CongregationBlackout {
 
         if($result){
             for($i = 0; $i < sizeof($blackoutWeek); $i++) {
+                //This if handles if the congregation chose "No Blackouts"
+                //Incoming data for no blackouts will look like: 1970-01-01-53
+                if(strlen($blackoutWeek[$i]) > 10) {
+                    $rotationNum = substr($blackoutWeek[$i], 11);
+                    $blackoutWeekStartDate = substr($blackoutWeek[$i], 0, 10);
 
-                //Get the week number of the date that was submitted
-                $result2 = $this->DateRange->getWeekNumber($blackoutWeek[$i]);
-
-                $result3 = $this->DateRange->getRotationNumber($blackoutWeek[$i]);
-
-                if($result2 && $result3) {
                     //Insert the blackout date to MySQL
                     $sqlQuery3 = "INSERT INTO congregation_blackout VALUES (:congID, :weekNumber, :startDate, :rotNum)";
-                    $params3 = array(":congID" => $result[0]["congID"], ":weekNumber" => $result2,
-                                    ":startDate" => $blackoutWeek[$i], ":rotNum" => $result3);
+                    $params3 = array(":congID" => $result[0]["congID"], ":weekNumber" => 0,
+                        ":startDate" => $blackoutWeekStartDate, ":rotNum" => $rotationNum);
                     $result4 = $this->DB->executeQuery($sqlQuery3, $params3, "insert");
-                    if($result4 < 0) {
+                    if($result4 <= 0) {
                         return false;
                     }
                 }else {
-                    return false;
+                    //Get the week number of the date that was submitted
+                    $result2 = $this->DateRange->getWeekNumber($blackoutWeek[$i]);
+
+                    $result3 = $this->DateRange->getRotationNumber($blackoutWeek[$i]);
+
+                    if($result2 && $result3) {
+                        //Insert the blackout date to MySQL
+                        $sqlQuery3 = "INSERT INTO congregation_blackout VALUES (:congID, :weekNumber, :startDate, :rotNum)";
+                        $params3 = array(":congID" => $result[0]["congID"], ":weekNumber" => $result2,
+                            ":startDate" => $blackoutWeek[$i], ":rotNum" => $result3);
+                        $result4 = $this->DB->executeQuery($sqlQuery3, $params3, "insert");
+                        if($result4 <= 0) {
+                            return false;
+                        }
+                    }else {
+                        return false;
+                    }
                 }
             }
         }else {
