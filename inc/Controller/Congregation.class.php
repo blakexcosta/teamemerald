@@ -8,47 +8,33 @@
 			$this->Functions = new Functions();
 		}
 
-        /* function to get all the congregation names
-         * @return $result - MySQL data holding all the congregation names
-         * @return null - return nothing if no data was returned
-         * */
-		function getAllCongregationNames() {
-            $sqlQuery = "SELECT congName FROM congregation";
-            $result = $this->DB->executeQuery($sqlQuery, $this->Functions->paramsIsZero(), "select");
-            if($result) {
-                return $result;
-            }else {
-                return null;
-            }
-        }//end getAllCongregationNames
-
 		/* function to get all the congregations from MySQL
 		 * @return $result - MySQL data holding all the congregations
 		 * @return null - return nothing if no data was returned
 		 * */
-        function getCongregations() {
-            $sqlQuery = "SELECT * FROM congregation";
-            $result = $this->DB->executeQuery($sqlQuery, $this->Functions->paramsIsZero(), "select");
-            if($result) {
-                return $result;
-            }else {
-                return null;
-            }
-        }//end getCongregations
+		function getCongregations() {
+        $sqlQuery = "SELECT * FROM congregation";
+        $result = $this->DB->executeQuery($sqlQuery, $this->Functions->paramsIsZero(), "select");
+        if($result) {
+            return $result;
+        }else {
+            return null;
+        }
+    }//end getCongregations
 
-        /* function to get the address of a congregation in the database
-         * @return $result[0]['congAddress'] - the address of the congregation
-         * @return null - return nothing if no data was returned
-         * */
-        function getCongregationAddress($congID) {
-            $sqlQuery = "SELECT congAddress FROM congregation WHERE congID = :congID";
-            $params = array(":congID" => $congID);
-            $result = $this->DB->executeQuery($sqlQuery, $params, "select");
-            if($result) {
-                return $result[0]["congAddress"];
-            }else {
-                return null;
-            }
+    /* function to get the address of a congregation in the database
+     * @return $result[0]['congAddress'] - the address of the congregation
+     * @return null - return nothing if no data was returned
+     * */
+    function getCongregationAddress($congID) {
+        $sqlQuery = "SELECT congAddress FROM congregation WHERE congID = :congID";
+        $params = array(":congID" => $congID);
+        $result = $this->DB->executeQuery($sqlQuery, $params, "select");
+        if($result) {
+            return $result[0]["congAddress"];
+        }else {
+            return null;
+        }
 		}//end getCongregationAddress
 
         /* function to get the comments of a congregation in the database
@@ -79,22 +65,6 @@
                 return null;
             }
         }//end getCongregationID
-
-        /* function to get the congregation ID by congregation name
-         * @param $congName - the name of the congregation
-         * @return $result - the desired congregation ID
-         * @return null - return nothing if no data was returned
-         * */
-        function getCongregationIDByName($congName) {
-            $sqlQuery = "SELECT congID FROM congregation WHERE congName = :congName";
-            $params = array(":congName" => $congName);
-            $result = $this->DB->executeQuery($sqlQuery, $params, "select");
-            if($result) {
-                return $result[0]["congID"];
-            }else {
-                return null;
-            }
-        }//end getCongregationIDByName
 
         /* function to get a congregation name from MySQL
          * @param $congID - the congregation ID that will be used to help find the name
@@ -213,7 +183,7 @@
          * */
         function updateLastDatesServed($lastDateServed, $lastHolidayServed, $congID) {
             if($lastHolidayServed == "") {
-                $sqlQuery = "UPDATE congregation SET lastDateServed = :lastDateServed WHERE congID = :congID";
+                $sqlQuery = "UPDATE congregation_schedule SET lastDateServed = :lastDateServed WHERE congID = :congID";
                 $params = array(":lastDateServed" => $lastDateServed, ":congID" => $congID);
                 $result = $this->DB->executeQuery($sqlQuery, $params, "update");
                 if($result > 0) {
@@ -222,7 +192,7 @@
                     return false;
                 }
             }else {
-                $sqlQuery = "UPDATE congregation SET lastDateServed = :lastDateServed, lastHolidayServed = :lastHolidayServed WHERE congID = :congID";
+                $sqlQuery = "UPDATE congregation_schedule SET lastDateServed = :lastDateServed, lastHolidayServed = :lastHolidayServed WHERE congID = :congID";
                 $params = array(":lastDateServed" => $lastDateServed,":lastHolidayServed" => $lastHolidayServed,":congID" => $congID);
                 $result = $this->DB->executeQuery($sqlQuery, $params, "update");
                 if($result > 0) {

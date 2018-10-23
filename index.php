@@ -33,7 +33,7 @@
 				$_SESSION['role'] = $Users->getUserRole($_POST['raihn-email']);
 				$_SESSION['userID'] = $Users->getUserID($_POST['raihn-email']);
 				if($_SESSION['role'] == "Bus Driver"){
-					header("Location: ./finalBusSchedule.php");
+					header("Location: ./inputBusBlackouts.php");
 
 				}else if($_SESSION['role'] == "Admin"){
 					//goes to the new combined BUS + CONG VIEW

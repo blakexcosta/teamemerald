@@ -5,13 +5,13 @@
 
 ?>
 
-    <form action="" method="post">
+    <form action="createBusSchedule.php" method="post">
 
-       <select id="year"></select>
+       <select name="year" id="year"></select>
 
        <div>
          <select name='month' id='months'>
-          <option value=''>--Select Month--</option>
+          <option  value=''>--Select Month--</option>
           <option value='1'>Janaury</option>
            <option value='2'>February</option>
            <option value='3'>March</option>
@@ -27,13 +27,18 @@
            </select>
         </div>
 
+<!-- onclick="document.location.href='finalBusSchedule.php';" -->
+
+
+        <input id="generateButton"  type='submit' value'submitted' name='Generate Schedule'>Generate Schedule</input>
+
+
     </form>
 
 
 
 
 
-<button id="generateButton" onclick="document.location.href='finalBusSchedule.php';" type='button'>Generate Schedule</button>
 
 
 <script>

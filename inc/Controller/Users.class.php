@@ -28,15 +28,6 @@
 
 		}//end changePassword
 
-        /* function to check the user role see if it's correctly able to see a page
-         * @param $correctUserRole - the correct user role
-         * @param $currUserRole - the current role of the user
-         * @return boolean - boolean showing user is correct
-         */
-		function checkIncorrectUserRole($correctUserRole, $currUserRole) {
-
-		}//end checkIncorrectUserRole
-
 		/* function to get the user ID from MySQL
 		 * @param $email - email of the user
 		 * @return $result[0]['userID'] - the user ID from MySQL

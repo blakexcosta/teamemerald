@@ -12,17 +12,38 @@ $(document).ready(function() {
         var month = $("#months option:selected").text();
         var year = $("#year option:selected").text();
 
-        $.ajax({
-            type: "POST",
-            url: "../createBusSchedule.php",
-            data: {'month': '10', 'year': '2018'},
-            success: function(data){
-                console.log('hi');
-            },
-            error: function(XMLHttpRequest, textStatus, errorThrown) {
-                //alert(textStatus);
-            }
-        });
+
+
+        // $.ajax({
+        //     type: "POST",
+        //     url: "../createBusSchedule.php",
+        //     data: {
+        //         'month': '11', 'year': '2018'
+        //     },
+        //     success: function(data){
+        //         console.log(month);
+        //         console.log(year);
+        //     },
+        //     error: function (jqXHR, exception) {
+        //            var msg = '';
+        //            if (jqXHR.status === 0) {
+        //                msg = 'Not connect.\n Verify Network.';
+        //            } else if (jqXHR.status == 404) {
+        //                msg = 'Requested page not found. [404]';
+        //            } else if (jqXHR.status == 500) {
+        //                msg = 'Internal Server Error [500].';
+        //            } else if (exception === 'parsererror') {
+        //                msg = 'Requested JSON parse failed.';
+        //            } else if (exception === 'timeout') {
+        //                msg = 'Time out error.';
+        //            } else if (exception === 'abort') {
+        //                msg = 'Ajax request aborted.';
+        //            } else {
+        //                msg = 'Uncaught Error.\n' + jqXHR.responseText;
+        //            }
+        //            alert(msg);
+        //        }
+        //});
 
     });
 

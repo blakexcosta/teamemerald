@@ -2,7 +2,6 @@ $(document).ready(function() {
 
     var date = "";
 
-
     $('#inputBusCalendar').fullCalendar({
 
         dayClick: function(date, jsEvent, view) {
@@ -18,21 +17,8 @@ $(document).ready(function() {
             //if(view.name == 'month'){
                 $('.fc-day').each(function(){
                     $(this).css('position','relative');
-                    var add_button_AM = '<a class="add_event_label"><div id="container"><div id="content"><div id="contact-form buttonAM"><input type="button" name="contact" id ="blackout-am" value="Blackout-AM" class="AM contact demo"/></div></div></div></a>';
-                    var add_button_PM = '<a class="add_event_label"><div id="container"><div id="content"><div id="contact-form buttonPM"><input type="button" name="contact" id ="hi" value="Blackout-PM" class="PM contact demo"/></div></div></div></a>';
-
-                    var button = '<input type="button" name="contact" id ="hi" value="Blackout-PM" class="PM contact demo"/>';
-
-                    $(this).append(button);
-                    //$(this).append(add_button_PM);
-
-                    $('#hi').onclick = function() {
-                      alert("button was clicked  times");
-                      console.log('hey');
-                      // document.getElementById("black").style.background = "red";
-                    };
-
-
+                    var add_button = '<a class="add_event_label"><div id="container"><div id="content"><div id="contact-form"><input type="button" name="contact" value="Blackout" class="contact demo"/></div></div></div></a>';
+                    $(this).append(add_button);
                 });
             //}
         }

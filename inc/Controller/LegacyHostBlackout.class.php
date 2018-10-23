@@ -14,20 +14,6 @@ class LegacyHostBlackout {
         $this->Functions = new Functions();
     }
 
-    /* function to get all the legacy data
-     * @return $result - all the legacy data
-     * @return null - return no data if no data successfully fetched
-     * */
-    function getLegacyData() {
-        $sqlQuery = "SELECT * FROM legacy_host_blackout";
-        $result = $this->DB->executeQuery($sqlQuery, $this->Functions->paramsIsZero(), "select");
-        if($result) {
-            return $result;
-        }else {
-            return null;
-        }
-    }//end getLegacyData
-
     /* function to get all the legacy data for one congregation
      * @param $congID - the congregation ID of a certain congregation in MySQL
      * @return $result - all the legacy data for one congregation
@@ -43,36 +29,6 @@ class LegacyHostBlackout {
             return null;
         }
     }//end getLegacyDataForOneCong
-
-    /* function to get all the legacy data for one congregation
-     * @param $congID - the congregation ID of a certain congregation in MySQL
-     * @return $result - all the legacy data for one congregation
-     * @return null - return no data if no data successfully fetched
-     * */
-    function getLegacyDataForOneRotation($rotNum) {
-        $sqlQuery = "SELECT * FROM legacy_host_blackout WHERE rotation_number = :rotNum ORDER BY startDate";
-        $params = array(":rotNum" => $rotNum);
-        $result = $this->DB->executeQuery($sqlQuery, $params, "select");
-        if($result) {
-            return $result;
-        }else {
-            return null;
-        }
-    }//end getLegacyDataForOneCong
-
-    /* function to get distinct rotation nums
-     * @return $result - all the distinct rotation nums
-     * @return null - return no data if no data successfully fetched
-     * */
-    function getDistinctRotationNums() {
-        $sqlQuery = "SELECT DISTINCT rotation_number FROM legacy_host_blackout ORDER BY rotation_number DESC";
-        $result = $this->DB->executeQuery($sqlQuery, $this->Functions->paramsIsZero(), "select");
-        if($result) {
-            return $result;
-        }else {
-            return null;
-        }
-    }//end getDistinctRotationNums
 
     /* function that inserts legacy data to legacy_host_blackout table in MySQL
      * @param $congID - the ID of the congregation to be inserted
