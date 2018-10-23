@@ -72,5 +72,4 @@
 		</div>
 	</form>
 
-
 <?php require_once("./inc/bottom_layout.php"); ?>

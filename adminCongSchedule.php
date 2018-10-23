@@ -33,7 +33,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" id="conf-data-cancel-finalize" class="btn btn-danger" data-dismiss="modal">Cancel</button>
-                    <button type="button" id="conf-data-finalize" class="btn btn-primary">Finalize</button>
+                    <button type="button" id="conf-finalize" class="btn btn-primary">Finalize</button>
                 </div>
             </div>
         </div>
