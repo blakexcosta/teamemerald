@@ -344,18 +344,21 @@ $(document).ready(function() {
 
     $("#conf-data-cancel-finalize").on("click", function() {
         $(".modal-body").empty();
-        $("#modalLabel").css("color","");
+        $("#finalizeLabel").css("color","");
     });
 
-    $("#conf-data-finalize").on("click", function() {
+
+    $("#conf-finalize").on("click", function() {
         var spanTag = $(".finalized-title").children("span");
-        var rotNum = spanTag.eq(0).attr("id").split("-")
+        var rotNum = spanTag.eq(0).attr("id").split("-");
         var finalizeResult = postData({rotation_number: rotNum[1]},"inc/Controller/finalizeschedule.php");
         $.when(finalizeResult).then(function(result) {
             $("#finalizeLabel").text("Success: Schedule Finalized").css("color","#549F93");
             $(".modal-footer").empty();
             var okButton = $("<button>").attr({"type":"button","id":"finalize-ok-btn"}).addClass("btn btn-success").text("Ok");
             $(".modal-footer").append(okButton);
+        }).fail(function (XMLHttpRequest, textStatus, errorThrown) {
+            $("#finalizeLabel").text("Fail: Changes Not Made! Contact Admin!").css("color","#D63230");
         });
     });
 
