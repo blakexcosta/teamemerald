@@ -70,13 +70,18 @@ $(document).ready(function() {
     $("body").on("click", "#admin-finalize", function() {
         //Getting the rotation number
         var rotNum = $(".tbl-heading").eq(1).attr("id").split("-");
-        $("#finalizeLabel").attr("id",rotNum[1]).text("Are you sure you want to finalize rotation "+rotNum[1]+"?");
+        $("#finalizeLabel").append($("<span>").attr("id","Rotation-"+rotNum[1]).text("Finalize rotation "+rotNum[1]+"?"));
 
         var startDates = $(".start-date");
         var congNames = $(".congName");
 
         for(var i = 0; i < congNames.length; i++) {
-            $(".modal-body").append($("<p>").text(startDates.eq(i).text()+": "+congNames.eq(i).find(":selected").text()));
+            var holiday = startDates.eq(i).text().substr(11,8);
+            if(holiday) {
+                $(".modal-body").append($("<p>").append($("<strong>").text(startDates.eq(i).text()+": "+congNames.eq(i).find(":selected").text())));
+            }else {
+                $(".modal-body").append($("<p>").text(startDates.eq(i).text()+": "+congNames.eq(i).find(":selected").text()));
+            }
         }
     });
 
@@ -87,6 +92,10 @@ $(document).ready(function() {
 
     //The "Ok" button when the admin clicks to update changes made to the schedule
     $("body").on("click", "#conf-ok-btn", function() {
+        window.location.replace("adminCongSchedule.php");
+    });
+
+    $("body").on("click", "#finalize-ok-btn", function() {
         window.location.replace("adminCongSchedule.php");
     });
 
@@ -339,7 +348,15 @@ $(document).ready(function() {
     });
 
     $("#conf-data-finalize").on("click", function() {
-        //var finalizeResult = postData({rotation_number: });
+        var spanTag = $(".finalized-title").children("span");
+        var rotNum = spanTag.eq(0).attr("id").split("-")
+        var finalizeResult = postData({rotation_number: rotNum[1]},"inc/Controller/finalizeschedule.php");
+        $.when(finalizeResult).then(function(result) {
+            $("#finalizeLabel").text("Success: Schedule Finalized").css("color","#549F93");
+            $(".modal-footer").empty();
+            var okButton = $("<button>").attr({"type":"button","id":"finalize-ok-btn"}).addClass("btn btn-success").text("Ok");
+            $(".modal-footer").append(okButton);
+        });
     });
 
     //Send data to PHP file to be updated in the database

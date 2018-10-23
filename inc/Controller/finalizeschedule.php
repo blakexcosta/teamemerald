@@ -2,7 +2,7 @@
     require_once(__DIR__."/CongregationSchedule.class.php");
     $CongregationSchedule = new CongregationSchedule();
 
-    $rotNum = $_POST['rotation_number'];
+    $rotNum = 56;
 
     $finalizedResult = $CongregationSchedule->finalizeSchedule($rotNum);
 
