@@ -1,6 +1,9 @@
 		<!-- Minified JQuery v3.3.1 JS -->
 		<script type="text/javascript" src="./js/jquery-3.3.1.min.js"></script>
 
+        <!-- Minified JQuery UI v1.12.1 JS -->
+        <script type="text/javascript" src="./js/jquery-ui.min.js"></script>
+
 		<!-- Minified Bootstrap v3.7.7 JS -->
 		<script type="text/javascript" src="./js/bootstrap.min.js"></script>
 
