@@ -2,14 +2,10 @@
 
 class CalendarBus {
 
-private $bus;
-
-
   function __construct() {
     require_once("./inc/Controller/BusDriver.class.php");
-    require_once("./inc/Controller/CalendarBus.class.php");
 
-    $this->bus = new BusDriver();
+
 
   } //end of constructor
 
@@ -17,51 +13,40 @@ private $bus;
 
 
   //pass in the final schedule so that we can push it
-  function scheduleDrivers(){ //NO PARAMETER
+  function scheduleDrivers($schedule){
       $finalBusDriverScheduleArr = array();
-      $schedule = $this->bus->getSchedule();
 
-      // echo "<pre>";
-      // print_r($schedule);
-      // echo "<pre>";
-      //print_r($schedule);
       //parse the date out of the $schedule associative array
       foreach ($schedule as $key => $value) {
-          $driverName = $value['driverName'];
-          $date =$value['date'];
-          $timeOf = $value['timeOfDay'];
+
+          $primaryDriverName = $value[2];
+          $backupDriverName = $value[5];
+          $date = substr($value[1],0,10);
+
+          $timeOf = substr($value[1],10,2);
           $realTime = "";
-          $color;
-      //echo "timeOF " . $timeOf;
           if($timeOf =='AM'){
-              $realTime = "T09:00:00";
+            $realTime = "T09:00:00";
           }
           else{
               $realTime = "T18:00:00";
           }
 
-          if ($value['role'] == 'Primary'){
-              $color = "#0000ff";
-          }
-          else if ($value['role'] == 'Backup'){
-              $color = "#008000";
-          }
-
-            //printf("BACKUPGUY" . $backupDriverName);
-
-          //if not available, make red
-          if ($driverName == "NO DRIVER AVAILABLE"){
-              $color =  "#f20000";
-          }
-
-          $driver = array(
-              "title" => $driverName,
+          $primaryDriver = array(
+              "title" => "P: " . $primaryDriverName,
               "start" => $date . $realTime,
-              "end" => $date . $realTime,
-              "color"=> $color
+              "end" => $date . $realTime
+              // "color"=> '#ffffff
           );
 
-          array_push($finalBusDriverScheduleArr, $driver);
+          $backupDriver = array(
+              "title" => "B: " . $backupDriverName,
+              "start" => $date . $realTime,
+              "end" => $date . $realTime,
+              "color" => '#f20000'
+          );
+
+          array_push($finalBusDriverScheduleArr, $primaryDriver, $backupDriver);
 
 
       } //for each

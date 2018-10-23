@@ -70,13 +70,10 @@ class Schedule{
     //Array ( [0] => 2018-09-01AM [1] => 2018-09-01PM [2] => 2018-09-02AM [3] => 2018-09-02PM [4] => 2018-09-03AM [5] => 2018-09-03PM [6]
     $monthOutline = $this->getDaysInMonth();
 
-    //print_r($monthOutline);
-
     $storedWeekNumber = 1;
     $draftSchedule = array();
 
     $tempCounterMonthOutline = 1;
-    //printf("MonthOutline: " . sizeof($monthOutline));
     for ($i=0;$i<sizeof($monthOutline);$i++){
 
         //if even i, update counter, unless first time through
@@ -85,6 +82,7 @@ class Schedule{
                 $tempCounterMonthOutline++;
             }
         }
+
 
         //week number within the current month
         $week_num = $this->getWeekNumber($monthOutline[$i]); //111112222233344455
@@ -111,36 +109,28 @@ class Schedule{
 
         //start going through this drivers blackout dates
         for($j=0;$j<sizeof($blackouts[$currentDriverToSchedule]);$j++){
-          // $currentBlackoutDay = (int)(substr($blackouts[$currentDriverToSchedule][$j]->{'date'}, strrpos($blackouts[$currentDriverToSchedule][$j]->{'date'}, '-') + 1));
-
-
-            $currentBlackoutDay = ($blackouts[$currentDriverToSchedule][$j]->{'date'});
+            $currentBlackoutDay = (int)(substr($blackouts[$currentDriverToSchedule][$j]->{'date'}, strrpos($blackouts[$currentDriverToSchedule][$j]->{'date'}, '-') + 1));
             $currentBlackoutDay = $currentBlackoutDay . $blackouts[$currentDriverToSchedule][$j]->{'timeof'};
+            $currentSlot = $tempCounterMonthOutline . substr($monthOutline[$i],10,2);
 
-            //printf("Temp: " . $tempCounterMonthOutline);
 
-            $currentSlot = ($monthOutline[$i]);
+            if($tempCounterMonthOutline >= (sizeof($monthOutline)/2)){
+                $tempCounterMonthOutline = 1;
+            }
 
-            //
-            //
             // echo (' current driver to shcedule: ') . $currentDriverToSchedule;
             // echo (' current driver index: ') . $currentDriverIndex;
             // echo ("    blackout day we are checking:   ". $currentBlackoutDay);
             // echo ("     slot to schedule in :  " . $currentSlot);
             // echo "<br>";
 
-            if($tempCounterMonthOutline == (sizeof($monthOutline)/2)+1){
-                $tempCounterMonthOutline = 1;
-            }
-
-
             if($currentBlackoutDay == $currentSlot) {
-                 //echo "don't schedule";
+                // echo "don't schedule";
                 // echo "<br>";
                 $unavailableDrivers++;
-                  //-1 BECAUSE To signifiy no driver avail
+
                 if($unavailableDrivers == $this->numberOfDrivers){
-                    $draftSchedule[$monthOutline[$i]] = ["-1", $monthOutline[$i], "NO DRIVER AVAILABLE"];
+                    $draftSchedule[$monthOutline[$i]] = "NO DRIVER AVAILABLE";
                     $unavailableDrivers = 0;
                     $scheduleBoolean = false;
                     break;

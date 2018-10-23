@@ -107,4 +107,18 @@ class Functions {
         }
     }//end testSQLNullValue
 
+    /* function to help turn MySQL column data into a normal array
+     * @param $data - data that came from MySQL as an associative array
+     * @param $columnName - the name of the MySQL column you would like as a normal array
+     * @return $normalArray - the data as a normal indexed array
+     * */
+    function turnIntoNormalArray($data, $columnName) {
+        $normalArray = array();
+
+        for ($e = 0; $e < sizeof($data); $e++) {
+            array_push($normalArray, $data[$e][$columnName]);
+        }
+        return $normalArray;
+    }//end turnIntoNormalArray
+
 }//end Functions
