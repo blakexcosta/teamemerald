@@ -33,7 +33,7 @@ hr {
 
 .checkmark {
 	height: 25px;
-	width: 25pc;
+	width: 25px;
 }
 
 .cong-blackouts {
@@ -115,6 +115,11 @@ hr {
 
 .tbl-heading {
 	color: white;
+}
+
+.warning-symbol {
+	height: 18px;
+	width: 18px;
 }
 
 /* IDs */
@@ -243,6 +248,10 @@ hr {
 	font-size: 30px;
 	font-weight: lighter;
 	color: white;
+}
+
+#sch-finalized-rot {
+	margin-bottom: 7px;
 }
 
 #sch-rot-nums-select {

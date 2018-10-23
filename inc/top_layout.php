@@ -1,19 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-		<title>RAIN Scheduler</title>
+    <title>RAIN Scheduler</title>
 
-		<!-- Minified Bootstrap v3.7.7 CSS -->
-		<link rel="stylesheet" type="text/css" href="./css/bootstrap.min.css">
+    <!-- Minified Bootstrap v3.7.7 CSS -->
+    <link rel="stylesheet" type="text/css" href="./css/bootstrap.min.css">
 
-		<!-- Minified Font Awesome CSS -->
-		<link rel="stylesheet" type="text/css" href="./css/font-awesome.min.css">
+    <!-- Minified Font Awesome CSS -->
+    <link rel="stylesheet" type="text/css" href="./css/font-awesome.min.css">
 
-      <!-- Minified FullCalendar CSS -->
-      <link rel="stylesheet" type="text/css" href="./css/fullcalendar.min.css">
+    <!-- Minified FullCalendar CSS -->
+    <link rel="stylesheet" type="text/css" href="./css/fullcalendar.min.css">
 
-		<!-- Main custom CSS -->
-		<link rel="stylesheet" type="text/css" href="./css/styles.css">
+    <!-- Main custom CSS -->
+    <link rel="stylesheet" type="text/css" href="./css/styles.css">
 </head>
 <body>
 	<div id="title-section">
@@ -54,18 +54,34 @@
                             <a class="nav-link" href="./testBlackoutsDRIVERS.php">Test Blackout Drivers</a>
                         </li>
 			      	<?php endif; ?>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Finalized Schedules<b class="caret"></b>
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                            <a class="nav-link" href="./finalizedschedules.php">Congregation Schedules</a>
+                        </div>
+                    </li>
 			      	<?php /* if logged in as congregation or admin */ if(isset($_SESSION['role']) && ($_SESSION['role'] == "Congregation" || $_SESSION['role'] == "Congregation Admin" || $_SESSION['role'] == "Admin" )): ?>
-				      	<li class="nav-item">
-				        	<a class="nav-link" href="./congregationroster.php">Host Congregation Roster</a>
-				      	</li>
-				      	<li class="nav-item">
-				        	<a class="nav-link" href="./congregationcoordinators.php">Congregation Coordinators</a>
-				      	</li>
-				      	<li class="nav-item">
-				        	<a class="nav-link" href="./inputblackouts.php">Input Blackouts</a>
-				      	</li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Congregation Rosters<b class="caret"></b>
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                                <a class="nav-link" href="./congregationroster.php">Host Congregation Roster</a>
+                                <a class="nav-link" href="./congregationcoordinators.php">Congregation Coordinators</a>
+                            </div>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="./inputblackouts.php">Input Blackouts</a>
+                        </li>
 			      	<?php endif; ?>
-                    <?php /* if logged in as congregation admin or admin */ if(isset($_SESSION['role']) && $_SESSION['role'] == ("Congregation Admin" || $_SESSION['role'] == "Admin")): ?>
+                    <?php /* if logged in as congregation or admin */ if(isset($_SESSION['role']) && ($_SESSION['role'] == "Congregation" || $_SESSION['role'] == "Admin")): ?>
+                        <li class="nav-item">
+                            <a class="nav-link" href="./inputblackouts.php">Input Blackouts</a>
+                        </li>
+                    <?php endif; ?>
+                    <?php /* if logged in as congregation admin or admin */ if(isset($_SESSION['role']) && ($_SESSION['role'] == "Congregation Admin" || $_SESSION['role'] == "Admin")): ?>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 Admin Tools<b class="caret"></b>
@@ -75,12 +91,6 @@
                                 <a class="nav-link" href="./viewenteredblackouts.php">Blackouts Entered</a>
                             </div>
                         </li>
-                        <!--<li class="nav-item">
-                            <a class="nav-link" href="./adminCongSchedule.php">Scheduled Rotations</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="./viewenteredblackouts.php">Blackouts Entered</a>
-                        </li>-->
                     <?php endif; ?>
 			      	<?php /* if logged in as admin */ if(isset($_SESSION['role']) && $_SESSION['role'] == "Admin"): ?>
 			      		<li class="nav-item">

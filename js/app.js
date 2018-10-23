@@ -2,22 +2,33 @@ $(document).ready(function() {
 	//Global Variables
 	var blackoutWeekDates;
 
-	$("#blackoutSubmit").on("click", function() {
-        $(".blackoutWeek:checked").each(function(i) {
-            var congBlackoutDates = $("<div>").attr("class","cong-blackouts");
+    $('[data-toggle="tooltip"]').tooltip();
 
-            var rotationBlackout = $("<p>").append($("<strong>").text("Rotation: "));
-            rotationBlackout.append($("<span>").attr("class","rotation-blackout").text($("#rot-number").text()));
+    $("#blackoutSubmit").on("click", function() {
+	    if($(".blackoutWeek:checked").length > 0) {
+            $(".blackoutWeek:checked").each(function(i) {
+                var congBlackoutDates = $("<div>").attr("class","cong-blackouts");
 
-            var startDateBlackout = $("<p>").append($("<strong>").text("Blacked out week: "));
-            startDateBlackout.append($("<span>").attr("class","start-date-blackout").text($(this).next($(".blackout-date-text")).text()));
+                var rotationBlackout = $("<p>").append($("<strong>").text("Rotation: "));
+                rotationBlackout.append($("<span>").attr("class","rotation-blackout").text($("#rot-number").text()));
 
-            congBlackoutDates.append(rotationBlackout);
-            congBlackoutDates.append(startDateBlackout);
+                var startDateBlackout = $("<p>").append($("<strong>").text("Blacked out week: "));
+                if($(this).next($(".blackout-date-text")).length == 0) {
+                    startDateBlackout.append($("<span>").attr("class","start-date-blackout").text("No blackout weeks"));
+                }else {
+                    startDateBlackout.append($("<span>").attr("class","start-date-blackout").text($(this).next($(".blackout-date-text")).text()));
+                }
 
-            $("#modalLabel").text("Please Confirm Blackouts");
-            $(".modal-body").append(congBlackoutDates);
-        });
+                congBlackoutDates.append(rotationBlackout);
+                congBlackoutDates.append(startDateBlackout);
+
+                $("#modalLabel").text("Please Confirm Blackouts");
+                $(".modal-body").append(congBlackoutDates);
+            });
+        }else {
+            $("#modalLabel").text("Nothing Selected");
+            $("#input-data-save").prop("disabled",true);
+        }
     });
 
 	$("body").on("click", "#admin-submit", function() {
@@ -61,6 +72,19 @@ $(document).ready(function() {
         $('#calendar').fullCalendar('gotoDate', this.value);
     });
 
+    $("body").on("click", "#admin-finalize", function() {
+        //Getting the rotation number
+        var rotNum = $(".tbl-heading").eq(1).attr("id").split("-");
+        $("#finalizeLabel").attr("id",rotNum[1]).text("Are you sure you want to finalize rotation "+rotNum[1]+"?");
+
+        var startDates = $(".start-date");
+        var congNames = $(".congName");
+        // console.log(startDates);
+        for(var i = 0; i < congNames.length; i++) {
+            $(".modal-body").append($("<p>").text(startDates.eq(i).text()+": "+congNames.eq(i).find(":selected").text()));
+        }
+    });
+
     //The "Ok" button when the admin clicks to update changes made to the schedule
     $("body").on("click", "#conf-ok-btn", function() {
         window.location.replace("adminCongSchedule.php");
@@ -71,10 +95,11 @@ $(document).ready(function() {
     });
 
     $("body").on("click", ".schedule-button", function() {
-        var numberOfCheckmarks = $(this).siblings("td").children(".green-checkmark");
-        console.log(numberOfCheckmarks.length);
+        var rotNum = $(this).attr("id").split("-");
+        $(".modal-title").text("Schedule rotation "+rotNum[1]+"?");
     });
 
+    //Select option for Scheduled Rotations page
     $("body").on("change", "#sch-rot-nums-select", function() {
         $("#rotation-sch-div").empty();
         $("#admin-cong-buttons").empty();
@@ -86,7 +111,6 @@ $(document).ready(function() {
             eligibleCongregations = postData({rotation_number: $(this).val()},"inc/Controller/fetchEligibleCongregations.php");
         $.when(getSelectedRot,getFullSchedule,eligibleCongregations).then(function(selectedRot, fullSchedule, eligibleCongs) {
             $(".loader").hide();
-            console.log(fullSchedule[0]);
             //Get all the start dates for each rotation
             //Helps create "Admin Congregation Schedule" page
             var startDates = Object.keys(eligibleCongs[0]);
@@ -103,7 +127,7 @@ $(document).ready(function() {
             var tableRow = $("<tr>");
             var tableHeading1 = $("<th>").attr("scope", "col").addClass("tbl-heading");
             tableHeading1.text("Start Date");
-            var tableHeading2 = $("<th>").attr("scope", "col").addClass("tbl-heading");
+            var tableHeading2 = $("<th>").attr("scope", "col").addClass("tbl-heading").attr("id","Rotation-"+selectedRot[0]["selected"]);
             tableHeading2.text("Rotation #"+selectedRot[0]["selected"]);
             var tableHeading3 = $("<th>").attr("scope", "col").addClass("tbl-heading");
             tableHeading3.text("Approved Schedule as of:");
@@ -117,17 +141,30 @@ $(document).ready(function() {
 
             var tableBody = $("<tbody>");
             for(var h = 0; h < 13; h++) {
-                var tableBodyRow = $("<tr>");
-                tableBodyRow.addClass("scheduled-date");
+                var tableBodyRow = $("<tr>").addClass("scheduled-date");
 
-                var tableData = $("<td>");
-                console.log(fullSchedule[0][h]["holiday"]);
-                if(fullSchedule[0][h]["holiday"] == 1){
-                    var strongTag = $("<strong>");
-                    strongTag.text(fullSchedule[0][h]["startDate"]+" HOLIDAY!");
-                    tableData.append(strongTag);
+                var tableData = $("<td>").addClass("start-date");
+                if(fullSchedule[0][h]["isFlagged"]) {
+                    if(fullSchedule[0][h]["holiday"] == 1){
+                        var strongTag = $("<strong>");
+                        strongTag.text(fullSchedule[0][h]["startDate"]+" HOLIDAY!");
+
+                        tableData.append($("<img src='img/warningsymbol.svg'/>").addClass("warning-symbol").attr({"data-toggle": "tooltip",
+                                                                                    "title": "Currently Scheduled "+fullSchedule[0][h]["reasonForFlag"]}));
+                        tableData.append(strongTag);
+                    }else {
+                        tableData.append($("<img src='img/warningsymbol.svg'/>").addClass("warning-symbol").attr({"data-toggle": "tooltip",
+                                                                                "title": "Currently Scheduled "+fullSchedule[0][h]["reasonForFlag"]}));
+                        tableData.append("  "+fullSchedule[0][h]["startDate"]);
+                    }
                 }else {
-                    tableData.text(fullSchedule[0][h]["startDate"]);
+                    if(fullSchedule[0][h]["holiday"] == 1){
+                        var strongTag = $("<strong>");
+                        strongTag.text(fullSchedule[0][h]["startDate"]+" HOLIDAY!");
+                        tableData.append(strongTag);
+                    }else {
+                        tableData.text(fullSchedule[0][h]["startDate"]);
+                    }
                 }
 
                 var tableData2 = $("<td>").addClass("congName").attr("id","cong"+congCount);
@@ -205,8 +242,85 @@ $(document).ready(function() {
 		}
     });
 
+    //Button on "viewenteredblackouts.php" page that refreshes the page
     $("body").on("click", "#refr-table-btn", function() {
         window.location.replace("viewenteredblackouts.php");
+    });
+
+    //"Ok" button on the modal for the "viewenteredblackouts.php" page
+    $("body").on("click", "#sch-ok-btn", function() {
+        window.location.replace("viewenteredblackouts.php");
+    });
+
+    //Select option for the finalized congregation schedule page
+    $("body").on("change", "#sch-finalized-rot", function() {
+        $("#finalized-sch-div").empty();
+        //Get the finalized schedules
+        var getFullSchedule = getData({rotation_number: $(this).val()},"inc/Controller/fetchfinalizedschedules.php"),
+            getSelectedRot = postData({rotation_number: $(this).val()},"inc/Controller/fetchselectedrotation.php");
+        $.when(getFullSchedule, getSelectedRot).then(function(fullSchedule, selectedRot) {
+            $(".loader").hide();
+
+            var table = $("<table>").addClass("table");
+            table.attr("id","final-cong-schedule");
+
+            var congCount = 0;
+
+            var tableHead = $("<thead>");
+            tableHead.addClass("rotation-head");
+            var tableRow = $("<tr>");
+            var tableHeading1 = $("<th>").attr("scope", "col").addClass("tbl-heading");
+            tableHeading1.text("Start Date");
+            var tableHeading2 = $("<th>").attr("scope", "col").addClass("tbl-heading");
+            tableHeading2.text("Rotation #"+selectedRot[0]["selected"]);
+            var tableHeading3 = $("<th>").attr("scope", "col").addClass("tbl-heading");
+            tableHeading3.text("Approved Schedule as of:");
+
+            tableRow.append(tableHeading1);
+            tableRow.append(tableHeading2);
+            tableRow.append(tableHeading3);
+            tableHead.append(tableRow);
+
+            table.append(tableHead);
+
+            var tableBody = $("<tbody>");
+            for(var h = 0; h < 13; h++) {
+                var tableBodyRow = $("<tr>");
+                tableBodyRow.addClass("scheduled-date");
+
+                var tableData = $("<td>");
+                if(fullSchedule[0][h]["holiday"] == 1){
+                    var strongTag = $("<strong>");
+                    strongTag.text(fullSchedule[0][h]["startDate"]+" HOLIDAY!");
+                    tableData.append(strongTag);
+                }else {
+                    tableData.text(fullSchedule[0][h]["startDate"]);
+                }
+
+                var tableData2 = $("<td>").addClass("congName").attr("id","cong"+congCount);
+
+                tableData2.text(fullSchedule[0][h]["congName"]);
+
+                var tableData3 = $("<td>");
+                tableData3.text("");
+
+                tableBodyRow.append(tableData);
+                tableBodyRow.append(tableData2);
+                tableBodyRow.append(tableData3);
+
+                tableBody.append(tableBodyRow);
+                congCount++;
+            }
+
+            table.append(tableBody);
+            $("#finalized-sch-div").append(table);
+        }).fail(function (XMLHttpRequest, textStatus, errorThrown) {
+            console.log(textStatus);
+        });
+    });
+
+    $("body").on("mouseover", ".warning-symbol", function() {
+        console.log($(this).attr("id"));
     });
 
     //Full calendar congregation blackout inputs
@@ -218,6 +332,15 @@ $(document).ready(function() {
         $(".modal-body").empty();
         $("#modalLabel").css("color","");
 	});
+
+    $("#conf-data-cancel-finalize").on("click", function() {
+        $(".modal-body").empty();
+        $("#modalLabel").css("color","");
+    });
+
+    $("#conf-data-finalize").on("click", function() {
+        //var finalizeResult = postData({rotation_number: });
+    });
 
     //Send data to PHP file to be updated in the database
     $("#conf-data-save").on("click", function() {
@@ -273,9 +396,28 @@ $(document).ready(function() {
 			$("#pass-submit").prop("disabled",true);
 		}
 	});
+
+	$("#conf-sch-cancel").on("click", function() {
+        $("#modalLabel").css("color","");
+    });
+
+	$("#conf-sch-yes").on("click", function() {
+        var titleText = $(".modal-title").text().split(" ");
+        var rotNum = titleText[2].split("?");
+        var scheduleRotations = postData({rotation_number: rotNum[0]}, "inc/Controller/schedulecongregations.php");
+        $.when(scheduleRotations).then(function(scheduledResult) {
+            $("#modalLabel").text("Success: Rotation Scheduled!").css("color","#549F93");
+            $(".modal-footer").empty();
+            var okButton = $("<button>").attr({"type":"button","id":"sch-ok-btn"}).addClass("btn btn-success").text("Ok");
+            $(".modal-footer").append(okButton);
+        }).fail(function (XMLHttpRequest, textStatus, errorThrown) {
+            $("#modalLabel").text("Fail: Schedule not made! Contact Admin!").css("color","#D63230");
+        });
+    });
 	
 	$("#input-data-cancel").on("click", function() {
         $(".modal-body").empty();
+        $("#modalLabel").css("color","");
     });
 
     $("#input-data-save").on("click", function() {
@@ -415,6 +557,7 @@ $(document).ready(function() {
 
     adminRotSchedules();
     createCongBlackoutsEnteredTable();
+    getFinalizedSchedules();
 
 	//FUNCTIONS
     function adminRotSchedules() {
@@ -451,7 +594,7 @@ $(document).ready(function() {
                 var tableRow = $("<tr>");
                 var tableHeading1 = $("<th>").attr("scope", "col").addClass("tbl-heading");
                 tableHeading1.text("Start Date");
-                var tableHeading2 = $("<th>").attr("scope", "col").addClass("tbl-heading");
+                var tableHeading2 = $("<th>").attr("scope", "col").addClass("tbl-heading").attr("id","Rotation-"+rotationNums[0]["rotationNumber"]);
                 tableHeading2.text("Rotation #"+rotationNums[0]["rotationNumber"]);
                 var tableHeading3 = $("<th>").attr("scope", "col").addClass("tbl-heading");
                 tableHeading3.text("Approved Schedule as of:");
@@ -468,13 +611,26 @@ $(document).ready(function() {
                     var tableBodyRow = $("<tr>");
                     tableBodyRow.addClass("scheduled-date");
 
-                    var tableData = $("<td>");
-                    if(fullSchedule[0][h]["holiday"] == 1){
-                        var strongTag = $("<strong>");
-                        strongTag.text(fullSchedule[0][h]["startDate"]+" HOLIDAY!");
-                        tableData.append(strongTag);
+                    var tableData = $("<td>").addClass("start-date");
+                    if(fullSchedule[0][h]["isFlagged"]) {
+                        if(fullSchedule[0][h]["holiday"] == 1){
+                            var strongTag = $("<strong>");
+                            strongTag.text(fullSchedule[0][h]["startDate"]+" HOLIDAY!");
+
+                            tableData.append($("<img src='img/warningsymbol.svg'/>").addClass("warning-symbol").attr("id",fullSchedule[0][h]["reasonForFlag"]));
+                            tableData.append(strongTag);
+                        }else {
+                            tableData.append($("<img src='img/warningsymbol.svg'/>").addClass("warning-symbol").attr("id",fullSchedule[0][h]["reasonForFlag"]));
+                            tableData.append("  "+fullSchedule[0][h]["startDate"]);
+                        }
                     }else {
-                        tableData.text(fullSchedule[0][h]["startDate"]);
+                        if(fullSchedule[0][h]["holiday"] == 1){
+                            var strongTag = $("<strong>");
+                            strongTag.text(fullSchedule[0][h]["startDate"]+" HOLIDAY!");
+                            tableData.append(strongTag);
+                        }else {
+                            tableData.text(fullSchedule[0][h]["startDate"]);
+                        }
                     }
 
                     var tableData2 = $("<td>").addClass("congName").attr("id","cong"+congCount);
@@ -539,7 +695,7 @@ $(document).ready(function() {
 
                 var adminButtons = $("<div>").attr("id","admin-cong-buttons");
                 adminButtons.append($("<button>").attr({"id": "admin-submit", "type": "submit", "data-toggle": "modal", "data-target":"#conf-data-submit"}).addClass("btn btn-primary").text("Submit Changes"));
-                adminButtons.append($("<button>").attr({"id": "admin-finalize", "type": "submit"}).addClass("btn btn-success").text("Finalize Schedule"));
+                adminButtons.append($("<button>").attr({"id": "admin-finalize", "type": "submit", "data-toggle": "modal", "data-target":"#conf-data-finalize"}).addClass("btn btn-success").text("Finalize Schedule"));
                 $("#admin-schedule").append(adminButtons);
             }).fail(function (XMLHttpRequest, textStatus, errorThrown) {
                 console.log(textStatus);
@@ -578,7 +734,7 @@ $(document).ready(function() {
                     for(var i = 0; i < rotations.length; i++) {
                         var tableRow = $("<tr>").addClass("blackouts-per-rot");
 
-                        var scheduleButton = $("<button>").addClass("btn btn-primary schedule-button").prop("disabled",true).attr("id","btn-"+rotations[i]["rotation_number"]).text("Schedule");
+                        var scheduleButton = $("<button>").addClass("btn btn-primary schedule-button").prop("disabled",true).attr({"id":"btn-"+rotations[i]["rotation_number"],"data-toggle": "modal", "data-target":"#conf-sch-submit"}).text("Schedule");
                         tableRow.append(scheduleButton);
 
                         var rotationTableHead = $("<th>").attr("scope","row").addClass("rotation-number").text(rotations[i]["rotation_number"]);
@@ -704,7 +860,88 @@ $(document).ready(function() {
 			}
 		};
 		return indexOfFirstWeek;
-	}
+	}//end getCurrRotationsFirstWeek
+
+    function getFinalizedSchedules() {
+        //Get all the finalized schedules
+        var finalizedRotNums = getData({},"inc/Controller/fetchfinalizedrotationnums.php");
+        $.when(finalizedRotNums).then(function(finalizedRots) {
+            $("#finalized-schedule").append($("<p>").text("Select a schedule"));
+            var selectWithAllSchRots = $("<select>").attr("id","sch-finalized-rot");
+            selectWithAllSchRots.append(createHeader("Scheduled Rotations"));
+            for(var i = 0; i < finalizedRots.length; i++) {
+                var rotationOption = $("<option>").attr("value",finalizedRots[i]["rotation_number"]).text(finalizedRots[i]["rotation_number"]);
+                selectWithAllSchRots.append(rotationOption);
+            }
+            $("#finalized-schedule").append(selectWithAllSchRots);
+
+            var getFullSchedule = getData({rotation_number: finalizedRots[0]["rotation_number"]},"inc/Controller/fetchfinalizedschedules.php");
+            $.when(getFullSchedule).then(function(fullSchedule) {
+                $(".loader").hide();
+
+                var table = $("<table>").addClass("table");
+                table.attr("id","final-cong-schedule");
+
+                var congCount = 0;
+
+                var tableHead = $("<thead>");
+                tableHead.addClass("rotation-head");
+                var tableRow = $("<tr>");
+                var tableHeading1 = $("<th>").attr("scope", "col").addClass("tbl-heading");
+                tableHeading1.text("Start Date");
+                var tableHeading2 = $("<th>").attr("scope", "col").addClass("tbl-heading");
+                tableHeading2.text("Rotation #"+finalizedRots[0]["rotation_number"]);
+                var tableHeading3 = $("<th>").attr("scope", "col").addClass("tbl-heading");
+                tableHeading3.text("Approved Schedule as of:");
+
+                tableRow.append(tableHeading1);
+                tableRow.append(tableHeading2);
+                tableRow.append(tableHeading3);
+                tableHead.append(tableRow);
+
+                table.append(tableHead);
+
+                var tableBody = $("<tbody>");
+                for(var h = 0; h < 13; h++) {
+                    var tableBodyRow = $("<tr>");
+                    tableBodyRow.addClass("scheduled-date");
+
+                    var tableData = $("<td>");
+                    if(fullSchedule[h]["holiday"] == 1){
+                        var strongTag = $("<strong>");
+                        strongTag.text(fullSchedule[h]["startDate"]+" HOLIDAY!");
+                        tableData.append(strongTag);
+                    }else {
+                        tableData.text(fullSchedule[h]["startDate"]);
+                    }
+
+                    var tableData2 = $("<td>").addClass("congName").attr("id","cong"+congCount);
+
+                    tableData2.text(fullSchedule[h]["congName"]);
+
+                    var tableData3 = $("<td>");
+                    tableData3.text("");
+
+                    tableBodyRow.append(tableData);
+                    tableBodyRow.append(tableData2);
+                    tableBodyRow.append(tableData3);
+
+                    tableBody.append(tableBodyRow);
+                    congCount++;
+                }
+
+                table.append(tableBody);
+
+                var finalizedSchDiv = $("<div>").attr("id","finalized-sch-div");
+                finalizedSchDiv.append(table);
+                $("#finalized-schedule").append(finalizedSchDiv);
+            }).fail(function (XMLHttpRequest, textStatus, errorThrown) {
+                console.log(textStatus);
+            });
+        }).fail(function (XMLHttpRequest, textStatus, errorThrown) {
+            console.log(textStatus);
+        });
+    }//end getFinalizedSchedules
 
 	/* Returns the maximum rotation number from date range array
 	 * @return blackoutWeekDates[lastIndex]['rotation_number'] - last rotation number

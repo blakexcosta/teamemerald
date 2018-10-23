@@ -206,7 +206,19 @@ class CongregationBlackout {
      * function helps determine which congregation has the most blackout/unavailability week
      * @return $sortedBlackouts - sorted number of blackout dates entered for each congregation
      * */
-    function getCongBlackoutCountWithBlackouts() {
+    function getCongBlackoutCountWithBlackouts($rotNum) {
+        $result = $this->getCongBlackoutsByRotationWithBlackouts($rotNum,"congID");
+        $countedData = $this->countValues($result,$result[0]["congID"],"congID","count");
+        $sortedBlackouts = $this->Functions->sortArray($countedData,"congID","count");
+        return $sortedBlackouts;
+    }//end getCongBlackoutCountWithBlackouts
+
+    /* function that gets the congregations with blackouts entered,
+     * counts the number of dates each congregation blacked out, then sorts them
+     * function helps determine which congregation has the most blackout/unavailability week
+     * @return $sortedBlackouts - sorted number of blackout dates entered for each congregation
+     * */
+    function getCongBlackoutCountByRotationWithBlackouts() {
         $result = $this->getCongBlackoutsWithBlackouts("congID");
         $countedData = $this->countValues($result,$result[0]["congID"],"congID","count");
         $sortedBlackouts = $this->Functions->sortArray($countedData,"congID","count");

@@ -17,7 +17,9 @@
                 "startDate" => $fullSchedule[$i]["startDate"],
                 "weekNumber" => $fullSchedule[$i]["weekNumber"],
                 "rotationNumber" => $fullSchedule[$i]["rotationNumber"],
-                "holiday" => $fullSchedule[$i]["holiday"]
+                "holiday" => $fullSchedule[$i]["holiday"],
+                "isFlagged" => $fullSchedule[$i]["IsFlagged"],
+                "reasonForFlag" => $fullSchedule[$i]["ReasonForFlag"]
         );
         array_push($fullSchedulePerRotation, $tempArr);
     }
