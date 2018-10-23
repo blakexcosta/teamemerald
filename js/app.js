@@ -8,25 +8,59 @@ $(document).ready(function() {
     var fullSchedule;
 
     $('#calendar').fullCalendar({
-        eventSources : [
-        	"inc/Controller/getFullCongSchedule.php",
-            "inc/Controller/getFlaggedCongregations.php"
-		]
+
     });
 
-    // function(start, end, timezone, callback) {
-    //     $.ajax({
-    //         type: "post",
-    //         url: "inc/Controller/getFullCongSchedule.php",
-    //         dataType: "json",
-    //         success: function(data) {
-    //             callback(data);
-    //         },
-    //         error: function(XMLHttpRequest, textStatus, errorThrown) {
-    //             alert(textStatus);
-    //         }
-    //     });
-    // }
+    $("#conf-data-cancel").on("click", function() {
+        $(".modal-body").empty();
+        $("#modalLabel").css("color","");
+	});
+
+    $("#conf-data-cancel-finalize").on("click", function() {
+        $(".modal-body").empty();
+        $("#finalizeLabel").css("color","");
+    });
+
+
+    $("#conf-finalize").on("click", function() {
+        var spanTag = $(".finalized-title").children("span");
+        var rotNum = spanTag.eq(0).attr("id").split("-");
+        var finalizeResult = postData({rotation_number: rotNum[1]},"inc/Controller/finalizeschedule.php");
+        $.when(finalizeResult).then(function(result) {
+            $("#finalizeLabel").text("Success: Schedule Finalized").css("color","#549F93");
+            $(".modal-footer").empty();
+            var okButton = $("<button>").attr({"type":"button","id":"finalize-ok-btn"}).addClass("btn btn-success").text("Ok");
+            $(".modal-footer").append(okButton);
+        }).fail(function (XMLHttpRequest, textStatus, errorThrown) {
+            $("#finalizeLabel").text("Fail: Changes Not Made! Contact Admin!").css("color","#D63230");
+        });
+    });
+
+    //Send data to PHP file to be updated in the database
+    $("#conf-data-save").on("click", function() {
+        var updatedStartDates = $(".updated-start-date");
+        var updatedCongNames = $(".updated-cong-name");
+        var updatedRotations = $(".updated-rotation");
+
+        var updatedCongData = [];
+        for(var i = 0; i < updatedCongNames.length; i++) {
+            var updatedCong = {};
+            updatedCong.startDate = updatedStartDates.eq(i).text();
+            updatedCong.congName = updatedCongNames.eq(i).text();
+            updatedCong.rotation = updatedRotations.eq(i).text();
+            updatedCongData.push(updatedCong);
+        }
+        console.log(updatedCongNames);
+        var updateData = postData({updatedData: updatedCongData},"inc/Controller/updateCongSch.php")
+        $.when(updateData).then(function(updateDataResult) {
+            $("#modalLabel").text("Success: Changes Made!").css("color","#549F93");
+            $(".modal-footer").empty();
+            var okButton = $("<button>").attr({"type":"button","id":"conf-ok-btn"}).addClass("btn btn-success").text("Ok");
+            $(".modal-footer").append(okButton);
+        }).fail(function (XMLHttpRequest, textStatus, errorThrown) {
+            $("#modalLabel").text("Fail: Changes Not Made! Contact Admin!").css("color","#D63230");
+        });
+	});
 
 	//If the user clicks inside the "confirm password" field, show message
 	$("#conf-password").focus(function() {
