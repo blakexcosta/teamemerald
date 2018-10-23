@@ -19,5 +19,14 @@
 		<!-- Custom Javascript File -->
 		<script type="text/javascript" src="./js/createBusCalendar.js"></script>
 
+		<!-- Custom Javascript File -->
+		<script type="text/javascript" src="./js/inputBusBlackouts.js"></script>
+
+		<script type='text/javascript' src='js/jquery.simplemodal.js'></script>
+		<script type='text/javascript' src='js/contact.js'></script>
+
+		<!-- Latest compiled and minified JavaScript -->
+	   <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+
 	</body>
 </html>

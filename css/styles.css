@@ -15,6 +15,16 @@ hr {
 	width: 70%;
 }
 
+/* basic positioning */
+.legend { list-style: none; float: right; margin-right: 2em;  }
+.legend li {margin-right: 10px; }
+.legend span { border: 1px solid #ccc; float: left; width: 12px; height: 12px; margin: 2px; }
+/* your colors */
+.legend .primary { background-color: #0000ff; }
+.legend .backup { background-color: #008000; }
+.legend .nodriver { background-color: #f20000; }
+
+
 /* CLASSES */
 .blackout-checkboxes {
 	font-size: 1.25vw;

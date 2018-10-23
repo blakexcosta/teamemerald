@@ -52,6 +52,7 @@
 			}
 		}
 
+
 		/* function to get the user role from MySQL
 		 * @param $email - email of the user
 		 * @return $result[0]['userType'] - the user role from MySQL

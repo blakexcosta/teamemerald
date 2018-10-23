@@ -65,7 +65,7 @@ class CongregationBlackout {
     }//end dateBlackoutCount
 
     function dateBlackoutCountForOneRotation($rotNum) {
-        $result = $this->getCongBlackoutsByRotationWithBlackouts($rotNum,"startDate");
+        $result = $this->getCongBlackoutsByRotation($rotNum,"startDate");
         $countedBlackedOutDates = $this->countValues($result,$result[0]["startDate"],"startDate", "count");
         $sortedDates = $this->Functions->sortArray($countedBlackedOutDates,"startDate","count");
         return $sortedDates;
@@ -103,22 +103,7 @@ class CongregationBlackout {
         }
     }//end getCongBlackouts
 
-    /* function that fetches all data from congregation_blackouts
-     * @param $orderByVar - variable used to help order the incoming select query
-     * @return $result - if data was successfully fetched return the data
-     * @return null - return no data if no data successfully fetched
-     * */
-    function getCongBlackoutsWithBlackouts($orderByVar) {
-        $sqlQuery = "SELECT * FROM congregation_blackout WHERE NOT weekNumber = :weekNum ORDER BY ".$orderByVar;
-        $params = array(":weekNum" => 0);
-        $result = $this->DB->executeQuery($sqlQuery, $params, "select");
-        if($result) {
-            return $result;
-        }else {
-            return null;
-        }
-    }//end getCongBlackoutsWithBlackouts
-
+    //First, grab congregations and their blackout dates
     /* function that fetches all data from congregation_blackouts
      * @param $rotNum - the desired rotation number to get blackouts for
      * @param $orderByVar - variable used to help order the incoming select query
@@ -255,11 +240,6 @@ class CongregationBlackout {
         }
     }//end getDistinctRotationNums
 
-    /* function to insert blackouts for congregations
-     * @param $blackoutWeek - array containing all the blackout choices the congregation selected
-     * @param $email - the email of the logged in user
-     * @return boolean - return true or false if the blackout was inserted
-     * */
     function insertBlackout($blackoutWeek, $email) {
         //Get the congregation ID of the current user logged in
         $sqlQuery = "SELECT congID FROM congregation_coordinator WHERE coordinatorEmail = :email";
@@ -274,32 +254,22 @@ class CongregationBlackout {
                     $rotationNum = substr($blackoutWeek[$i], 11);
                     $blackoutWeekStartDate = substr($blackoutWeek[$i], 0, 10);
 
+                //Get the week number of the date that was submitted
+                $result2 = $this->DateRange->getWeekNumber($blackoutWeek[$i]);
+
+                $result3 = $this->DateRange->getRotationNumber($blackoutWeek[$i]);
+
+                if($result2 && $result3) {
                     //Insert the blackout date to MySQL
                     $sqlQuery3 = "INSERT INTO congregation_blackout VALUES (:congID, :weekNumber, :startDate, :rotNum)";
-                    $params3 = array(":congID" => $result[0]["congID"], ":weekNumber" => 0,
-                        ":startDate" => $blackoutWeekStartDate, ":rotNum" => $rotationNum);
+                    $params3 = array(":congID" => $result[0]["congID"], ":weekNumber" => $result2,
+                                    ":startDate" => $blackoutWeek[$i], ":rotNum" => $result3);
                     $result4 = $this->DB->executeQuery($sqlQuery3, $params3, "insert");
-                    if($result4 <= 0) {
+                    if($result4 < 0) {
                         return false;
                     }
                 }else {
-                    //Get the week number of the date that was submitted
-                    $result2 = $this->DateRange->getWeekNumber($blackoutWeek[$i]);
-
-                    $result3 = $this->DateRange->getRotationNumber($blackoutWeek[$i]);
-
-                    if($result2 && $result3) {
-                        //Insert the blackout date to MySQL
-                        $sqlQuery3 = "INSERT INTO congregation_blackout VALUES (:congID, :weekNumber, :startDate, :rotNum)";
-                        $params3 = array(":congID" => $result[0]["congID"], ":weekNumber" => $result2,
-                            ":startDate" => $blackoutWeek[$i], ":rotNum" => $result3);
-                        $result4 = $this->DB->executeQuery($sqlQuery3, $params3, "insert");
-                        if($result4 <= 0) {
-                            return false;
-                        }
-                    }else {
-                        return false;
-                    }
+                    return false;
                 }
             }
         }else {
