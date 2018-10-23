@@ -37,21 +37,6 @@ class CongregationSchedule {
         }
     }//end deleteCongregationSchedule
 
-    /* function to get scheduled congregations IDs of a rotation
-     * @return $result - all the scheduled congregation IDs for a rotation
-     * @return null - return nothing if no data was returned
-     * */
-    function getCongIDsByRotation($rotationNum) {
-        $sqlQuery = "SELECT congID FROM congregation_schedule WHERE rotationNumber = :rotNum";
-        $params = array(":rotNum" => $rotationNum);
-        $result = $this->DB->executeQuery($sqlQuery, $params, "select");
-        if($result) {
-            return $result;
-        }else {
-            return null;
-        }
-    }//end getCongIDsByRotation
-
     /* function to get the congregations that weren't scheduled
      * @return $flaggedCongregations - all the congregations not scheduled
      * */
@@ -105,21 +90,16 @@ class CongregationSchedule {
             }
         }
 
-        $flaggedCongNameCount = 0;
         //Combine the missing start dates and congregation names into one final array
-        for($e = 0; $e < sizeof($flaggedCongDates); $e++) {
-            $scheduledEndDate = date("Y-m-d", strtotime("+7 days", strtotime($flaggedCongDates[$e])));
+        for($e = 0; $e < sizeof($flaggedCongNames); $e++) {
+            $scheduledEndDate = date("Y-m-d",strtotime("+7 days",strtotime($flaggedCongDates[$e])));
             $tempFlagArray = array(
-                "title" => $flaggedCongNames[$flaggedCongNameCount],
-                "start" => $flaggedCongDates[$e],
-                "end" => $scheduledEndDate,
-                "color" => "#CC2936"
-            );
+                                "title" => $flaggedCongNames[$e],
+                                "start" => $flaggedCongDates[$e],
+                                "end" => $scheduledEndDate,
+                                "color" => "#CC2936"
+                            );
             array_push($finalFlaggedCongList, $tempFlagArray);
-            $flaggedCongNameCount++;
-            if($flaggedCongNameCount == 4) {
-                $flaggedCongNameCount = 0;
-            }
         }
 
         return $finalFlaggedCongList;
@@ -191,39 +171,6 @@ class CongregationSchedule {
         }
     }//end getRotationNumber
 
-    /* function to get the scheduled congregation names per rotation
-     * */
-    function getScheduledCongsPerRotation($rotationNum) {
-        $sqlQuery = "SELECT congID FROM congregation_schedule WHERE rotationNumber = :rotNum";
-        $params = array(":rotNum" => $rotationNum);
-        $result = $this->DB->executeQuery($sqlQuery, $params, "select");
-        if($result) {
-            $schCongNames = array();
-            for($i = 0; $i < sizeof($result); $i++) {
-                array_push($schCongNames, $this->Congregation->getCongregationName($result[$i]['congID']));
-            }
-            return $schCongNames;
-        }else {
-            return null;
-        }
-    }//end getScheduledCongsPerRotation
-
-    /* function to get a schedule for each rotation
-     * @param $rotationNum - the desired rotation number of schedule
-     * @return $result - the schedule for a rotation number
-     * @return null - return no data if no data successfully fetched
-     * */
-    function getSchedulePerRotation($rotationNum) {
-        $sqlQuery = "SELECT * FROM congregation_schedule WHERE rotationNumber = :rotationNumber";
-        $params = array(":rotationNumber" => $rotationNum);
-        $result = $this->DB->executeQuery($sqlQuery, $params, "select");
-        if($result) {
-            return $result;
-        }else {
-            return null;
-        }
-    }//end getSchedulePerRotation
-
     /* function to get the start date of a congregation in the congregation schedule
      * @param $congID - the congregation ID of a certain congregation in MySQL
      * @param $weekNumber - the week number of a rotation for a scheduled congregation
@@ -242,36 +189,6 @@ class CongregationSchedule {
             return null;
         }
     }//end getStartDate
-
-    /* function to get the start dates by rotation numbers
-     * @param $rotationNum - the rotation number
-     * @return $result - the start dates for the rotation
-     * @return null - return no data if no data successfully fetched
-     * */
-    function getStartDatesByRotation($rotationNum) {
-        $sqlQuery = "SELECT startDate FROM congregation_schedule WHERE rotationNumber = :rotNum";
-        $params = array(":rotNum" => $rotationNum);
-        $result = $this->DB->executeQuery($sqlQuery, $params, "select");
-        if($result) {
-            return $result;
-        }else {
-            return null;
-        }
-    }//end getStartDatesByRotation
-
-    /* function to get the start dates in the congregation schedule without any parameters
-     * @return $result - the start dates from congregation_schedule
-     * @return null - return no data if no data successfully fetched
-     * */
-    function getStartDatesNoParams() {
-        $sqlQuery = "SELECT startDate FROM congregation_schedule";
-        $result = $this->DB->executeQuery($sqlQuery, $this->Functions->paramsIsZero(), "select");
-        if($result) {
-            return $result;
-        }else {
-            return null;
-        }
-    }//end getStartDatesNoParams
 
     /* function to get the week number of a congregation in the congregation schedule
      * @param $congID - the congregation ID of a certain congregation in MySQL
@@ -331,111 +248,105 @@ class CongregationSchedule {
      * @return bool - return true or false if the congregations were successfully inserted
      * */
     function scheduleCongregations(){
-        /*$deleteQuery = $this->deleteCongregationSchedule();*/
-        $numOfRotations = $this->CongregationBlackout->getDistinctRotationNums();
+        $deleteQuery = $this->deleteCongregationSchedule();
+        if($deleteQuery == false) {
+            return false;
+        }else {
+            $numOfRotations = $this->CongregationBlackout->getDistinctRotationNums();
 
-        //Boolean variable used to check if the schedule was created
-        $scheduleCreated = true;
-        for ($u = 0; $u < sizeof($numOfRotations); $u++) {
-            //Congregation blackout count data sorted
-            $congregationBlackoutCount = $this->CongregationBlackout->getCongBlackoutCountWithBlackouts();
+            //Boolean variable used to check if the schedule was created
+            $scheduleCreated = true;
+            for ($u = 0; $u < sizeof($numOfRotations); $u++) {
+                //Congregation blackout count data sorted
+                $congregationBlackoutCount = $this->CongregationBlackout->getCongBlackoutCount();
 
 
-            $startDateList = $this->DateRange->getStartDateBasedRotWithoutZero($numOfRotations[$u]["rotation_number"]);
+                $startDateList = $this->DateRange->getStartDateBasedRotation($numOfRotations[$u]["rotation_number"]);
 
-            //Date blackout count data sorted
-            $dateBlackoutCount = $this->CongregationBlackout->dateBlackoutCountForOneRotation($numOfRotations[$u]["rotation_number"]);
+                //Date blackout count data sorted
+                $dateBlackoutCount = $this->CongregationBlackout->dateBlackoutCountForOneRotation($numOfRotations[$u]["rotation_number"]);
 
-            //Grab start dates from dateBlackoutCount and store in separate array
-            //Used for figuring if start dates weren't blacked out
-            $justBlackoutStartDates = array();
-            for ($i = 0; $i < sizeof($dateBlackoutCount); $i++) {
-                array_push($justBlackoutStartDates, $dateBlackoutCount[$i]['startDate']);
-            }
-
-            //Figure out which start dates weren't blacked out
-            //If a start date wasn't blacked out, add it to the dateBlackoutCount array with a count of 0
-            for ($e = 0; $e < sizeof($startDateList); $e++) {
-                if (!in_array($startDateList[$e]['startDate'], $justBlackoutStartDates)) {
-                    $tempArray = array(
-                        'startDate' => $startDateList[$e]['startDate'],
-                        'count' => 0
-                    );
-                    array_push($dateBlackoutCount, $tempArray);
+                //Grab start dates from dateBlackoutCount and store in separate array
+                //Used for figuring if start dates weren't blacked out
+                $justBlackoutStartDates = array();
+                for ($i = 0; $i < sizeof($dateBlackoutCount); $i++) {
+                    array_push($justBlackoutStartDates, $dateBlackoutCount[$i]['startDate']);
                 }
-            }
 
-            for ($i = 0; $i < sizeof($dateBlackoutCount); $i++) {
-                for ($h = 0; $h < sizeof($congregationBlackoutCount); $h++) {
-                    //Get an array of a single congregation's list of blackout weeks
-                    //The array is used to help figure out if the date we're trying to schedule for is already blacked
-                    // out by the congregation
-                    $singleCongBlackouts = $this->CongregationBlackout->getBlackoutsForOneCongregation($congregationBlackoutCount[$h]["congID"]);
-                    $noConflictingDate = true;
-                    for ($j = 0; $j < sizeof($singleCongBlackouts); $j++) {
-                        //If the congregation we're looking at doesn't have a
-                        // blackout date that is the date we're trying to schedule for
-                        if ($dateBlackoutCount[$i]["startDate"] == $singleCongBlackouts[$j]["startDate"]) {
-                            //If the date we're trying to schedule for IS one of the blackout dates for the
-                            // congregation we're trying to schedule, break the loop and move onto the next congregation
-                            $noConflictingDate = false;
-                            break;
-                        }
+                //Figure out which start dates weren't blacked out
+                //If a start date wasn't blacked out, add it to the dateBlackoutCount array with a count of 0
+                for ($e = 0; $e < sizeof($startDateList); $e++) {
+                    if (!in_array($startDateList[$e]['startDate'], $justBlackoutStartDates)) {
+                        $tempArray = array(
+                            'startDate' => $startDateList[$e]['startDate'],
+                            'count' => 0
+                        );
+                        array_push($dateBlackoutCount, $tempArray);
                     }
+                }
 
-                    //If the congregation we're trying to schedule has no matching blackout date with the date we're
-                    // looking at, move onto the next step
-                    if ($noConflictingDate == true) {
-                        //Test to see if the congregation was scheduled within a 10 week span of the date we're trying to schedule
-                        $scheduledAtLeast10Apart = $this->scheduledAtLeast10WeeksApart($congregationBlackoutCount[$h]["congID"], $dateBlackoutCount[$i]["startDate"]);
+                for ($i = 0; $i < sizeof($dateBlackoutCount); $i++) {
+                    for ($h = 0; $h < sizeof($congregationBlackoutCount); $h++) {
+                        //Get an array of a single congregation's list of blackout weeks
 
-                        //If the date we're trying to schedule for is at least 10 weeks apart
-                        // from the last time the congregation was scheduled, move on to the next step
-                        //Else, break the for loop and move on to the next congregation
-                        if ($scheduledAtLeast10Apart == true) {
-                            $year = substr($dateBlackoutCount[$i]["startDate"], 0, 4);
-                            $scheduledEndDate = date("Y-m-d", strtotime("+6 days", strtotime($dateBlackoutCount[$i]["startDate"])));
-                            $dateIsAHoliday = $this->DateRange->containsHoliday($year, $dateBlackoutCount[$i]["startDate"], $scheduledEndDate);
-                            //If the date is not a holiday, schedule the congregation for that holiday
-                            //If it is a holiday, check if the congregation was scheduled the holiday the year before
-                            if ($dateIsAHoliday == false) {
-                                $congID = $congregationBlackoutCount[$h]["congID"];
-                                $scheduledStartDate = $dateBlackoutCount[$i]["startDate"];
-                                $scheduledWeekNum = $this->DateRange->getWeekNumber($dateBlackoutCount[$i]["startDate"]);
-                                $scheduledRotationNum = $this->DateRange->getRotationNumber($dateBlackoutCount[$i]["startDate"]);
+                        //The array is used to help figure out if the date we're trying to schedule for is already blacked
+                        // out by the congregation
 
-                                $insertedIntoCongSch = $this->insertNewScheduledCong($congID, $scheduledStartDate, $scheduledWeekNum, $scheduledRotationNum, 0);
-                                $updatedLastDatesServed = $this->Congregation->updateLastDatesServed($scheduledStartDate, "", $congID);
-                                if ($insertedIntoCongSch && $updatedLastDatesServed) {
-                                    unset($congregationBlackoutCount[$h]);
-                                    $congregationBlackoutCount = array_values($congregationBlackoutCount);
+                        $singleCongBlackouts = $this->CongregationBlackout->getBlackoutsForOneCongregation($congregationBlackoutCount[$h]["congID"]);
+                        $noConflictingDate = true;
+                        for ($j = 0; $j < sizeof($singleCongBlackouts); $j++) {
+                            //If the congregation we're looking at doesn't have a
+                            // blackout date that is the date we're trying to schedule for
+                            if ($dateBlackoutCount[$i]["startDate"] == $singleCongBlackouts[$j]["startDate"]) {
+                                //If the date we're trying to schedule for IS one of the blackout dates for the
+                                // congregation we're trying to schedule, break the loop and move onto the next congregation
+                                $noConflictingDate = false;
+                                break;
+                            }
+                        }
 
-                                    if ($h == 12) {
-                                        $congregationBlackoutCount = $this->CongregationBlackout->getCongBlackoutCount();
+                        //If the congregation we're trying to schedule has no matching blackout date with the date we're
+                        // looking at, move onto the next step
+                        if ($noConflictingDate == true) {
+                            //Test to see if the congregation was scheduled within a 10 week span of the date we're trying to schedule
+                            $scheduledAtLeast10Apart = true;
+                            $priorDate = $this->Congregation->getLastDateServed($congregationBlackoutCount[$h]["congID"]);
+                            if (is_null($priorDate) == false) {
+                                $datetime1 = new DateTime($dateBlackoutCount[$i]["startDate"]);
+                                $datetime2 = new DateTime($priorDate);
+                                $interval = $datetime1->diff($datetime2);
+                                $daysDiff = $interval->format('%a days');
+                                $numOfDays = 0;
+                                for ($k = 0; $k < strlen($daysDiff); $k++) {
+                                    if (!is_numeric(substr($daysDiff, $k, 1))) {
+                                        $numOfDays = intval(substr($daysDiff, 0, $k));
+                                        break;
                                     }
-
-                                    break;
-                                } else {
-                                    $scheduleCreated = false;
-                                    return $scheduleCreated;
                                 }
-                            } else {
-                                //See if the holiday was scheduled a year ago
-                                $scheduledHolidayYearAgo = $this->scheduledHolidayAYearAgo($year, $dateBlackoutCount[$i]["startDate"], $congregationBlackoutCount[$h]["congID"]);
-
-                                //If the congregation was scheduled for the holiday a year ago, move on to the next congregation
-                                //Else, schedule the congregation for that holiday
-                                if ($scheduledHolidayYearAgo) {
-                                    break;
-                                } else {
+                                $numOfWeeks = $numOfDays / 7;
+                                if ($numOfWeeks < 10) {
+                                    $scheduledAtLeast10Apart = false;
+                                }
+                            }
+                            //If the date we're trying to schedule for is at least 10 weeks apart
+                            // from the last time the congregation was scheduled, move on to the next step
+                            //Else, break the for loop and move on to the next congregation
+                            if ($scheduledAtLeast10Apart == true) {
+                                $year = substr($dateBlackoutCount[$i]["startDate"], 0, 4);
+                                $scheduledEndDate = date("Y-m-d", strtotime("+6 days", strtotime($dateBlackoutCount[$i]["startDate"])));
+                                $dateIsAHoliday = $this->DateRange->containsHoliday($year, $dateBlackoutCount[$i]["startDate"], $scheduledEndDate);
+                                //If the date is not a holiday, schedule the congregation for that holiday
+                                //If it is a holiday, check if the congregation was scheduled the holiday the year before
+                                if ($dateIsAHoliday == false) {
                                     $congID = $congregationBlackoutCount[$h]["congID"];
                                     $scheduledStartDate = $dateBlackoutCount[$i]["startDate"];
                                     $scheduledWeekNum = $this->DateRange->getWeekNumber($dateBlackoutCount[$i]["startDate"]);
                                     $scheduledRotationNum = $this->DateRange->getRotationNumber($dateBlackoutCount[$i]["startDate"]);
 
-                                    $insertedIntoCongSch = $this->insertNewScheduledCong($congID, $scheduledStartDate, $scheduledWeekNum, $scheduledRotationNum, 1);
-                                    $updatedLastDatesServed = $this->Congregation->updateLastDatesServed($scheduledStartDate, $scheduledStartDate, $congID);
-                                    if ($insertedIntoCongSch && $updatedLastDatesServed) {
+                                    $insertedIntoCongSch = $this->insertNewScheduledCong($congID, $scheduledStartDate, $scheduledWeekNum, $scheduledRotationNum, 0);
+
+                                    if ($insertedIntoCongSch == true) {
+
                                         unset($congregationBlackoutCount[$h]);
                                         $congregationBlackoutCount = array_values($congregationBlackoutCount);
 
@@ -448,155 +359,74 @@ class CongregationSchedule {
                                         $scheduleCreated = false;
                                         return $scheduleCreated;
                                     }
+                                } else {
+                                    //First, identify which holiday it is
+                                    $holidayName = $this->DateRange->identifyHoliday($year, $dateBlackoutCount[$i]["startDate"]);
+                                    $holidayArray = array("SundayBeforeEaster", "Easter", "Memorial", "Independence", "Labor", "Thanksgiving", "Christmas", "NewYears");
+                                    $priorYear = date("Y", strtotime("-1 year", strtotime($year)));
+                                    $holidayAYearAgo = date("Y-m-d");
+                                    foreach ($holidayArray as $holiday) {
+                                        if ($holiday == $holidayName) {
+                                            if ($holidayName == "SundayBeforeEaster") {
+                                                $holidayAYearAgo = $this->DateRange->getSundayBeforeEaster($priorYear);
+                                            } elseif ($holidayName == "Easter") {
+                                                $holidayAYearAgo = $this->DateRange->get_easter_datetime($priorYear);
+                                            } elseif ($holidayName == "Memorial") {
+                                                $holidayAYearAgo = $this->DateRange->getMemorialDay($priorYear);
+                                            } elseif ($holidayName == "Independence") {
+                                                $holidayAYearAgo = $this->DateRange->getIndependenceDay($priorYear);
+                                            } elseif ($holidayName == "Labor") {
+                                                $holidayAYearAgo = $this->DateRange->getLaborDay($priorYear);
+                                            } elseif ($holidayName == "Thanksgiving") {
+                                                $holidayAYearAgo = $this->DateRange->getThanksgiving($priorYear);
+                                            } elseif ($holidayName == "Christmas") {
+                                                $holidayAYearAgo = $this->DateRange->getChristmas($priorYear);
+                                            } elseif ($holidayName == "NewYears") {
+                                                $holidayAYearAgo = $this->DateRange->getNewYears($priorYear);
+                                            } else {
+                                                break;
+                                            }
+                                        }
+                                    }
+
+
+                                    //Next, see if the congregation was scheduled for that holiday a year ago
+                                    $lastHolidayServed = $this->Congregation->getLastHolidayServed($congregationBlackoutCount[$h]["congID"]);
+
+                                    //If the congregation was scheduled for the holiday a year ago, move on to the next congregation
+                                    //Else, schedule the congregation for that holiday
+                                    if ($holidayAYearAgo == $lastHolidayServed) {
+                                        break;
+                                    } else {
+                                        $congID = $congregationBlackoutCount[$h]["congID"];
+                                        $scheduledStartDate = $dateBlackoutCount[$i]["startDate"];
+                                        $scheduledWeekNum = $this->DateRange->getWeekNumber($dateBlackoutCount[$i]["startDate"]);
+                                        $scheduledRotationNum = $this->DateRange->getRotationNumber($dateBlackoutCount[$i]["startDate"]);
+
+                                        $insertedIntoCongSch = $this->insertNewScheduledCong($congID, $scheduledStartDate, $scheduledWeekNum, $scheduledRotationNum, 1);
+
+                                        if ($insertedIntoCongSch == true) {
+                                            unset($congregationBlackoutCount[$h]);
+                                            $congregationBlackoutCount = array_values($congregationBlackoutCount);
+
+                                            if ($h == 12) {
+                                                $congregationBlackoutCount = $this->CongregationBlackout->getCongBlackoutCount();
+                                            }
+
+                                            break;
+                                        } else {
+                                            $scheduleCreated = false;
+                                            return $scheduleCreated;
+                                        }
+                                    }
                                 }
                             }
                         }
                     }
                 }
             }
+            return $scheduleCreated;
         }
-
-
-        $scheduleCreated = $this->scheduleCongsWithNoBlackouts($numOfRotations);
-
-        return $scheduleCreated;
     }//end scheduleCongregations
-
-    /* function to schedule all the congregations that don't have blackouts (listed as completely available)
-     * @param $numOfRotations - the number of distinct rotations in congregation blackouts
-     * @return $scheduled - boolean variable indicating if the all the congregations got scheduled
-     * */
-    function scheduleCongsWithNoBlackouts($numOfRotations) {
-        $allCongregationIDs = $this->Congregation->getCongregationID();
-
-        //Find all the start dates that weren't scheduled
-        $missingStartDates = array();
-        $scheduled = true;
-        for($i = 0; $i < sizeof($numOfRotations); $i++) {
-
-            //Get the start dates for each rotation, use for comparisons sake
-            $startDates = $this->DateRange->getStartDateBasedRotWithoutZero($numOfRotations[$i]['rotation_number']);
-
-            //Get the start dates for the congregation_schedule table
-            $congSchStartDates = $this->getStartDatesByRotation($numOfRotations[$i]['rotation_number']);
-
-            //Take all the start dates from congregation_schedule and move them into a normal indexed array
-            $allCongSchStartDates = array();
-            $allCongSchStartDates = $this->Functions->turnIntoNormalArray($congSchStartDates, 'startDate');
-
-            //Create array that holds all the start dates not scheduled
-            $missingStartDates = $this->Functions->createMissingValuesArray($startDates, $allCongSchStartDates, 'startDate');
-
-            //Get the congregation IDs from the congregation_schedule table
-            $scheduledCongIDs = $this->getCongIDsByRotation($numOfRotations[$i]['rotation_number']);
-
-            $congSchCongIDs = $this->Functions->turnIntoNormalArray($scheduledCongIDs, 'congID');
-
-            $missingCongIDs = $this->Functions->createMissingValuesArray($allCongregationIDs, $congSchCongIDs, 'congID');
-
-            //Schedule all the congregations that don't have blackouts
-            for($e = 0; $e < sizeof($missingCongIDs); $e++) {
-
-                $atLeast10WeeksApart = $this->scheduledAtLeast10WeeksApart($missingCongIDs[$e], $missingStartDates[$e]);
-                if($atLeast10WeeksApart) {
-                    $year = substr($missingStartDates[$e], 0, 4);
-                    $scheduledEndDate = date("Y-m-d", strtotime("+6 days", strtotime($missingStartDates[$e])));
-                    $dateIsAHoliday = $this->DateRange->containsHoliday($year, $missingStartDates[$e], $scheduledEndDate);
-                    if($dateIsAHoliday) {
-                        $hadHolidayAYearAgo = $this->scheduledHolidayAYearAgo($year, $missingStartDates[$e], $missingCongIDs[$e]);
-                        if ($hadHolidayAYearAgo == false) {
-                            $scheduledWeekNum = $this->DateRange->getWeekNumber($missingStartDates[$e]);
-                            $scheduledRotationNum = $this->DateRange->getRotationNumber($missingStartDates[$e]);
-
-                            $insertedIntoCongSch = $this->insertNewScheduledCong($missingCongIDs[$e], $missingStartDates[$e], $scheduledWeekNum, $scheduledRotationNum, 1);
-                            $updatedLastDatesServed = $this->Congregation->updateLastDatesServed($missingStartDates[$e], $missingStartDates[$e], $missingCongIDs[$e]);
-                            if (!($insertedIntoCongSch && $updatedLastDatesServed)) {
-                                $scheduled = false;
-                                return $scheduled;
-                            }
-                        }
-                    }else {
-                        $scheduledWeekNum = $this->DateRange->getWeekNumber($missingStartDates[$e]);
-                        $scheduledRotationNum = $this->DateRange->getRotationNumber($missingStartDates[$e]);
-                        $insertedIntoCongSch = $this->insertNewScheduledCong($missingCongIDs[$e], $missingStartDates[$e], $scheduledWeekNum, $scheduledRotationNum, 0);
-                        $updatedLastDatesServed = $this->Congregation->updateLastDatesServed($missingStartDates[$e], "", $missingCongIDs[$e]);
-                        if (!($insertedIntoCongSch && $updatedLastDatesServed)) {
-                            $scheduled = false;
-                            return $scheduled;
-                        }
-                    }
-                }
-            }
-        }
-
-        return $scheduled;
-    }//end scheduleCongsWithNoBlackouts
-
-    function scheduledAtLeast10WeeksApart($congID, $startDate) {
-        //Test to see if the congregation was scheduled within a 10 week span of the date we're trying to schedule
-        $scheduledAtLeast10Apart = true;
-        $priorDate = $this->Congregation->getLastDateServed($congID);
-        if (is_null($priorDate) == false) {
-            $datetime1 = new DateTime($startDate);
-            $datetime2 = new DateTime($priorDate);
-            $interval = $datetime1->diff($datetime2);
-            $daysDiff = $interval->format('%a days');
-            $numOfDays = 0;
-            for ($k = 0; $k < strlen($daysDiff); $k++) {
-                if (!is_numeric(substr($daysDiff, $k, 1))) {
-                    $numOfDays = intval(substr($daysDiff, 0, $k));
-                    break;
-                }
-            }
-            $numOfWeeks = $numOfDays / 7;
-            if ($numOfWeeks < 10) {
-                $scheduledAtLeast10Apart = false;
-            }
-        }
-
-        return $scheduledAtLeast10Apart;
-    }//end scheduledAtLeast10WeeksApart
-
-    function scheduledHolidayAYearAgo($year, $startDate, $congID) {
-        //First, identify which holiday it is
-        $holidayName = $this->DateRange->identifyHoliday($year, $startDate);
-        $holidayArray = array("SundayBeforeEaster", "Easter", "Memorial", "Independence", "Labor", "Thanksgiving", "Christmas", "NewYears");
-        $priorYear = date("Y", strtotime("-1 year", strtotime($year)));
-        $holidayAYearAgo = date("Y-m-d");
-        foreach ($holidayArray as $holiday) {
-            if ($holiday == $holidayName) {
-                if ($holidayName == "SundayBeforeEaster") {
-                    $holidayAYearAgo = $this->DateRange->getSundayBeforeEaster($priorYear);
-                } elseif ($holidayName == "Easter") {
-                    $holidayAYearAgo = $this->DateRange->get_easter_datetime($priorYear);
-                } elseif ($holidayName == "Memorial") {
-                    $holidayAYearAgo = $this->DateRange->getMemorialDay($priorYear);
-                } elseif ($holidayName == "Independence") {
-                    $holidayAYearAgo = $this->DateRange->getIndependenceDay($priorYear);
-                } elseif ($holidayName == "Labor") {
-                    $holidayAYearAgo = $this->DateRange->getLaborDay($priorYear);
-                } elseif ($holidayName == "Thanksgiving") {
-                    $holidayAYearAgo = $this->DateRange->getThanksgiving($priorYear);
-                } elseif ($holidayName == "Christmas") {
-                    $holidayAYearAgo = $this->DateRange->getChristmas($priorYear);
-                } elseif ($holidayName == "NewYears") {
-                    $holidayAYearAgo = $this->DateRange->getNewYears($priorYear);
-                } else {
-                    break;
-                }
-            }
-        }
-
-        //Next, see if the congregation was scheduled for that holiday a year ago
-        $lastHolidayServed = $this->Congregation->getLastHolidayServed($congID);
-
-        //If the congregation was scheduled a year ago, return true
-        //Else, return false
-        if ($holidayAYearAgo == $lastHolidayServed) {
-            return true;
-        }else {
-            return false;
-        }
-    }//end scheduledHolidayAYearAgo
 
 }//end CongregationSchedule

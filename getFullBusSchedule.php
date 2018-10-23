@@ -5,52 +5,64 @@
 	require_once("./inc/Controller/Blackouts.class.php");
 
 
-  $bus = new BusDriver();
-    //$calendarBus = new CalendarBus();
+$bus = new BusDriver();
+//$calendarBus = new CalendarBus();
 
 
-    $numberOfDrivers = $bus->getNumberOfBusDrivers();
+$numberOfDrivers = $bus->getNumberOfBusDrivers();
 
-    //testing for Sept, 2018
-    $schedule = new Schedule(9,2018,$numberOfDrivers);
-
-
-    //this gets an array of the drivers with the most to least blackout dates
-    $mostBlackouts = $bus->getMostBlackouts();
+//testing for Sept, 2018
+$schedule = new Schedule(10,2018,$numberOfDrivers);
 
 
-    $blackouts = $bus->getAllBlackout();
-
-    //make a call to the db to get a list of all the drivers and there associated driver names
-    //Array ( [0] => Array ( [driverID] => 1 [name] => John ) [1] => Array ( [driverID] => 2 [name] => Bill )
-    $driverNames = $bus->getAllDriverNames();
+//this gets an array of the drivers with the most to least blackout dates
+$mostBlackouts = $bus->getMostBlackouts();
 
 
-    $drivingLimits = $bus->getDriverLimits();
+$blackouts = $bus->getAllBlackout();
+
+//make a call to the db to get a list of all the drivers and there associated driver names
+//Array ( [0] => Array ( [driverID] => 1 [name] => John ) [1] => Array ( [driverID] => 2 [name] => Bill )
+$driverNames = $bus->getAllDriverNames();
+
+$drivingLimits = $bus->getDriverLimits();
 
 
-  //primary schedule
-  $result = $schedule->createDraftSchedule($mostBlackouts, $driverNames, $blackouts, "");
+//primary schedule
+$result = $schedule->createDraftSchedule($mostBlackouts, $driverNames, $blackouts, "");
 
-  // echo "<pre>";
-  // print_r($result);
-  // echo "<pre>";
+// echo "<pre>";
+// print_r($result);
+// echo "<pre>";
 
-  //backup schedule
-  $calendarWithBackups = $schedule->createDraftSchedule($mostBlackouts, $driverNames, $blackouts, $result);
+//backup schedule
+$calendarWithBackups = $schedule->createDraftSchedule($mostBlackouts, $driverNames, $blackouts, $result);
 
-  $fullScheduleArray = array_merge_recursive($result, $calendarWithBackups);
-  
-  $calendarBus = new CalendarBus();
-  
-  $scheduleArrayForm = $calendarBus->scheduleDrivers($fullScheduleArray);
-
-  // echo "<pre>";
-  // print_r($scheduleArrayForm);
-  // echo "<pre>";
+$fullScheduleArray = array_merge_recursive($result, $calendarWithBackups);
 
 
-  echo json_encode($scheduleArrayForm);
+$calendarBus = new CalendarBus();
+
+// echo "<pre>";
+// print_r($fullScheduleArray);
+// echo "<pre>";
+
+$bus->clearTable("bus_driver");
+
+$bus->insertSchedule($fullScheduleArray);
+
+
+$scheduleArrayForm = $calendarBus->scheduleDrivers();
+
+
+// echo "<pre>";
+// print_r($scheduleArrayForm);
+// echo "<pre>";
+
+
+
+
+echo json_encode($scheduleArrayForm);
 
 
 

@@ -11,23 +11,6 @@ class Functions {
 
     }
 
-    /* function to sift through values of one array and see if they're missing in another array
-     * normally used with MySQL data
-     * @param $arr1 - the array that has all the values you want to search for in the other array
-     * @param $arr2 - the array you want to search in
-     * @param $valueName - the name of the value you want to search for
-     * @return $missingValues - an array that has all the values missing from the second array (arr2)
-     * */
-    function createMissingValuesArray($arr1, $arr2, $valueName) {
-        $missingValues = array();
-        for ($e = 0; $e < sizeof($arr1); $e++) {
-            if (!in_array($arr1[$e][$valueName], $arr2)) {
-                array_push($missingValues, $arr1[$e][$valueName]);
-            }
-        }
-        return $missingValues;
-    }//end createMissingValuesArray
-
     /* function to move one index to another
      * @param $array - the array that has indexes you want to move
      * @param $a - the index you want to move from
@@ -82,19 +65,5 @@ class Functions {
             return $sqlData;
         }
     }//end testSQLNullValue
-
-    /* function to help turn MySQL column data into a normal array
-     * @param $data - data that came from MySQL as an associative array
-     * @param $columnName - the name of the MySQL column you would like as a normal array
-     * @return $normalArray - the data as a normal indexed array
-     * */
-    function turnIntoNormalArray($data, $columnName) {
-        $normalArray = array();
-
-        for ($e = 0; $e < sizeof($data); $e++) {
-            array_push($normalArray, $data[$e][$columnName]);
-        }
-        return $normalArray;
-    }//end turnIntoNormalArray
 
 }//end Functions
