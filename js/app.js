@@ -67,11 +67,6 @@ $(document).ready(function() {
         }
 	});
 
-    //On selection of one of the check marks for the host congregation blackouts
-    $("body").on("change", ".blackoutWeek", function() {
-        $('#calendar').fullCalendar('gotoDate', this.value);
-    });
-
     $("body").on("click", "#admin-finalize", function() {
         //Getting the rotation number
         var rotNum = $(".tbl-heading").eq(1).attr("id").split("-");
@@ -79,10 +74,15 @@ $(document).ready(function() {
 
         var startDates = $(".start-date");
         var congNames = $(".congName");
-        // console.log(startDates);
+
         for(var i = 0; i < congNames.length; i++) {
             $(".modal-body").append($("<p>").text(startDates.eq(i).text()+": "+congNames.eq(i).find(":selected").text()));
         }
+    });
+
+    //On selection of one of the check marks for the host congregation blackouts
+    $("body").on("change", ".blackoutWeek", function() {
+        $('#calendar').fullCalendar('gotoDate', this.value);
     });
 
     //The "Ok" button when the admin clicks to update changes made to the schedule
@@ -225,7 +225,7 @@ $(document).ready(function() {
 
             $("#rotation-sch-div").append(table);
             $("#admin-cong-buttons").append($("<button>").attr({"id": "admin-submit", "type": "submit", "data-toggle": "modal", "data-target":"#conf-data-submit"}).addClass("btn btn-primary").text("Submit Changes"));
-            $("#admin-cong-buttons").append($("<button>").attr({"id": "admin-finalize", "type": "submit"}).addClass("btn btn-success").text("Finalize Schedule"));
+            $("#admin-cong-buttons").append($("<button>").attr({"id": "admin-finalize", "type": "submit", "data-toggle": "modal", "data-target":"#conf-data-finalize"}).addClass("btn btn-success").text("Finalize Schedule"));
         }).fail(function (XMLHttpRequest, textStatus, errorThrown) {
             console.log(textStatus);
         });
@@ -356,6 +356,7 @@ $(document).ready(function() {
             updatedCong.rotation = updatedRotations.eq(i).text();
             updatedCongData.push(updatedCong);
         }
+        console.log(updatedCongNames);
         var updateData = postData({updatedData: updatedCongData},"inc/Controller/updateCongSch.php")
         $.when(updateData).then(function(updateDataResult) {
             $("#modalLabel").text("Success: Changes Made!").css("color","#549F93");
